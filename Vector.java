@@ -16,6 +16,20 @@ public class Vector {
 		double distance = Math.sqrt(Math.pow(v.getX()-this.X, 2)+Math.pow(v.getY()-this.Y, 2)+Math.pow(v.getZ()-this.Z, 2));
 		return distance;
 	}
+	
+	//sun between this vector and vector v.
+	public Vector sum(Vector v) {
+		Vector sum = new Vector(X+v.getX(),Y+v.getY(),Z+v.getZ());
+		return sum;
+	}
+	
+	//difference between this vector and vector v.
+	public Vector subtract(Vector v) {
+		Vector subtract = new Vector(X-v.getX(),Y-v.getY(),Z-v.getZ());
+		return subtract;
+	}
+	
+	
 	public double getZ() {
 		return Z;
 	}
@@ -34,6 +48,7 @@ public class Vector {
 	public void setX(double x) {
 		X = x;
 	}
-	
-
+	public String toString() {
+		return X+" "+Y+" "+Z;
+	}
 }
