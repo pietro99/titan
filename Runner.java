@@ -1,3 +1,5 @@
+
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -10,15 +12,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
  
 public class Runner extends Application{
 	public static SolarSystem solarSystem;
 	public static double mouseX = 0;
 	public static double mouseY = 0;
+	public static Stage primaryStage;
+	public static double frameSeconds = 0.1;
+	
 	
 	
     public void start(Stage primaryStage) {
-    	
+    	this.primaryStage = primaryStage;
        //creating the solar system
        solarSystem = new SolarSystem();
        Scene scene = new Scene(solarSystem, 1000, 850, true);
@@ -28,10 +34,11 @@ public class Runner extends Application{
        Timeline timeline = new Timeline();
        timeline.setCycleCount(Timeline.INDEFINITE);
        KeyFrame kf = new KeyFrame(
-               Duration.millis(0.1),
+               Duration.millis(frameSeconds),
                new EventHandler<ActionEvent>() {
                    public void handle(ActionEvent ae) {
                 	   //update the frame
+                	
                        update();
                    }
                });
@@ -66,14 +73,14 @@ public class Runner extends Application{
 					solarSystem.setScale(72992.01452560296);
 					solarSystem.setMovingFactor(-4365.039999999958 , 20464.560000000056);
 				}
-				else if(code == KeyCode.C) {
-					solarSystem.setScale(4E6);
-					solarSystem.setMovingFactor(500, 525);
+				else if(code == KeyCode.DOWN) {
+					setFrameSeconds(getFrameSeconds()*0.0001);
 				}
-				else if(code == KeyCode.E) {
-					solarSystem.setScale(27005.45381686715);
-					solarSystem.setMovingFactor(6004.33999999998, 498.2600000000017);
+				else if(code == KeyCode.UP) {
+					setFrameSeconds(getFrameSeconds()*10000);
 				}
+				else if(code == KeyCode.F)
+					fullScreen();
 			}
    		}));
    		
@@ -92,10 +99,13 @@ public class Runner extends Application{
    		
        primaryStage.setTitle("Mission To Titan");
        primaryStage.setScene(scene);
+       //primaryStage.setFullScreen(true);
        primaryStage.show();
     }
     
-    
+    public void fullScreen() {
+    	primaryStage.setFullScreen(true);
+    }
     
     
     //method that updates the frame
@@ -103,7 +113,18 @@ public class Runner extends Application{
     	solarSystem.updateSolarSystem();
     }
     
-    
+    public static double getHeight() {
+    	return primaryStage.getHeight();
+    }
+    public static double getWidth() {
+    	return primaryStage.getWidth();
+    }
+    public static void setFrameSeconds(double time) {
+    	frameSeconds = time;
+    }
+    public static double getFrameSeconds() {
+    	return frameSeconds;
+    }
     
     
  public static void main(String[] args) {
