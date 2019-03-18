@@ -89,8 +89,7 @@ public class SolarSystem extends Group{
 //			System.out.println(getEarth().getPosition().distance(new Vector(-1.490108437771287E+08,-2.895909986831957E+06,2.165455838982249E+03)));
 //			System.exit(0);
 //		}
-		
-		
+
 		calculateGravity();
 		for(int i=0; i<planets.length; i++) {
         	 planetCircles[i].setLayoutX((planets[i].getPosition().getX()/scale)+movingFactor.getX());
@@ -99,12 +98,28 @@ public class SolarSystem extends Group{
      }
 	
 	
-	
-	
+
 	public void calculateGravity() {
-		for(int i=0; i<planets.length; i++) 
+		/*for(int i=0; i<planets.length; i++)
 			planets[i].calculateGravityForce();
-		
+		*/
+		//reset force and acceleration
+		for(int i = 0; i < planets.length; i++) {
+			planets[i].setAcceleration(new Vector(0,0,0));
+			planets[i].setGravityForce(new Vector(0,0,0));
+		}
+		//get acceleration	-> we don't need force
+		//Calculate acceleration of each pair of object only once
+		for(int i = 0; i < planets.length; i++) {	//first planet
+			for(int j = 1; j < planets.length - i; j++) {        //other planet
+				Vector distance = planets[i].getPosition().subtract(planets[i + j].getPosition());	//from j to i
+				double d = distance.squareLength();
+				distance = distance.normalize();
+				planets[i + j].addAcceleration(distance.multiply(Planet.g * planets[i].getMass() / d));
+				planets[i].addAcceleration(distance.multiply(-1 * Planet.g * planets[i + j].getMass() / d));
+			}
+		}
+
 		for(int i=0; i<planets.length; i++) 
 			planets[i].updateVelocityAndPosition(TIME);
 	}

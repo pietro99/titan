@@ -1,7 +1,7 @@
 
 
 public class Planet {
-	private final double g = 6.67408E-11;
+	public static final double g = 6.67408E-11;
 	private String name;
 	private double mass;
 	private Vector position;
@@ -35,20 +35,29 @@ public class Planet {
 				Vector forceVector = direction.multiply(force);
 				p.setGravityForce(forceVector);
 				p.addAcceleration();
+			}
 		}
-	}
 	}
 	public void addAcceleration() {
 		acceleration = acceleration.sum(gravityForce.multiply(1/mass));
 	}
-	
+
+	public void addAcceleration(Vector acc) {
+		acceleration = acceleration.sum(acc);
+	}
+
 	public void updateVelocityAndPosition(double deltaT) {
-		Vector oldVel = new Vector(velocity.getX(),velocity.getY(),velocity.getZ());
+		/*Vector oldVel = new Vector(velocity.getX(),velocity.getY(),velocity.getZ());
 		velocity = velocity.sum(acceleration.multiply(deltaT));
 		Vector averageVel = oldVel.sum(velocity).multiply(0.5);
 		position = position.sum((averageVel).multiply(deltaT));
-		acceleration = new Vector(0,0,0);
+		acceleration = new Vector(0,0,0);*/
+
+		//more compact
+		velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
+		position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
 	}
+
 	public Vector getPosition() {
 		return position;
 	}
@@ -63,5 +72,10 @@ public class Planet {
 	public void setGravityForce(Vector force) {
 		gravityForce = force;
 	}
-	
+	public void setAcceleration(Vector acc) {
+		acceleration = acc;
+	}
+	public Vector getAcceleration() {
+		return acceleration;
+	}
 }
