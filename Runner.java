@@ -1,15 +1,21 @@
 
 
+import com.sun.prism.paint.Color;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -27,7 +33,14 @@ public class Runner extends Application{
     	this.primaryStage = primaryStage;
        //creating the solar system
        solarSystem = new SolarSystem();
-       Scene scene = new Scene(solarSystem, 1000, 850, true);
+       BorderPane mainPane = new BorderPane();
+       HBox infoBox = createHBox();
+       HBox sideBar = createSideBar();
+       mainPane.getChildren().add(solarSystem);
+       mainPane.setBottom(infoBox);
+       mainPane.setRight(sideBar);
+       
+       Scene scene = new Scene(mainPane, 1000, 850, true);
        
        
        //game loop......
@@ -76,8 +89,10 @@ public class Runner extends Application{
 				else if(code == KeyCode.DOWN) {
 					setFrameSeconds(getFrameSeconds()*0.0001);
 				}
-				else if(code == KeyCode.UP) {
-					setFrameSeconds(getFrameSeconds()*10000);
+				else if(code == KeyCode.C) {
+
+					solarSystem.setScale(4e6);
+					solarSystem.setMovingFactor(500,525);
 				}
 				else if(code == KeyCode.F)
 					fullScreen();
@@ -101,6 +116,31 @@ public class Runner extends Application{
        primaryStage.setScene(scene);
        //primaryStage.setFullScreen(true);
        primaryStage.show();
+    }
+    
+    
+    public HBox createHBox() {
+    	HBox infoBox = new HBox();
+    	infoBox.setPrefSize(0, 60);
+        infoBox.setStyle("-fx-background-color: #336699;");
+        Label time = new Label("time: ");
+        Label scale = new Label("scale: ");
+        infoBox.getChildren().addAll(time, scale);
+        
+        return infoBox;
+        
+    }
+
+    public HBox createSideBar() {
+    	HBox infoBox = new HBox();
+    	infoBox.setPrefSize(0, 60);
+        infoBox.setStyle("-fx-background-color: #336699;");
+        Label time = new Label("time: ");
+        Label scale = new Label("scale: ");
+        infoBox.getChildren().addAll(time, scale);
+        
+        return infoBox;
+        
     }
     
     public void fullScreen() {
