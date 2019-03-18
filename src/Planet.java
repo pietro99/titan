@@ -1,5 +1,3 @@
-
-
 public class Planet {
 	public static final double g = 6.67408E-11;
 	private String name;

@@ -88,4 +88,9 @@ public class Vector {
 	public String toString() {
 		return X+" "+Y+" "+Z;
 	}
+	public void set(double x, double y, double z) {
+		X = x;
+		Y = y;
+		Z = z;
+	}
 }
