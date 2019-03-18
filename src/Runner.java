@@ -145,7 +145,9 @@ public class Runner extends Application{
         infoBox.setPrefSize(0, 60);
         infoBox.setStyle("-fx-background-color: #336699;");
         Label time = new Label("time: ");
+        time.setTextFill(Color.WHITE);
         Label scale = new Label("scale: ");
+        scale.setTextFill(Color.WHITE);
         infoBox.getChildren().addAll(time, scale);
 
         return infoBox;
@@ -217,10 +219,15 @@ public class Runner extends Application{
         //selectedItem = comboBox.getValue().toString();
         comboBox.setValue(planet.getName());
         Label size = new Label("Size = " + planet.getRadius());
+        size.setTextFill(Color.WHITE);
         Label mass = new Label("Mass = " + planet.getMass());
+        mass.setTextFill(Color.WHITE);
         Label position = new Label("Position is: " + planet.getPosition());
+        position.setTextFill(Color.WHITE);
         Label acceleration = new Label("Accelaration = " + planet.getAcceleration());
+        acceleration.setTextFill(Color.WHITE);
         Label velocity = new Label("Velocity =" + planet.getVelocity());
+        velocity.setTextFill(Color.WHITE);
 
         infoBox.getChildren().addAll(comboBox,size, mass, position, acceleration, velocity);
 
