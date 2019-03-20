@@ -1,5 +1,6 @@
 
 
+
 //import com.sun.prism.paint.Color;
 
 import javafx.animation.KeyFrame;
@@ -25,15 +26,17 @@ public class Runner extends Application{
 	public static double mouseX = 0;
 	public static double mouseY = 0;
 	public static Stage primaryStage;
+	public static BorderPane mainPane;
 	public static double frameSeconds = 0.1;
 	public static int count = 0;
+	public static int gen =0;
 	
 	
     public void start(Stage primaryStage) {
     	this.primaryStage = primaryStage;
        //creating the solar system
        solarSystem = new SolarSystem();
-       BorderPane mainPane = new BorderPane();
+       mainPane = new BorderPane();
        HBox infoBox = createHBox();
        HBox sideBar = createSideBar();
        mainPane.getChildren().add(solarSystem);
@@ -138,7 +141,7 @@ public class Runner extends Application{
         Label time = new Label("time: ");
         Label scale = new Label("scale: ");
         infoBox.getChildren().addAll(time, scale);
-        
+       
         return infoBox;
         
     }
@@ -152,19 +155,28 @@ public class Runner extends Application{
     public void update() {
     	solarSystem.updateSolarSystem();
 		count += 250 ;
+	
 		if(count >= 3600 * 24 * 365) {
+			gen++;
 			count = 0;
-			Shuttle best = null;
+			Shuttle best = SolarSystem.best;
+			
 			for(int i = 0; i < solarSystem.shuttles.length; i++) {
 				if(solarSystem.shuttles[i] != null && (best == null || best.getPosition().distance(solarSystem.planets[10].getPosition()) >= solarSystem.shuttles[i].getPosition().distance(solarSystem.planets[10].getPosition())))
 					best = solarSystem.shuttles[i];
 			}
 			System.out.println("Select " + best.init);
-			System.out.println(best.getPosition().distance(solarSystem.planets[10].getPosition()));
+			System.out.println(solarSystem.bestDistance);
 			solarSystem = new SolarSystem();
 			for(int i = 0; i < solarSystem.shuttles.length; i++) {
-				solarSystem.shuttles[i] = new Shuttle(solarSystem.planets[3].getPosition().sum(best.init.normalize().multiply(solarSystem.planets[3].getRadius())), best.init.sum(new Vector(Math.random() * 200000 - 10000, Math.random()  * 20000 - 10000, Math.random()  * 200000 - 10000)).normalize().multiply(1000000), 1000);
+				if(i==0) {
+					solarSystem.shuttles[i] = new Shuttle(best.init, 1000);
+				}
+				else
+				solarSystem.shuttles[i] = new Shuttle(best.init.sum(new Vector(Math.random() * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance -0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance)).normalize().multiply(1000000), 1000);
 			}
+			mainPane.getChildren().remove(0);
+			mainPane.getChildren().add(solarSystem);
 		}
     }
     
