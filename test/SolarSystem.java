@@ -1,5 +1,6 @@
 
 
+
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -10,12 +11,14 @@ public class SolarSystem extends Group{
 	public final double TIME = 0.05;
 	
 	public static Planet[] planets = new Planet[11];
-	public static Shuttle[] shuttles = new Shuttle[100];
+	public static Shuttle[] shuttles = new Shuttle[300];
 	public static boolean done = false;
+	public static Shuttle best;
+	public static double bestDistance;
 
 
 	private static Circle[] planetCircles = new Circle[11];
-	private static Circle[] shuttleCircles = new Circle[100];
+	private static Circle[] shuttleCircles = new Circle[300];
 	//planets size in pixels
 	private final double SUN_SIZE = 6;
 	private final double SMALL_SIZE = 1;
@@ -62,11 +65,11 @@ public class SolarSystem extends Group{
 		
 		planetCircles[10] = new Circle(SMALL_SIZE);
 
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < shuttleCircles.length; i++) {
 			shuttleCircles[i] = new Circle(SMALL_SIZE);
 			shuttleCircles[i].fillProperty().set(Color.RED);
 		}
-		// add the circles to the SolarSystem group
+	 // add the circles to the SolarSystem group
 		for(int i=0; i<planetCircles.length; i++) {
 			getChildren().add(planetCircles[i]);
 		}
@@ -74,6 +77,7 @@ public class SolarSystem extends Group{
 		for(int i=0; i<shuttleCircles.length; i++) {
 			getChildren().add(shuttleCircles[i]);
 		}
+		
 
 		//color the circles
 		planetCircles[0].fillProperty().set(Color.YELLOW);
@@ -89,10 +93,18 @@ public class SolarSystem extends Group{
 		planetCircles[10].fillProperty().set(Color.RED);
 
 		Vector tmp;
-		for(int i = 0; i < shuttles.length; i++) {
-			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-			shuttles[i] = new Shuttle(planets[3].getPosition().sum(tmp.multiply(planets[3].getRadius())), planets[3].getVelocity().sum(tmp.normalize().multiply(1000000)), 100);
+		if(best!=null) {
+			shuttles[0]= best;
 		}
+		else {
+			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
+			shuttles[0] = new Shuttle( planets[3].getVelocity().sum(tmp.normalize().multiply(70*10000)), 100);
+		}
+		for(int i = 1; i < shuttles.length; i++) {
+			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
+			shuttles[i] = new Shuttle(planets[3].getVelocity().sum(tmp.normalize().multiply(70*10000)), 100);
+		}
+		
 	}
 	
 	
@@ -108,6 +120,8 @@ public class SolarSystem extends Group{
 //		}
 
 		calculateGravity();
+		
+		
 		for(int i=0; i<planets.length; i++) {
         	 planetCircles[i].setLayoutX((planets[i].getPosition().getX()/scale)+movingFactor.getX());
         	 planetCircles[i].setLayoutY((planets[i].getPosition().getY()/scale)+movingFactor.getY());
@@ -118,9 +132,11 @@ public class SolarSystem extends Group{
 				shuttleCircles[i].setLayoutX((shuttles[i].getPosition().getX() / scale) + movingFactor.getX());
 				shuttleCircles[i].setLayoutY((shuttles[i].getPosition().getY() / scale) + movingFactor.getY());
 			}else {
-				shuttleCircles[i].fillProperty().set(Color.BLACK);;
+				shuttleCircles[i].fillProperty().set(Color.BLACK);
 			}
+			
 		}
+		
      }
 	
 	
@@ -160,6 +176,12 @@ public class SolarSystem extends Group{
 						}
 					}
 				}
+			}
+			if(shuttles[i]!=null) {
+			if(best == null ||best.getPosition().distance(planets[10].getPosition())>shuttles[i].getPosition().distance(planets[10].getPosition())) {
+				best = shuttles[i];
+				bestDistance = best.getPosition().distance(planets[10].getPosition());
+			}
 			}
 		}
 
