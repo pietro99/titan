@@ -11,14 +11,16 @@ public class SolarSystem extends Group{
 	public final double TIME = 0.05;
 	
 	public static Planet[] planets = new Planet[11];
-	public static Shuttle[] shuttles = new Shuttle[300];
+	public static Shuttle[] shuttles = new Shuttle[400];
 	public static boolean done = false;
 	public static Shuttle best;
+	public static Vector bestPos, bestTitan;
 	public static double bestDistance;
-
+	public static int time = 0;
+	public static int bestTime = 0;
 
 	private static Circle[] planetCircles = new Circle[11];
-	private static Circle[] shuttleCircles = new Circle[300];
+	private static Circle[] shuttleCircles = new Circle[shuttles.length];
 	//planets size in pixels
 	private final double SUN_SIZE = 6;
 	private final double SMALL_SIZE = 1;
@@ -31,6 +33,9 @@ public class SolarSystem extends Group{
 	private Vector movingFactor = new Vector(500,525,0);
 	
 	public SolarSystem() {
+		//-235301.33181875394 -800572.9273890787 477.10348273478763
+		//-235955.3311477492 -800117.3184090039 477.08528139046257
+		time = 0;
 		//the coordinates origin is the sun for the planets and titan, the moon uses the earth as origin instead
 		
 		
@@ -97,12 +102,16 @@ public class SolarSystem extends Group{
 			shuttles[0]= best;
 		}
 		else {
-			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-			shuttles[0] = new Shuttle( planets[3].getVelocity().sum(tmp.normalize().multiply(70*10000)), 100);
+			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiply(60*10000);
+			tmp.set(planets[3].getVelocity().getX() + tmp.getX(), planets[3].getVelocity().getY() + tmp.getY(), tmp.getZ() / 500);
+			shuttles[0] = new Shuttle( tmp, 100);
 		}
-		for(int i = 1; i < shuttles.length; i++) {
-			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-			shuttles[i] = new Shuttle(planets[3].getVelocity().sum(tmp.normalize().multiply(70*10000)), 100);
+		shuttles[1] = new Shuttle(new Vector(-235301.33181875394, -800572.9273890787, 477.10348273478763), 100);
+		for(int i = 2; i < shuttles.length; i++) {
+			//tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiply(60*10000);
+			//tmp.set(planets[3].getVelocity().getX() + tmp.getX(), planets[3].getVelocity().getY() + tmp.getY(), planets[3].getVelocity().getZ() + tmp.getZ() / 500 );
+			tmp = new Vector(-235955.3311477492, -800117.3184090039, 477.08528139046257);
+			shuttles[i] = new Shuttle( tmp, 100);
 		}
 		
 	}
@@ -142,6 +151,7 @@ public class SolarSystem extends Group{
 	
 
 	public void calculateGravity() {
+		time++;
 		/*for(int i=0; i<planets.length; i++)
 			planets[i].calculateGravityForce();
 		*/
@@ -168,6 +178,7 @@ public class SolarSystem extends Group{
 				if(shuttles[i].getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
 					System.out.println(shuttles[i].init);
 					done = true;
+					System.out.println("LANDED ON TITAN");
 					System.exit(0);
 				}else {
 					for(int j = 0; j < planets.length - 1; j++) {
@@ -178,14 +189,17 @@ public class SolarSystem extends Group{
 				}
 			}
 			if(shuttles[i]!=null) {
-			if(best == null ||best.getPosition().distance(planets[10].getPosition())>shuttles[i].getPosition().distance(planets[10].getPosition())) {
-				best = shuttles[i];
-				bestDistance = best.getPosition().distance(planets[10].getPosition());
-			}
+				if(best == null ||best.getPosition().distance(planets[10].getPosition())>shuttles[i].getPosition().distance(planets[10].getPosition())) {
+					best = shuttles[i];
+					bestPos = best.getPosition();
+					bestTitan = planets[10].getPosition();
+					bestDistance = best.getPosition().distance(planets[10].getPosition());
+					bestTime = time;
+				}
 			}
 		}
 
-		for(int i=0; i<planets.length; i++) 
+		for(int i=0; i<planets.length; i++)
 			planets[i].update(TIME);
 	}
 	

@@ -156,27 +156,33 @@ public class Runner extends Application{
     	solarSystem.updateSolarSystem();
 		count += 250 ;
 	
-		if(count >= 3600 * 24 * 365) {
+		if(count >= 3600 * 24 * 365 * 2) {
 			gen++;
 			count = 0;
 			Shuttle best = SolarSystem.best;
-			
-			for(int i = 0; i < solarSystem.shuttles.length; i++) {
-				if(solarSystem.shuttles[i] != null && (best == null || best.getPosition().distance(solarSystem.planets[10].getPosition()) >= solarSystem.shuttles[i].getPosition().distance(solarSystem.planets[10].getPosition())))
-					best = solarSystem.shuttles[i];
-			}
-			System.out.println("Select " + best.init);
-			System.out.println(solarSystem.bestDistance);
+
 			solarSystem = new SolarSystem();
+			Vector correction = solarSystem.bestPos.subtract(solarSystem.bestTitan);	//from shuttle to titan
+			correction.set(correction.getX() / solarSystem.bestTime, correction.getY() / solarSystem.bestTime, correction.getZ() / solarSystem.bestTime);
+			double err = solarSystem.bestPos.distance(solarSystem.bestTitan);
 			for(int i = 0; i < solarSystem.shuttles.length; i++) {
 				if(i==0) {
 					solarSystem.shuttles[i] = new Shuttle(best.init, 1000);
+				} else if (i == 1) {
+					solarSystem.shuttles[i] = new Shuttle(best.init.sum(correction), 1000);
+				} else {
+					//solarSystem.shuttles[i] = new Shuttle(best.init.sum(new Vector(Math.random() * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance -0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance)).normalize().multiply(1000000), 1000);
+					solarSystem.shuttles[i] = new Shuttle(new Vector(best.init.getX() + (Math.random() * 2 - 1)* correction.getX(), best.init.getY() + (Math.random() * 2 - 1)* correction.getY(), best.init.getZ() + (Math.random() * 2 - 1)* correction.getZ()), 1000);
 				}
-				else
-				solarSystem.shuttles[i] = new Shuttle(best.init.sum(new Vector(Math.random() * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance -0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance)).normalize().multiply(1000000), 1000);
 			}
 			mainPane.getChildren().remove(0);
 			mainPane.getChildren().add(solarSystem);
+			System.out.println("Select: " + best.init);
+			System.out.println("Position: " + solarSystem.bestPos);
+			System.out.println("Titan: " + solarSystem.bestTitan);
+			System.out.println("Time: " + solarSystem.bestTime);
+			System.out.println("Correction: " + correction);
+			System.out.println("Error: " + solarSystem.bestPos.distance(solarSystem.bestTitan));
 		}
     }
     
