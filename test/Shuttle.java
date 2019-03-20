@@ -5,10 +5,10 @@ public class Shuttle extends Body{
     private InertiaSolver inertia;
     public Vector init;
 
-    public Shuttle(Vector position, Vector velocity, double mass) {
+    public Shuttle(Vector velocity, double mass) {
         //TODO motor force, consume mass, controller, rigid body shape (InertiaSolver)
         this.acceleration = new Vector(0, 0, 0);
-        this.position = position;
+        this.position = SolarSystem.getPlanets()[3].getPosition().sum(velocity.normalize().multiply(SolarSystem.getPlanets()[3].getRadius()));
         this.direction = velocity.normalize();
         this.velocity = velocity;
         this.mass = mass;
@@ -18,7 +18,7 @@ public class Shuttle extends Body{
     }
 
     public Shuttle(Vector position, Vector velocity, double mass, InertiaSolver inertia) {
-        this(position, velocity, mass);
+        this(velocity, mass);
         this.inertia = inertia;
     }
 
