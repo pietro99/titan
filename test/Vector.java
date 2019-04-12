@@ -1,9 +1,10 @@
-
 public class Vector {
 	private double X;
 	private double Y;
 	private double Z;
-	
+
+	public static final Vector ZERO = new Vector(0, 0, 0);
+
 	public Vector(double PosX, double PosY, double PosZ) {
 		this.setX(PosX);
 		this.setY(PosY);

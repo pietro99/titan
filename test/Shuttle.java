@@ -1,25 +1,64 @@
 public class Shuttle extends Body{
     private static final double epsilon = 1E-10;
-    private Vector direction;
+    private Vector[] direction; //object coordiante system
     private Vector angularSpeed;
-    private InertiaSolver inertia;
-    public Vector init;
+
+    private double innerRadius;    //shuttle as a sphere shell, radius in body class
+
+    private Vector init; //initial velocity
+
+    private double inertia; //moment of inertia / mass
+
+    private double mainEngineAcc;   //acceleration / time of the engines
+    private double lateralEngineAcc;
+    private double mainEngineMass;  //mass / time consumed by the engines
+    private double lateralEngineMass;
 
     public Shuttle(Vector velocity, double mass) {
-        //TODO motor force, consume mass, controller, rigid body shape (InertiaSolver)
+        //set initial acceleration
         this.acceleration = new Vector(0, 0, 0);
+
+        //set initial position on the surface of the planet     //TODO use different planets
         this.position = SolarSystem.getPlanets()[3].getPosition().sum(velocity.normalize().multiply(SolarSystem.getPlanets()[3].getRadius()));
-        this.direction = velocity.normalize();
+
+        //initialiaze coordinate system
+        this.direction = new Vector[3];
+        this.direction[2] = velocity.normalize();   //main engine and lateral
+        this.direction[0] = this.direction[2].cross(new Vector(0, 0, 1)).normalize();   //lateral engine
+        this.direction[1] = this.direction[0].cross(this.direction[2]);                 //lateral engine
+
+        //set physical data
         this.velocity = velocity;
         this.mass = mass;
         this.angularSpeed = new Vector(0, 0,0);
-        this.inertia = Physics.NO_INERTIA;
         this.init = velocity;
+
+        this.inertia = 0;
+        this.mainEngineAcc = 0;
+        this.mainEngineMass = 0;
+        this.lateralEngineAcc = 0;
+        this.lateralEngineMass = 0;
+        this.radius = 0;
+        this.innerRadius = 0;
     }
 
-    public Shuttle(Vector position, Vector velocity, double mass, InertiaSolver inertia) {
+    /*
+    public Shuttle(Vector position, Vector velocity, double mass) {
         this(velocity, mass);
-        this.inertia = inertia;
+    }*/
+
+    public Shuttle(Vector velocity, double mass, double innerRadius, double radius, double mainEngineAcc, double mainEngineMass, double lateralEngineAcc, double lateralEngineMass, Body starting) {
+        this(velocity, mass);
+        this.position = starting.getPosition().sum(velocity.normalize().multiply(starting.getRadius()));
+
+        this.innerRadius = innerRadius;
+        this.radius = radius;
+        this.inertia = 0.4 * (Math.pow(this.radius, 5) - Math.pow(this.innerRadius, 5)) / (Math.pow(this.radius, 3) - Math.pow(this.innerRadius, 3)); //mass simplified
+
+        this.mainEngineMass = mainEngineMass;
+        this.mainEngineAcc = mainEngineAcc;
+        this.lateralEngineMass = lateralEngineMass;
+        this.lateralEngineAcc = lateralEngineAcc;
     }
 
     public void calculateGravity(Planet[] planets) {
@@ -34,10 +73,13 @@ public class Shuttle extends Body{
     }
 
     public void addAcceleration(Vector acc, Vector radius, double deltaMass) {
+        //add acceleration
         acceleration = acceleration.sum(acc);
+
+        //update mass
         mass += deltaMass;
-        if(radius.squareLength() < epsilon) {   //TODO check physics: mass of the object and mass consumed
-            angularSpeed.sum(radius.cross(acc).multiply(1 / inertia.solve(radius)));
+        if(radius.squareLength() < epsilon) {
+            angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
         }
     }
 
@@ -46,7 +88,26 @@ public class Shuttle extends Body{
 
         //rotation
         if(angularSpeed.squareLength() < epsilon) {
-            direction = direction.rotate(angularSpeed, angularSpeed.length() * deltaT);
+            for(int i = 0; i < 3; i++) {
+                direction[i] = direction[i].rotate(angularSpeed, angularSpeed.legth() * deltaT);    //rotate directions -> rotate engines   //TODO integral
+            }
         }
     }
+
+    public void mainEngine(double time) {
+        addAcceleration(direction[2].multiply(mainEngineAcc * time), Vector.ZERO, -mainEngineMass * time);
+    }
+
+    public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {
+        int sign = 1;
+        if(!positive)
+            sign = -1;
+        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign), direction[axisRot].multiply(radius), -lateralEngineMass * time);
+    }
+
+    public void applyForce(Vector force, Vector position) {
+        addAcceleration(force.multiply(1 / mass), position, 0);
+    }
+
+    public Vector getInitialVelocity() { return init;}
 }
