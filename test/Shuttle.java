@@ -98,11 +98,15 @@ public class Shuttle extends Body{
         addAcceleration(direction[2].multiply(mainEngineAcc * time), Vector.ZERO, -mainEngineMass * time);
     }
 
-    public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {
+    public void lateralEngine(double time, boolean positive, int axisMove, int axisRot, double error) {
         int sign = 1;
         if(!positive)
             sign = -1;
-        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign), direction[axisRot].multiply(radius), -lateralEngineMass * time);
+        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign * (1 + Math.random() * error)), direction[axisRot].multiply(radius * (1 + error * Math.random()), -lateralEngineMass * time);
+    }
+
+    public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {
+        lateralEngine(time, positive, axisMove, axisRot, 0);
     }
 
     public void applyForce(Vector force, Vector position) {
@@ -110,4 +114,9 @@ public class Shuttle extends Body{
     }
 
     public Vector getInitialVelocity() { return init;}
+
+    public double getDragArea() {
+        //half of the surface
+        return 2 * Math.PI * radius * radius;
+    }
 }
