@@ -95,14 +95,14 @@ public class Shuttle extends Body{
     }
 
     public void mainEngine(double time) {
-        addAcceleration(direction[2].multiply(mainEngineAcc * time), Vector.ZERO, -mainEngineMass * time);
+        addAcceleration(direction[2].multiply(mainEngineAcc * time / mass), Vector.ZERO, -mainEngineMass * time);
     }
 
     public void lateralEngine(double time, boolean positive, int axisMove, int axisRot, double error) {
         int sign = 1;
         if(!positive)
             sign = -1;
-        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign * (1 + Math.random() * error)), direction[axisRot].multiply(radius * (1 + error * Math.random()), -lateralEngineMass * time);
+        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign * (1 + Math.random() * error / mass)), direction[axisRot].multiply(radius * (1 + error * Math.random()), -lateralEngineMass * time);
     }
 
     public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {
