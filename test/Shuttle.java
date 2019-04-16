@@ -125,4 +125,8 @@ public class Shuttle extends Body{
         //half of the surface
         return 2 * Math.PI * radius * radius;
     }
+
+    public void useParachute() {
+        //TODO
+    }
 }
