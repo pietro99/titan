@@ -14,7 +14,9 @@ public class Shuttle extends Body{
     private double mainEngineMass;  //mass / time consumed by the engines
     private double lateralEngineMass;
 
-    public Shuttle(Vector velocity, double mass) {
+    private double minMass;
+
+    public Shuttle(Vector velocity, double mass, double minMass) {
         //set initial acceleration
         this.acceleration = new Vector(0, 0, 0);
 
@@ -40,6 +42,8 @@ public class Shuttle extends Body{
         this.lateralEngineMass = 0;
         this.radius = 0;
         this.innerRadius = 0;
+
+        this.minMass = minMass;
     }
 
     /*
@@ -47,8 +51,8 @@ public class Shuttle extends Body{
         this(velocity, mass);
     }*/
 
-    public Shuttle(Vector velocity, double mass, double innerRadius, double radius, double mainEngineAcc, double mainEngineMass, double lateralEngineAcc, double lateralEngineMass, Body starting) {
-        this(velocity, mass);
+    public Shuttle(Vector velocity, double mass, double minMass, double innerRadius, double radius, double mainEngineAcc, double mainEngineMass, double lateralEngineAcc, double lateralEngineMass, Body starting) {
+        this(velocity, mass, minMass);
         this.position = starting.getPosition().sum(velocity.normalize().multiply(starting.getRadius()));
 
         this.innerRadius = innerRadius;
@@ -73,13 +77,15 @@ public class Shuttle extends Body{
     }
 
     public void addAcceleration(Vector acc, Vector radius, double deltaMass) {
-        //add acceleration
-        acceleration = acceleration.sum(acc);
+        if(deltaMass < mass) {
+            //add acceleration
+            acceleration = acceleration.sum(acc);
 
-        //update mass
-        mass += deltaMass;
-        if(radius.squareLength() < epsilon) {
-            angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
+            //update mass
+            mass += deltaMass;
+            if (radius.squareLength() < epsilon) {
+                angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
+            }
         }
     }
 
