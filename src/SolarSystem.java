@@ -98,11 +98,11 @@ public class SolarSystem extends Group{
 		}
 		else {
 			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-			shuttles[0] = new Shuttle( planets[3].getVelocity().sum(tmp.normalize().multiply(70*10000)), 100);
+			shuttles[0] = new Shuttle( planets[3].getVelocity().sum(tmp.normalize().multiply(70*1000)), 100);
 		}
 		for(int i = 1; i < shuttles.length; i++) {
 			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-			shuttles[i] = new Shuttle(planets[3].getVelocity().sum(tmp.normalize().multiply(70*10000)), 100);
+			shuttles[i] = new Shuttle(planets[3].getVelocity().sum(tmp.normalize().multiply(70*1000)), 100);
 		}
 		
 	}
@@ -112,7 +112,7 @@ public class SolarSystem extends Group{
 	//method for updating solar system
 	public void updateSolarSystem() {
 		
-//	//	accuracy check: get the distance between the earth after an year in the simulation and the earth after an year accordig to the data.
+//	//	accuracy check: get the distance between the earth after an year in the simulation and the earth after an year according to the data.
 //		counter+=500;
 //		if(counter == 60*60*24*365) {
 //			System.out.println(getEarth().getPosition().distance(new Vector(-1.490108437771287E+08,-2.895909986831957E+06,2.165455838982249E+03)));

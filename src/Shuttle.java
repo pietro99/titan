@@ -112,7 +112,7 @@ public class Shuttle extends Body{
         int sign = 1;
         if(!positive)
             sign = -1;
-        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign * (1 + Math.random() * error / mass)), direction[axisRot].multiply(radius * (1 + error * Math.random()), -lateralEngineMass * time);
+        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign * (1 + Math.random() * error / mass)), direction[axisRot].multiply(radius * (1 + error * Math.random())), -lateralEngineMass * time);
     }
 
     public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {

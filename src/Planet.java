@@ -13,4 +13,9 @@ public class Planet extends Body{
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	public Vector getPosition() {
+		return super.getPosition();
+	}
 }
