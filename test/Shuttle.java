@@ -9,8 +9,8 @@ public class Shuttle extends Body{
 
     private double inertia; //moment of inertia / mass
 
-    private double mainEngineAcc;   //acceleration / time of the engines
-    private double lateralEngineAcc;
+    private double mainEngineForce;   //acceleration / time of the engines
+    private double lateralEngineForce;
     private double mainEngineMass;  //mass / time consumed by the engines
     private double lateralEngineMass;
 
@@ -38,9 +38,9 @@ public class Shuttle extends Body{
         this.init = velocity;
 
         this.inertia = 0;
-        this.mainEngineAcc = 0;
+        this.mainEngineForce = 0;
         this.mainEngineMass = 0;
-        this.lateralEngineAcc = 0;
+        this.lateralEngineForce = 0;
         this.lateralEngineMass = 0;
         this.radius = 0;
         this.innerRadius = 0;
@@ -55,7 +55,7 @@ public class Shuttle extends Body{
         this(velocity, mass);
     }*/
 
-    public Shuttle(Vector velocity, double mass, double minMass, double innerRadius, double radius, double mainEngineAcc, double mainEngineMass, double lateralEngineAcc, double lateralEngineMass, Body starting) {
+    public Shuttle(Vector velocity, double mass, double minMass, double innerRadius, double radius, double mainEngineForce, double mainEngineMass, double lateralEngineForce, double lateralEngineMass, Body starting) {
         this(velocity, mass, minMass);
         this.position = starting.getPosition().sum(velocity.normalize().multiply(starting.getRadius()));
 
@@ -64,9 +64,9 @@ public class Shuttle extends Body{
         this.inertia = 0.4 * (Math.pow(this.radius, 5) - Math.pow(this.innerRadius, 5)) / (Math.pow(this.radius, 3) - Math.pow(this.innerRadius, 3)); //mass simplified
 
         this.mainEngineMass = mainEngineMass;
-        this.mainEngineAcc = mainEngineAcc;
+        this.mainEngineForce = mainEngineForce;
         this.lateralEngineMass = lateralEngineMass;
-        this.lateralEngineAcc = lateralEngineAcc;
+        this.lateralEngineForce = lateralEngineForce;
     }
 
     public void calculateGravity(Planet[] planets) {
@@ -109,14 +109,14 @@ public class Shuttle extends Body{
     }
 
     public void mainEngine(double time) {
-        addAcceleration(direction[2].multiply(mainEngineAcc * time / mass), Vector.ZERO, -mainEngineMass * time);
+        addAcceleration(direction[2].multiply(mainEngineForce * time / mass), Vector.ZERO, -mainEngineMass * time);
     }
 
     public void lateralEngine(double time, boolean positive, int axisMove, int axisRot, double error) {
         int sign = 1;
         if(!positive)
             sign = -1;
-        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign * (1 + Math.random() * error / mass)),
+        addAcceleration(direction[axisMove].multiply(lateralEngineForce * time * sign * (1 + Math.random() * error / mass)),
                         direction[axisRot].multiply(radius * (1 + error * Math.random())),
                         -lateralEngineMass * time);
     }
@@ -141,16 +141,53 @@ public class Shuttle extends Body{
     }
 
     public void stopRotation(double tolerance, double timeStep) {   //timeStep: step of the simulation, lateral engines can work with smaller time step
-        //TODO
+        //TODO tolerance?
+        Vector time = angularSpeed.multiply(mass / lateralEngineForce);
+        for(int i = 0; i < 3; i++){
+            if(angularSpeed.get(i) > tolerance)
+                lateralEngine(time.get(i), angularSpeed.get(i) < 0, i == 2 ? 1 : 2, i, 0);
+        }
     }
 
-    public void alignTo(Vector axis, boolean sameDirection) {
-        //for velocity, planet-shuttle,
-        //TODO
+    public void alignTo(Vector axis, boolean sameDirection, double timeStep, double tolerance) {
+        //assume it is not rotating
+        //for velocity, planet-shuttle, ...
+
+        //select the engine that approximate best the aligment (max dot product), repeat until it is done (rotAxis < tolerance)
+        Vector rotAxis = direction[2].cross(axis);
+        double totTime = 0;
+        while(totTime < timeStep && rotAxis.squareLength() < tolerance * tolerance) {
+            //TODO really really bad code
+            int ax = 0;
+            double dot = direction[ax].dot(rotAxis);
+
+            double tmp = direction[1].dot(rotAxis);
+            if(Math.abs(tmp) > Math.abs(dot)) {
+                ax = 1;
+                dot = tmp;
+            }
+
+            tmp = direction[2].dot(rotAxis);
+            if(Math.abs(tmp) > Math.abs(dot)) {
+                ax = 2;
+                dot = tmp;
+            }
+
+            //TODO calculate time
+            //lateralEngine(time, dot < 0, ax == 2 ? 1 : 2, axis);
+            rotAxis = direction[2].cross(axis);
+        }
     }
 
     public void brake(double targetVelocity, double tolerance, double timeStep) {
-        //TODO
+        //TODO tolerance?
+        //assumet that it has the right direction
+        double vel = velocity.length();
+        double time = 0;
+        if(vel > targetVelocity) {
+            time = Math.max(Math.abs(vel - targetVelocity) * mass / mainEngineForce, timeStep);
+            mainEngine(time);
+        }
     }
 
     public void land(Planet planet, double timeStep) {
@@ -158,16 +195,16 @@ public class Shuttle extends Body{
         double sDist = dist.squareLength();
         if(sDist > (600 + planet.getRadius())) {
             stopRotation(0.1, timeStep);
-            alignTo(velocity, false);
+            alignTo(velocity, false, timeStep, 0.1);
             brake(2555, 50, timeStep);  //less than escape velocity
         }else if(sDist > 50){
             stopRotation(0.1, timeStep);
-            alignTo(velocity.subtract(dist), false);
+            alignTo(velocity.subtract(dist), false, timeStep, 0.1);
             //TODO  wind parachute, drag?
             brake(200, 30, timeStep);
         }else {
             stopRotation(0.1, timeStep);
-            alignTo(dist, true);
+            alignTo(dist, true, timeStep, 0.1);
             //TODO  wind parachute, drag?
             brake(0.1, 0.1, timeStep);
         }

@@ -70,6 +70,17 @@ public class Vector {
 		return new Vector(multiply(1 / length()));
 	}
 
+	public double get(int i) {
+		if(i == 0)
+			return X;
+		else if(i == 1)
+			return Y;
+		else if(i == 2)
+			return Z;
+		else
+			throw new IndexOutOfBoundsException("3D vector but " + i + " given");
+	}
+
 	public double getZ() { return Z; }
 	public void setZ(double z) {
 		Z = z;
