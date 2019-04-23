@@ -136,8 +136,9 @@ public class Shuttle extends Body{
         return 2 * Math.PI * radius * radius;
     }
 
-    public void useParachute(double atmosphere) {
-        acceleration = acceleration.sum(velocity.multiply(- parachute * atmosphere));
+    public void useParachute() {
+        double atmosphere = SolarSystem.planets[10].getAtmosphericPressureComparedToEarthPressure();
+        acceleration = acceleration.sum(velocity.multiply(-parachute * atmosphere));
     }
 
     public void stopRotation(double tolerance, double timeStep) {   //timeStep: step of the simulation, lateral engines can work with smaller time step
@@ -156,7 +157,7 @@ public class Shuttle extends Body{
     public void land(Planet planet, double timeStep) {
         Vector dist = position.subtract(planet.getPosition());
         double sDist = dist.squareLength();
-        if(sDist > (600 + planet.getRadius())) {
+        if(sDist > (planet.getDistanceAtmosphere() + planet.getRadius())) {
             stopRotation(0.1, timeStep);
             alignTo(velocity, false);
             brake(2555, 50, timeStep);  //less than escape velocity
@@ -164,11 +165,13 @@ public class Shuttle extends Body{
             stopRotation(0.1, timeStep);
             alignTo(velocity.subtract(dist), false);
             //TODO  wind parachute, drag?
+            useParachute();
             brake(200, 30, timeStep);
         }else {
             stopRotation(0.1, timeStep);
             alignTo(dist, true);
             //TODO  wind parachute, drag?
+            useParachute();
             brake(0.1, 0.1, timeStep);
         }
     }
