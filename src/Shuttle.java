@@ -16,6 +16,8 @@ public class Shuttle extends Body{
 
     private double minMass;
 
+    private double parachute;
+
     public Shuttle(Vector velocity, double mass, double minMass) {
         //set initial acceleration
         this.acceleration = new Vector(0, 0, 0);
@@ -44,6 +46,8 @@ public class Shuttle extends Body{
         this.innerRadius = 0;
 
         this.minMass = minMass;
+
+        this.parachute = .2;
     }
 
     /*
@@ -84,7 +88,7 @@ public class Shuttle extends Body{
             //update mass
             mass += deltaMass;
             if (radius.squareLength() < epsilon) {
-                angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
+                angularSpeed = angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
             }
         }
     }
@@ -126,7 +130,7 @@ public class Shuttle extends Body{
         return 2 * Math.PI * radius * radius;
     }
 
-    public void useParachute() {
-        //TODO
+    public void useParachute(double atmosphere) {
+        accelaration = acceleration.sum(velocity.multiply(- parachute * atmosphere));
     }
 }
