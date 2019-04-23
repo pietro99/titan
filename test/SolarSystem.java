@@ -11,7 +11,7 @@ public class SolarSystem extends Group{
 	public final double TIME = 0.05;
 	
 	public static Planet[] planets = new Planet[11];
-	public static Shuttle[] shuttles = new Shuttle[400];
+	public static Shuttle[] shuttles = new Shuttle[2];
 	public static boolean done = false;
 	public static Shuttle best;
 	public static Vector bestPos, bestTitan;
@@ -104,14 +104,14 @@ public class SolarSystem extends Group{
 		else {
 			tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiply(60*10000);
 			tmp.set(planets[3].getVelocity().getX() + tmp.getX(), planets[3].getVelocity().getY() + tmp.getY(), tmp.getZ() / 500);
-			shuttles[0] = new Shuttle( tmp, 100);
+			shuttles[0] = new Shuttle( tmp, 100, 0);
 		}
-		shuttles[1] = new Shuttle(new Vector(-235301.33181875394, -800572.9273890787, 477.10348273478763), 100);
+		shuttles[1] = new Shuttle(new Vector(-235301.33181875394, -800572.9273890787, 477.10348273478763), 100, 0);
 		for(int i = 2; i < shuttles.length; i++) {
 			//tmp = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiply(60*10000);
 			//tmp.set(planets[3].getVelocity().getX() + tmp.getX(), planets[3].getVelocity().getY() + tmp.getY(), planets[3].getVelocity().getZ() + tmp.getZ() / 500 );
 			tmp = new Vector(-235955.3311477492, -800117.3184090039, 477.08528139046257);
-			shuttles[i] = new Shuttle( tmp, 100);
+			shuttles[i] = new Shuttle( tmp, 100, 0);
 		}
 		
 	}

@@ -19,23 +19,23 @@ public class Physics {
         //zero - inverse quadratic - constant
         if(height > heightMax)
             return Vector.ZERO;
-        else if{height < heightMin}
+        else if(height < heightMin)
             return shuttle.getVelocity().multiply(-dragConstant * planetConst / shuttle.getMass());
         else
-            return shuttle.getVelocity().multiply(-drag * planetConst * shuttle.getDragArea() / (mass * height * height));
+            return shuttle.getVelocity().multiply(-drag * planetConst * shuttle.getDragArea() / (shuttle.getMass() * height * height));
     }
 
     public static Vector[] wind(Shuttle shuttle, Planet p, double squareLimit, double scale, double change, double rotScale) {
-        double height = shuttle..getPosition().subtract(p.getPostion()).squareLength();
-        Vecotr wind = Vector.ZERO;
+        double height = shuttle.getPosition().subtract(p.getPosition()).squareLength();
+        Vector wind = Vector.ZERO;
         Vector rot = Vector.ZERO;
 
         if(height < squareLimit) {
-            Vector wind = shuttle.getDirection(0).multiply(Math.random()).sum(shuttle.getDirection(1).multiply(Math.random()));
-            wind = wind.sum(new Vector(change * Math.random() * wing.getX(), change * Math.random() * wing.getY(), change * Math.random() * wind.getZ()));
-            wind = wind.multiple(height / (scale * shuttle.getMass()));
+            wind = shuttle.getDirection(0).multiply(Math.random()).sum(shuttle.getDirection(1).multiply(Math.random()));
+            wind = wind.sum(new Vector(change * Math.random() * wind.getX(), change * Math.random() * wind.getY(), change * Math.random() * wind.getZ()));
+            wind = wind.multiply(height / (scale * shuttle.getMass()));
 
-            Vector rot = new Vector(Math.random(), Math.random(), Math.random());
+            rot = new Vector(Math.random(), Math.random(), Math.random());
             rot = rot.multiply(rotScale);
         }
         return new Vector[]{wind, rot};
