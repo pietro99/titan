@@ -5,7 +5,7 @@ public class Shuttle extends Body{
 
     private double innerRadius;    //shuttle as a sphere shell, radius in body class
 
-    private Vector init; //initial velocity
+    public Vector init; //initial velocity
 
     private double inertia; //moment of inertia / mass
 
@@ -18,7 +18,7 @@ public class Shuttle extends Body{
 
     private double parachute;
 
-    public Shuttle(Vector velocity, double mass, double minMass) {
+    public Shuttle(Vector velocity, double mass, double minMass){
         //set initial acceleration
         this.acceleration = new Vector(0, 0, 0);
 
@@ -99,9 +99,13 @@ public class Shuttle extends Body{
         //rotation
         if(angularSpeed.squareLength() < epsilon) {
             for(int i = 0; i < 3; i++) {
-                direction[i] = direction[i].rotate(angularSpeed, angularSpeed.legth() * deltaT);    //rotate directions -> rotate engines   //TODO integral
+                direction[i] = direction[i].rotate(angularSpeed, angularSpeed.length() * deltaT);    //rotate directions -> rotate engines   //TODO integral
             }
         }
+    }
+
+    public Vector getDirection(int axis) {
+        return direction[axis];
     }
 
     public void mainEngine(double time) {
@@ -112,7 +116,9 @@ public class Shuttle extends Body{
         int sign = 1;
         if(!positive)
             sign = -1;
-        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign * (1 + Math.random() * error / mass)), direction[axisRot].multiply(radius * (1 + error * Math.random())), -lateralEngineMass * time);
+        addAcceleration(direction[axisMove].multiply(lateralEngineAcc * time * sign * (1 + Math.random() * error / mass)),
+                        direction[axisRot].multiply(radius * (1 + error * Math.random())),
+                        -lateralEngineMass * time);
     }
 
     public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {
@@ -131,6 +137,40 @@ public class Shuttle extends Body{
     }
 
     public void useParachute(double atmosphere) {
-        accelaration = acceleration.sum(velocity.multiply(- parachute * atmosphere));
+        acceleration = acceleration.sum(velocity.multiply(- parachute * atmosphere));
     }
+
+    public void stopRotation(double tolerance, double timeStep) {   //timeStep: step of the simulation, lateral engines can work with smaller time step
+        //TODO
+    }
+
+    public void alignTo(Vector axis, boolean sameDirection) {
+        //for velocity, planet-shuttle,
+        //TODO
+    }
+
+    public void brake(double targetVelocity, double tolerance, double timeStep) {
+        //TODO
+    }
+
+    public void land(Planet planet, double timeStep) {
+        Vector dist = position.subtract(planet.getPosition());
+        double sDist = dist.squareLength();
+        if(sDist > (600 + planet.getRadius())) {
+            stopRotation(0.1, timeStep);
+            alignTo(velocity, false);
+            brake(2555, 50, timeStep);  //less than escape velocity
+        }else if(sDist > 50){
+            stopRotation(0.1, timeStep);
+            alignTo(velocity.subtract(dist), false);
+            //TODO  wind parachute, drag?
+            brake(200, 30, timeStep);
+        }else {
+            stopRotation(0.1, timeStep);
+            alignTo(dist, true);
+            //TODO  wind parachute, drag?
+            brake(0.1, 0.1, timeStep);
+        }
+    }
+
 }

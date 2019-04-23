@@ -167,12 +167,12 @@ public class Runner extends Application{
 			double err = solarSystem.bestPos.distance(solarSystem.bestTitan);
 			for(int i = 0; i < solarSystem.shuttles.length; i++) {
 				if(i==0) {
-					solarSystem.shuttles[i] = new Shuttle(best.init, 1000);
+					solarSystem.shuttles[i] = new Shuttle(best.init, 1000, 0);
 				} else if (i == 1) {
-					solarSystem.shuttles[i] = new Shuttle(best.init.sum(correction), 1000);
+					solarSystem.shuttles[i] = new Shuttle(best.init.sum(correction), 1000, 0);
 				} else {
 					//solarSystem.shuttles[i] = new Shuttle(best.init.sum(new Vector(Math.random() * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance -0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance)).normalize().multiply(1000000), 1000);
-					solarSystem.shuttles[i] = new Shuttle(new Vector(best.init.getX() + (Math.random() * 2 - 1)* correction.getX(), best.init.getY() + (Math.random() * 2 - 1)* correction.getY(), best.init.getZ() + (Math.random() * 2 - 1)* correction.getZ()), 1000);
+					solarSystem.shuttles[i] = new Shuttle(new Vector(best.init.getX() + (Math.random() * 2 - 1)* correction.getX(), best.init.getY() + (Math.random() * 2 - 1)* correction.getY(), best.init.getZ() + (Math.random() * 2 - 1)* correction.getZ()), 1000, 0);
 				}
 			}
 			mainPane.getChildren().remove(0);
