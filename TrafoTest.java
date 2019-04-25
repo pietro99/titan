@@ -1,7 +1,7 @@
 package trafotest;
 
 import javafx.application.Application;
-import static javafx.application.Application.launch;
+
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
@@ -14,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
@@ -43,12 +42,16 @@ public class TrafoTest extends Application {
     private static final String SPECULAR_MAP =
             "http://planetmaker.wthr.us/img/earth_specularmap_flat_8192x4096.jpg";
 
+    private static final String ROCKET_IMG =
+            "https://previews.123rf.com/images/fokaspokas/fokaspokas1612/fokaspokas161200085/69002443-rocket-launch-icon-black-icon-on-transparent-background-.jpg";
+
     @Override
     public void start(Stage primaryStage) {
         root.getChildren().add(world);
         root.setDepthTest(DepthTest.ENABLE);
         buildCamera();
         buildBodySystem();
+        addRocket();
         Scene scene = new Scene(root, MAP_WIDTH, MAP_HEIGHT, true);
         scene.setFill(Color.GREY);
         handleMouse(scene);
@@ -108,6 +111,24 @@ public class TrafoTest extends Application {
 
     }
 
+    private void addRocket(){
+        PhongMaterial rocketMaterial = new PhongMaterial();
+        rocketMaterial.setDiffuseMap(
+                new Image(
+                        ROCKET_IMG
+                )
+        );
+        Sphere rocket = new Sphere(20);
+        rocket.setTranslateX(500);
+        rocket.setTranslateY(500);
+        rocket.setTranslateZ(500);
+        world.getChildren().addAll(rocket);
+
+    }
+
+    private void buildGravity(){
+
+    }
     private void handleMouse(Scene scene) {
         scene.setOnMousePressed((MouseEvent me) -> {
             mousePosX = me.getSceneX();
@@ -183,6 +204,11 @@ class XformCamera extends Group {
         this.t = t.createConcatenation(r);
         this.getTransforms().clear();
         this.getTransforms().addAll(t);
+    }
+
+
+    public void calculateGravity() {
+        
     }
 
 }
