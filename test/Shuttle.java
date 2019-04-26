@@ -117,8 +117,8 @@ public class Shuttle extends Body{
         if(!positive)
             sign = -1;
         addAcceleration(direction[axisMove].multiply(lateralEngineForce * time * sign * (1 + Math.random() * error / mass)),
-                        direction[axisRot].multiply(radius * (1 + error * Math.random())),
-                        -lateralEngineMass * time);
+                direction[axisRot].multiply(radius * (1 + error * Math.random())),
+                -lateralEngineMass * time);
     }
 
     public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {
@@ -155,28 +155,31 @@ public class Shuttle extends Body{
         //for velocity, planet-shuttle, ...
 
         //select the engine that approximate best the aligment (max dot product), repeat until it is done (rotAxis < tolerance)
-        Vector rotAxis = direction[2].cross(axis);
+        Vector rotAxis = direction[2].cross(axis).normalize();
         double totTime = 0;
         while(totTime < timeStep && rotAxis.squareLength() < tolerance * tolerance) {
-            //TODO really really bad code
-            int ax = 0;
-            double dot = direction[ax].dot(rotAxis);
+            int ax = -1;
+            double dot = Double.MIN_VALUE;
+            double tmp = 0;
 
-            double tmp = direction[1].dot(rotAxis);
-            if(Math.abs(tmp) > Math.abs(dot)) {
-                ax = 1;
-                dot = tmp;
+            //select the axis with the maximu dot product with the axis -> best approximation of the rotation using only a single engine
+            for(int i = 0; i < direction.length; i++) {
+                tmp = direction[i].dot(rotAxis);
+                if(tmp > dot) {
+                    dot = tmp;
+                    ax = i;
+                }
             }
 
-            tmp = direction[2].dot(rotAxis);
-            if(Math.abs(tmp) > Math.abs(dot)) {
-                ax = 2;
-                dot = tmp;
-            }
+            //constant acceleration
+            //a = v / t, angle = arccos((u.dot(v) / v)) = 0.5 a * t^2   -> t = sqrt(angle / 0.5a)
+            //dot < 0 : counter-clock rotation
+            double time = Math.sqrt(Math.acos(direction[ax].dot(rotAxis)) / (0.5 * lateralEngineForce / mass));
+            totTime += time;
+            lateralEngine(time, dot < 0, ax == 2 ? 1 : 2, ax);
 
-            //TODO calculate time
-            //lateralEngine(time, dot < 0, ax == 2 ? 1 : 2, axis);
-            rotAxis = direction[2].cross(axis);
+            //new rotation axis
+            rotAxis = direction[2].cross(axis).normalize();
         }
     }
 
