@@ -5,6 +5,10 @@ public class Vector {
 
 	public static final Vector ZERO = new Vector(0, 0, 0);
 
+	public static Vector random() {
+	    return new Vector(Math.random(), Math.random(), Math.random());
+    }
+
 	public Vector(double PosX, double PosY, double PosZ) {
 		this.setX(PosX);
 		this.setY(PosY);
@@ -105,4 +109,7 @@ public class Vector {
 		Y = y;
 		Z = z;
 	}
+	public boolean isNaN() {
+	    return Double.isNaN(X) || Double.isNaN(Y) || Double.isNaN(Z);
+    }
 }

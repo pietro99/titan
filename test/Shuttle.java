@@ -19,7 +19,7 @@ public class Shuttle extends Body{
     private double parachute;
 
     public Shuttle(Vector velocity, double mass, double minMass){
-        //set initial acceleration
+      /*  //set initial acceleration
         this.acceleration = new Vector(0, 0, 0);
 
         //set initial position on the surface of the planet     //TODO use different planets
@@ -47,16 +47,38 @@ public class Shuttle extends Body{
 
         this.minMass = minMass;
 
-        this.parachute = .2;
+        this.parachute = .2;*/
+        this(velocity, mass, mass, 0, 0, 0, 0, 0, 0, SolarSystem.getPlanets()[3]);
     }
 
-    /*
-    public Shuttle(Vector position, Vector velocity, double mass) {
-        this(velocity, mass);
-    }*/
-
     public Shuttle(Vector velocity, double mass, double minMass, double innerRadius, double radius, double mainEngineForce, double mainEngineMass, double lateralEngineForce, double lateralEngineMass, Body starting) {
-        this(velocity, mass, minMass);
+        //set initial acceleration
+        this.acceleration = new Vector(0, 0, 0);
+
+        //initialiaze coordinate system
+        this.direction = new Vector[3];
+        this.direction[2] = velocity.normalize();   //main engine and lateral
+        if(this.direction[2].isNaN()) {
+            this.direction[2] = new Vector(0, 0, 1);
+        }
+        this.direction[0] = this.direction[2].cross(new Vector(0, 0, 1)).normalize();   //lateral engine
+        if(this.direction[0].isNaN()) {
+            this.direction[0] = new Vector(1, 0, 0);
+        }
+        this.direction[1] = this.direction[0].cross(this.direction[2]);                 //lateral engine
+        if(this.direction[1].isNaN()) {
+            this.direction[1] = new Vector(0, 1, 0);
+        }
+        //set physical data
+        this.velocity = velocity;
+        this.mass = mass;
+        this.angularSpeed = new Vector(0, 0,0);
+        this.init = velocity;
+
+        this.minMass = minMass;
+
+        this.parachute = .2;
+
         this.position = starting.getPosition().sum(velocity.normalize().multiply(starting.getRadius()));
 
         this.innerRadius = innerRadius;
@@ -95,9 +117,8 @@ public class Shuttle extends Body{
 
     public void update(double deltaT) {
         super.update(deltaT);
-
         //rotation
-        if(angularSpeed.squareLength() < epsilon) {
+        if(angularSpeed.squareLength() > epsilon) {
             for(int i = 0; i < 3; i++) {
                 direction[i] = direction[i].rotate(angularSpeed, angularSpeed.length() * deltaT);    //rotate directions -> rotate engines   //TODO integral
             }
@@ -220,5 +241,4 @@ public class Shuttle extends Body{
             brake(0.1, 0.1, timeStep);
         }
     }
-
 }
