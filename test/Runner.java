@@ -200,7 +200,7 @@ public class Runner extends Application{
 			System.out.println(err);
 			System.out.println(solarSystem.shuttle.getPosition().distance(solarSystem.getTitan().getPosition()));
 
-			solarSystem.shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
+			solarSystem.shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000, 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
 			
 			
 			oldErr = err;

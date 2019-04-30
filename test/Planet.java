@@ -1,6 +1,7 @@
 public class Planet extends Body{
 	private String name;
-	
+	double distanceAtmosphere;
+	double atmosphericPressureComparedToEarthPressure;
 	//constructor
 	public Planet(String name, Vector initialPos, Vector initialVelocity, double radius, double mass, double distanceAtmosphere, double atmosphericPressureComparedToEarthPressure) {    //distanceAtmosphere for titan = 600  and atmosphericPressureComparedToEarthPressure for titan = 1.5 (km)
 		this.position = initialPos;

@@ -1,7 +1,3 @@
-
-
-
-
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -41,11 +37,6 @@ public class SolarSystem extends Group{
 		initiatePlanets();
 		initiateCircles();
 		initiateShuttle();
-		
-
-		
-
-		
 	}
 	
 
@@ -117,7 +108,7 @@ public class SolarSystem extends Group{
 		vel = vel.normalize();
 		vel = vel.multiply(80*10000);
 		vel = vel.sum(planets[10].velocity);
-		shuttle = new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255 ), 100);
+		shuttle = new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255 ), 100, 100);
 	//	System.out.prinlnt(shuttle.getVelocity());
 		//192417.8004932324, -925027.0853926808, -558.466505544255 landing in 1 year
 		
