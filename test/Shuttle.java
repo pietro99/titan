@@ -155,7 +155,8 @@ public class Shuttle extends Body{
         //for velocity, planet-shuttle, ...
 
         //select the engine that approximate best the aligment (max dot product), repeat until it is done (rotAxis < tolerance)
-        Vector rotAxis = direction[2].cross(axis).normalize();
+        //Vector rotAxis = direction[2].cross(axis).normalize();
+        Vector rotAxis = direction[2].cross(axis);
         double totTime = 0;
         while(totTime < timeStep && rotAxis.squareLength() < tolerance * tolerance) {
             int ax = -1;
@@ -173,10 +174,14 @@ public class Shuttle extends Body{
 
             //constant acceleration
             //a = v / t, angle = arccos((u.dot(v) / v)) = 0.5 a * t^2   -> t = sqrt(angle / 0.5a)
+            //half angle for the acceleration phase, half angle for the deceleration part
             //dot < 0 : counter-clock rotation
-            double time = Math.sqrt(Math.acos(direction[ax].dot(rotAxis)) / (0.5 * lateralEngineForce / mass));
+            double time = Math.sqrt(Math.acos(direction[ax].normalize().dot(rotAxis.normalize())) / (0.25 * lateralEngineForce / mass));
             totTime += time;
+            //acceleration
             lateralEngine(time, dot < 0, ax == 2 ? 1 : 2, ax);
+            //brake
+            lateralEngine(time, dot > 0, ax == 2 ? 1 : 2, ax);
 
             //new rotation axis
             rotAxis = direction[2].cross(axis).normalize();
