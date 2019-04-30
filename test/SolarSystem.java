@@ -118,10 +118,12 @@ public class SolarSystem extends Group{
 		if(shuttle!= null) {
 			//if crashes on Titan:
 			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
-				System.out.println("shuttle initial vector speed: "+shuttle.init);
-				System.out.println("shuttle initial speed: "+shuttle.init.length());
-				System.out.println("distance shuttle-titan"+shuttle.getPosition().distance(planets[10].getPosition()));
+				System.out.println("shuttle initial vector speed: " + shuttle.init);
+				System.out.println("shuttle initial speed: " + shuttle.init.length());
+				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
 				System.out.println("LANDED ON TITAN");
+				System.out.println("Direction Z: " + shuttle.getDirection(2));
+				System.out.println("Angle: " + Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
 				done = true;
 				System.exit(0);
 			}
@@ -205,9 +207,7 @@ public class SolarSystem extends Group{
 		planets[8] = new Planet("neptune", new Vector(4.344787259046247E+09,-1.083664330264994E+09,-7.782633401672775E+07),     new Vector(1.292292607032268E+00*10000,5.304279525500773E+00*10000,-1.390977388629209E-01*10000),    24624,    102.413E24,0,0);
 
 		planets[9] = new Planet("moon", new Vector(-1.493626859901140E+08,-2.212378435248749E+06,3.162933122716530E+04),        new Vector(1.540496550112790E-01*10000,-3.094661877857872E+01*10000,2.193857468353855E-02*10000),     1737.4,   7.349E22,0,0);
-		planets[10]= new Planet("titan", new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07),        new Vector(1.208193089270527E+01*10000,-1.813839579262785E+00*10000,1.381017323560965E+00*10000),     2575.5,   13455.3E19, 600, 1.5);;
-		
-		
+		planets[10]= new Planet("titan", new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07),        new Vector(1.208193089270527E+01*10000,-1.813839579262785E+00*10000,1.381017323560965E+00*10000),     2575.5,   13455.3E19, 600, 1.5);
 	}
 
 	private void resetAcceleration() {

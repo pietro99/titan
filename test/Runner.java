@@ -169,56 +169,56 @@ public class Runner extends Application{
     	solarSystem.updateSolarSystem();
 		count += 250 ;
 		
-	if(simulation) {
-		if(count >= 3600 * 24 * 365/6) {
-			gen++;
-			
-			shuttle = solarSystem.getShuttle();
-			bestPos = shuttle.getPosition();
-			//192417.8004932324 -925027.0853926808 -558.466505544255
-			bestTitan = solarSystem.getTitan().getPosition();
-			solarSystem = new SolarSystem();
-			err = shuttle.getPosition().distance(solarSystem.getTitan().getPosition());	
-			//1.313989273851E9
-			if(oldErr>err) {	
-				factor+=0.01;
-			}
-			
-			Vector correction = bestTitan.subtract(bestPos);// 80619.14074576352
-			
-			double initX = shuttle.init.getX();
-			double initY = shuttle.init.getY();
-			double initZ = shuttle.init.getZ();
-			double scaling = Math.pow(err, (0.32+(count/7e8))*factor);
-			double addX = correction.getX()/scaling;
-			double addY = correction.getY()/scaling;
-			double addZ = correction.getZ()/scaling;
-			double newX = initX + addX;
-			double newY = initY + addY;
-			double newZ = initZ + addZ;
-			solarSystem.setShuttle(shuttle);
-			System.out.println(err);
-			System.out.println(solarSystem.shuttle.getPosition().distance(solarSystem.getTitan().getPosition()));
+        if(simulation) {
+            if(count >= 3600 * 24 * 365/6) {
+                gen++;
 
-			solarSystem.shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000, 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
-			
-			
-			oldErr = err;
-			
-			mainPane.getChildren().clear();
-			mainPane.getChildren().add(solarSystem);
-			
-			
-			System.out.println("Select: " + shuttle.init);
-			System.out.println("Position: " + solarSystem.bestPos);
-			System.out.println("Titan: " + solarSystem.bestTitan);
-			System.out.println("Time: " + solarSystem.bestTime);
-			System.out.println("Correction: " + correction);
-			System.out.println("Error: " + err);
-			//System.out.println(SolarSystem.shuttle.getPosition().subtract(SolarSystem.planets[10].getPosition()).length());
-			count = 0;
-		}
-		}
+                shuttle = solarSystem.getShuttle();
+                bestPos = shuttle.getPosition();
+                //192417.8004932324 -925027.0853926808 -558.466505544255
+                bestTitan = solarSystem.getTitan().getPosition();
+                solarSystem = new SolarSystem();
+                err = shuttle.getPosition().distance(solarSystem.getTitan().getPosition());
+                //1.313989273851E9
+                if(oldErr>err) {
+                    factor+=0.01;
+                }
+
+                Vector correction = bestTitan.subtract(bestPos);// 80619.14074576352
+
+                double initX = shuttle.init.getX();
+                double initY = shuttle.init.getY();
+                double initZ = shuttle.init.getZ();
+                double scaling = Math.pow(err, (0.32+(count/7e8))*factor);
+                double addX = correction.getX()/scaling;
+                double addY = correction.getY()/scaling;
+                double addZ = correction.getZ()/scaling;
+                double newX = initX + addX;
+                double newY = initY + addY;
+                double newZ = initZ + addZ;
+                solarSystem.setShuttle(shuttle);
+                System.out.println(err);
+                System.out.println(solarSystem.shuttle.getPosition().distance(solarSystem.getTitan().getPosition()));
+
+                solarSystem.shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000, 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
+
+
+                oldErr = err;
+
+                mainPane.getChildren().clear();
+                mainPane.getChildren().add(solarSystem);
+
+
+                System.out.println("Select: " + shuttle.init);
+                System.out.println("Position: " + solarSystem.bestPos);
+                System.out.println("Titan: " + solarSystem.bestTitan);
+                System.out.println("Time: " + solarSystem.bestTime);
+                System.out.println("Correction: " + correction);
+                System.out.println("Error: " + err);
+                //System.out.println(SolarSystem.shuttle.getPosition().subtract(SolarSystem.planets[10].getPosition()).length());
+                count = 0;
+            }
+        }
 		
 	//878629.7264863193	     -2588414.9687429797  
     }//4.1155308720947456E8 -1.4453512119138913E9 8755575.60203173
