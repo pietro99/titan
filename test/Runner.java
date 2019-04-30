@@ -1,7 +1,9 @@
 
 
-
 //import com.sun.prism.paint.Color;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -17,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -30,6 +33,16 @@ public class Runner extends Application{
 	public static double frameSeconds = 0.1;
 	public static int count = 0;
 	public static int gen =0;
+	public static boolean simulation = true;
+	double factor = 0.9;
+	Vector oldPos;
+	Vector oldTitan;
+	Shuttle shuttle;
+	Vector bestPos;
+	Vector bestTitan;
+	double err; 
+	double oldErr;
+	List<Circle>shuttleCir = new ArrayList<Circle>();
 	
 	
     public void start(Stage primaryStage) {
@@ -155,36 +168,61 @@ public class Runner extends Application{
     public void update() {
     	solarSystem.updateSolarSystem();
 		count += 250 ;
-	
-		if(count >= 3600 * 24 * 365 * 2) {
+		
+	if(simulation) {
+		if(count >= 3600 * 24 * 365/6) {
 			gen++;
-			count = 0;
-			Shuttle best = SolarSystem.best;
-
+			
+			shuttle = solarSystem.getShuttle();
+			bestPos = shuttle.getPosition();
+			//192417.8004932324 -925027.0853926808 -558.466505544255
+			bestTitan = solarSystem.getTitan().getPosition();
 			solarSystem = new SolarSystem();
-			Vector correction = solarSystem.bestPos.subtract(solarSystem.bestTitan);	//from shuttle to titan
-			correction.set(correction.getX() / solarSystem.bestTime, correction.getY() / solarSystem.bestTime, correction.getZ() / solarSystem.bestTime);
-			double err = solarSystem.bestPos.distance(solarSystem.bestTitan);
-			for(int i = 0; i < solarSystem.shuttles.length; i++) {
-				if(i==0) {
-					solarSystem.shuttles[i] = new Shuttle(best.init, 1000, 0);
-				} else if (i == 1) {
-					solarSystem.shuttles[i] = new Shuttle(best.init.sum(correction), 1000, 0);
-				} else {
-					//solarSystem.shuttles[i] = new Shuttle(best.init.sum(new Vector(Math.random() * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance -0.00001*solarSystem.bestDistance, Math.random()  * 0.00002*solarSystem.bestDistance - 0.00001*solarSystem.bestDistance)).normalize().multiply(1000000), 1000);
-					solarSystem.shuttles[i] = new Shuttle(new Vector(best.init.getX() + (Math.random() * 2 - 1)* correction.getX(), best.init.getY() + (Math.random() * 2 - 1)* correction.getY(), best.init.getZ() + (Math.random() * 2 - 1)* correction.getZ()), 1000, 0);
-				}
+			err = shuttle.getPosition().distance(solarSystem.getTitan().getPosition());	
+			//1.313989273851E9
+			if(oldErr>err) {	
+				factor+=0.01;
 			}
-			mainPane.getChildren().remove(0);
+			
+			Vector correction = bestTitan.subtract(bestPos);// 80619.14074576352
+			
+			double initX = shuttle.init.getX();
+			double initY = shuttle.init.getY();
+			double initZ = shuttle.init.getZ();
+			double scaling = Math.pow(err, (0.32+(count/7e8))*factor);
+			double addX = correction.getX()/scaling;
+			double addY = correction.getY()/scaling;
+			double addZ = correction.getZ()/scaling;
+			double newX = initX + addX;
+			double newY = initY + addY;
+			double newZ = initZ + addZ;
+			solarSystem.setShuttle(shuttle);
+			System.out.println(err);
+			System.out.println(solarSystem.shuttle.getPosition().distance(solarSystem.getTitan().getPosition()));
+
+			solarSystem.shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
+			
+			
+			oldErr = err;
+			
+			mainPane.getChildren().clear();
 			mainPane.getChildren().add(solarSystem);
-			System.out.println("Select: " + best.init);
+			
+			
+			System.out.println("Select: " + shuttle.init);
 			System.out.println("Position: " + solarSystem.bestPos);
 			System.out.println("Titan: " + solarSystem.bestTitan);
 			System.out.println("Time: " + solarSystem.bestTime);
 			System.out.println("Correction: " + correction);
-			System.out.println("Error: " + solarSystem.bestPos.distance(solarSystem.bestTitan));
+			System.out.println("Error: " + err);
+			//System.out.println(SolarSystem.shuttle.getPosition().subtract(SolarSystem.planets[10].getPosition()).length());
+			count = 0;
 		}
-    }
+		}
+		
+	//878629.7264863193	     -2588414.9687429797  
+    }//4.1155308720947456E8 -1.4453512119138913E9 8755575.60203173
+    //4.091557040724596E8   -1.4462529557723603E9 8726104.776757749
     
     public static double getHeight() {
     	return primaryStage.getHeight();
@@ -202,6 +240,12 @@ public class Runner extends Application{
     
  public static void main(String[] args) {
 	 	//call the start method
+	 
+	 if(args.length>=1 && args[0].equals("simulation"))
+		 simulation = false;
+	 else 
+		 simulation = true;
+	 
         launch(args);
         
     }
