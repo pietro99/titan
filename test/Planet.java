@@ -12,6 +12,9 @@ public class Planet extends Body{
 		this.atmosphericPressureComparedToEarthPressure = atmosphericPressureComparedToEarthPressure;
 	}
 
+	public Planet(String name, Vector initialPos, Vector initialVelocity, double radius, double mass) {    //distanceAtmosphere for titan = 600  and atmosphericPressureComparedToEarthPressure for titan = 1.5 (km)
+		this(name, initialPos, initialVelocity, radius, mass, 0, 0);
+	}
 	public String getName() {
 		return name;
 	}
