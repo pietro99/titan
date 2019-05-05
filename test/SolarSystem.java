@@ -117,7 +117,8 @@ public class SolarSystem extends Group{
 	private void checkCrush() {
 		if(shuttle!= null) {
 			//if crashes on Titan:
-			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
+			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius() + planets[10].getDistanceAtmosphere(), 2)) {
+			//if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
 				System.out.println("shuttle initial vector speed: " + shuttle.init);
 				System.out.println("shuttle initial speed: " + shuttle.init.length());
 				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
@@ -194,7 +195,7 @@ public class SolarSystem extends Group{
 
 	private void initiatePlanets() {
 	//the coordinates origin is the sun for the planets and titan, the moon uses the earth as origin instead
-							//		 name						 PosX					       PosY					       PosZ                                     VelX                              VelY                               VelZ                                    Radius            Mass               distance of the atmosphere    Atmospheric pressure compared to earth pressure
+							//		 name						 PosX				PosY				PosZ                                     VelX                              VelY                        VelZ                  Radius      Mass               distance of the atmosphere    Atmospheric pressure compared to earth pressure
 		planets[0] = new Planet(    "sun", new Vector(     0,                       0,                    0),                   new Vector(        0,                      0,                     0),                                695700,   1988500E+23, 0, 0);
 		planets[1] = new Planet("mercury", new Vector(-5.843237462283994E+07,-2.143781663349622E+07,3.608679295141068E+06),     new Vector(6.693497964118796E+00*10000,-4.362708337948559E+01*10000,-4.178969254985038E+00*10000),   2440,     3.302E23,0,0);
 		planets[2] = new Planet(  "venus", new Vector(-2.580458154996926E+06,-1.087011239119300E+08,-1.342601858592726E+06),    new Vector(3.477728421647656E+01*10000,-9.612123998925466E-01*10000,-2.020103291838695E+00*10000),   6051.84,  48.685E23,0,0);

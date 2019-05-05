@@ -112,4 +112,8 @@ public class Vector {
 	public boolean isNaN() {
 	    return Double.isNaN(X) || Double.isNaN(Y) || Double.isNaN(Z);
     }
+
+    public Vector project(Vector other) {
+		return other.multiply(dot(other)/ (other.squareLength()));
+	}
 }
