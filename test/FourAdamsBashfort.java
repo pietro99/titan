@@ -1,69 +1,49 @@
 public class FourAdamsBashfort {
-    public FourAdamsBashfort(double timeStep, Vector wi, Vector wMinus1, Vector wMinus2, Vector wMinus3){
+    double timeStep;
+    //previous value
+    Vector wi;
+
+    //f(t-1, w-1), ...
+    Vector f;
+    Vector f1;
+    Vector f2;
+    Vector f3;
+
+    public FourAdamsBashfort(double timeStep, Vector wi, Vector f, Vector f1, Vector f2, Vector f3){
         this.timeStep = timeStep;
         this.wi = wi;
-        this.wMinus1 = wMinus1;
-        this.wMinus2 = wMinus2;
-        this.wMinus3 = wMinus3;
-    }
-
-    double timeStep;
-    Vector wi;
-    Vector wMinus1;
-    Vector wMinus2;
-    Vector wMinus3;
-
-    private double positionX;
-    private double positionY;
-    private double positionZ;
-
-
-    public Vector getVectorPosition(){
-        getPositionX();
-        getPositionY();
-        getPositionZ();
-
-        Vector solution = new Vector(positionX,positionY,positionZ);
-
-        return solution;
+        this.f = f;
+        this.f1 = f1;
+        this.f2 = f2;
+        this.f3 = f3;
     }
 
 
-    public double getPositionX(){
-        double wiX = wi.getX();
-        double wMinus1X = wMinus1.getX();
-        double wMinus2X = wMinus2.getX();
-        double wMinus3X = wMinus3.getX();
-
-        double w = wiX + (1/24)*(timeStep)*(55*wiX) - (59*wMinus1X) + (37*wMinus2X) - (9*wMinus3X);  // Four-stage Adams-Bashforth method equation
-                                                                                                    // Local error E = 251*h^5*y^(5)*(τ). Global error O(h4); fourth-order
-        positionX = w;
-        return w;
+    public Vector getNext() {
+        //calculate next step
+        if(f == null)
+            return null;
+        wi = wi.sum(f.multiply(55).sum(f1.multiply(-59)).sum(f2.multiply(37)).sum(f3.multiply(-9)).multiply(timeStep / 12));
+        //update values
+        f3 = f2;
+        f2 = f1;
+        f1 = f;
+        f = null;
+        return wi;
     }
 
-
-    public double getPositionY(){
-        double wiY = wi.getY();
-        double wMinus1Y = wMinus1.getY();
-        double wMinus2Y = wMinus2.getY();
-        double wMinus3Y = wMinus3.getY();
-
-        double w = wiY + (1/24)*(timeStep)*(55*wiY) - (59*wMinus1Y) + (37*wMinus2Y) - (9*wMinus3Y);  // Four-stage Adams-Bashforth method equation
-                                                                                                    // Local error E = 251*h^5*y^(5)*(τ). Global error O(h4); fourth-order
-        positionY = w;
-        return w;
+/* Implicit method  -> TODO compare
+    public Vector getNext(Vector state) {
+        w1 = w1.add(state.multiply(251).add(f.multiply(646)).add(f1.multiply(-264)).add(f2.multiply(106)).add(f3.multiply(-19)).multiply(timeStep / 720));
+        f3 = f2;
+        f2 = f1;
+        f1 = f;
+        f = state;
+        return w1;
     }
+*/
 
-    public double getPositionZ(){
-        double wiZ = wi.getZ();
-        double wMinus1Z = wMinus1.getZ();
-        double  wMinus2Z = wMinus2.getZ();
-        double wMinus3Z = wMinus3.getZ();
-
-        double w = wiZ + (1/24)*(timeStep)*(55*wiZ) - (59*wMinus1Z) + (37*wMinus2Z) - (9*wMinus3Z);  // Four-stage Adams-Bashforth method equation
-                                                                                                    // Local error E = 251*h^5*y^(5)*(τ). Global error O(h4); fourth-order
-        positionZ = w;
-        return w;
+    public void setNext(Vector state) {
+        f = state;
     }
-
 }
