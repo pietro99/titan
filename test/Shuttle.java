@@ -157,39 +157,38 @@ public class Shuttle extends Body{
             //a = v / t, angle = arccos((u.dot(v) / v)) = 0.5 a * t^2   -> t = sqrt(angle / 0.5a)
             //half angle for the acceleration phase, half angle for the deceleration part
 
-            double time = Math.sqrt(2 * angle * mass / lateralEngineForce);
-            double complete =/* TODO Math.min(1, timeStep / time) */ 1;
+            double time = Math.sqrt(2 * angle * mass / lateralEngineForce) / timeStep;
             //rotate around direction[2], align direction[1] to horizontal projection
             if (direction[1].cross(horizontal).dot(direction[2]) < 0)
                 angle *= -1;
 
-            direction[0] = direction[0].rotate(direction[2], angle * complete);
-            direction[1] = direction[1].rotate(direction[2], angle * complete);
+            direction[0] = direction[0].rotate(direction[2], angle);
+            direction[1] = direction[1].rotate(direction[2], angle);
             //x2 rotation, acceleration and deceleration
                                             //acc = force * time * % rotation perfomed * accuracy factor                                 radius          mass
-            addAcceleration(direction[1].multiply(lateralEngineForce * time * complete * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time * complete/ 2);
-            addAcceleration(direction[1].multiply(-lateralEngineForce * time * complete * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time * complete/ 2);
+            addAcceleration(direction[1].multiply(lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time / 2);
+            addAcceleration(direction[1].multiply(-lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time / 2);
 
             //rotate around direction[0], align direction[2] to axis
             dot = direction[2].dot(axis) / (Math.sqrt(direction[2].squareLength() * axis.squareLength()));
             angle = Math.acos(dot);
             time = Math.sqrt(2 * angle * mass / lateralEngineForce);
-            complete = /* TODO Math.min(1, timeStep / time)*/ 1;
+
             if (direction[2].cross(axis).dot(direction[0]) < 0)
                 angle *= -1;
-            direction[2] = direction[2].rotate(direction[0], angle * complete);
-            direction[1] = direction[1].rotate(direction[0], angle * complete);
-            addAcceleration(direction[2].multiply(lateralEngineForce * time * complete * (1 + (Math.random() - .5) * accuracy) / (2 * mass)), Vector.ZERO, lateralEngineMass * time * complete / 2);
-            addAcceleration(direction[2].multiply(-lateralEngineForce * time * complete * (1 + (Math.random() - .5) * accuracy) / (2 * mass)), Vector.ZERO, lateralEngineMass * time * complete / 2);
-            addAcceleration(direction[0].multiply(lateralEngineForce * time * complete * (1 + (Math.random() - .5) * accuracy) / (2 * mass)), Vector.ZERO, lateralEngineMass * time * complete / 2);
-            addAcceleration(direction[0].multiply(-lateralEngineForce * time * complete * (1 + (Math.random() - .5) * accuracy) / (2 * mass)), Vector.ZERO, lateralEngineMass * time * complete / 2);
+            direction[2] = direction[2].rotate(direction[0], angle);
+            direction[1] = direction[1].rotate(direction[0], angle);
+            addAcceleration(direction[2].multiply(lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / (2 * mass)), Vector.ZERO, lateralEngineMass * time / 2);
+            addAcceleration(direction[2].multiply(-lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / (2 * mass)), Vector.ZERO, lateralEngineMass * time / 2);
+            addAcceleration(direction[0].multiply(lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / (2 * mass)), Vector.ZERO, lateralEngineMass * time / 2);
+            addAcceleration(direction[0].multiply(-lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / (2 * mass)), Vector.ZERO, lateralEngineMass * time / 2);
         }else if(Math.abs(dot + 1) < Physics.EPS) {
             double time = Math.sqrt(2 * Math.PI * mass / lateralEngineForce);
             double complete =/* TODO Math.min(1, timeStep / time) */ 1;
             direction[2] = direction[2].rotate(direction[0], Math.PI * complete);
             direction[1] = direction[1].rotate(direction[0], Math.PI * complete);
-            addAcceleration(direction[2].multiply(lateralEngineForce * time * complete * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time * complete/ 2);
-            addAcceleration(direction[2].multiply(-lateralEngineForce * time * complete * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time * complete/ 2);
+            addAcceleration(direction[2].multiply(lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time / 2);
+            addAcceleration(direction[2].multiply(-lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time / 2);
         }
     }
 
