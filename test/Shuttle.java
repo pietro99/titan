@@ -1,4 +1,8 @@
 public class Shuttle extends Body{
+    public static final int X_AXIS = 0;
+    public static final int Y_AXIS = 1;
+    public static final int Z_AXIS = 2;
+
     private static final double epsilon = 1E-10;
     private Vector[] direction; //object coordiante system
     private Vector angularSpeed;
@@ -18,11 +22,14 @@ public class Shuttle extends Body{
 
     private double parachute;
 
-    public Shuttle(Vector velocity, double mass, double minMass){
-        this(velocity, mass, mass, 0, 0, 0, 0, 0, 0, SolarSystem.getPlanets()[3]);
+    private double timeStep = 1;
+
+    /* ******* Constructor ******** */
+    public Shuttle(Vector velocity, double mass){
+        this(velocity, mass, mass, 0, 0, 0, 0, 0, 0, 0, SolarSystem.getPlanets()[3]);
     }
 
-    public Shuttle(Vector velocity, double mass, double minMass, double innerRadius, double radius, double mainEngineForce, double mainEngineMass, double lateralEngineForce, double lateralEngineMass, Body starting) {
+    public Shuttle(Vector velocity, double mass, double minMass, double innerRadius, double radius, double mainEngineForce, double mainEngineMass, double lateralEngineForce, double lateralEngineMass, double parachute, Body starting) {
         //set initial acceleration
         this.acceleration = new Vector(0, 0, 0);
 
@@ -48,19 +55,97 @@ public class Shuttle extends Body{
 
         this.minMass = minMass;
 
-        this.parachute = .2;
+        this.parachute = parachute;
 
         this.position = starting.getPosition().sum(velocity.normalize().multiply(starting.getRadius()));
 
         this.innerRadius = innerRadius;
         this.radius = radius;
-        this.inertia = 0.4 * (Math.pow(this.radius, 5) - Math.pow(this.innerRadius, 5)) / (Math.pow(this.radius, 3) - Math.pow(this.innerRadius, 3)); //mass simplified
+        this.inertia = calculateInertia();
 
         this.mainEngineMass = mainEngineMass;   //per timeStep
         this.mainEngineForce = mainEngineForce;
         this.lateralEngineMass = lateralEngineMass;
         this.lateralEngineForce = lateralEngineForce;
     }
+
+    public static Shuttle getStandardShuttle() {
+        return new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255), 20000, 2000, 5, 20, 100*1000, -100, 80*10000, -80, 0.2, SolarSystem.planets[3]);
+    }
+
+    /* ************************** */
+
+    /* ********* Setters ******** */
+    public void setTimeStep(double t) {
+        if(t >= 0) {
+            mainEngineForce *= timeStep / t;
+            lateralEngineForce *= timeStep / t;
+            mainEngineMass *= timeStep / t;
+            lateralEngineMass *= timeStep / t;
+            timeStep = t;
+        }
+    }
+    public void setMainEngineForce(double f) {
+        if(f >= 0)
+            mainEngineForce = f;
+    }
+    public void setMainEngineMass(double m) {
+        if(m >= 0)
+            mainEngineMass = m;
+    }
+    public void setLateralEngineForce(double f) {
+        if(f >= 0)
+            lateralEngineForce = f;
+    }
+    public void setLateralEngineMass(double m) {
+        if(m >= 0)
+            lateralEngineMass = m;
+    }
+    public void setRadius(double r) {
+        if(r >= 0 && r >= innerRadius) {
+            radius = r;
+            inertia = calculateInertia();
+        }
+    }
+    public void setInnerRadius(double r) {
+        if(r >= 0 && r <= radius) {
+            innerRadius = r;
+            inertia = calculateInertia();
+        }
+    }
+    public void setParachute(double p ){
+        if(p >= 0)
+            parachute = p;
+    }
+
+    private double calculateInertia() {
+        return 0.4 * (Math.pow(this.radius, 5) - Math.pow(this.innerRadius, 5)) / (Math.pow(this.radius, 3) - Math.pow(this.innerRadius, 3)); //mass simplified
+    }
+
+    /* *************************** */
+
+    /* ******* Getters *********** */
+    public Vector getDirection(int axis) {
+        return direction[axis];
+    }
+    public Vector getInitialVelocity() { return init;}
+    public double getDragArea() {
+        //half of the surface
+        return 2 * Math.PI * radius * radius;
+    }
+
+    public Vector getAngularSpeed() { return angularSpeed; }
+    public double getInnerRadius() { return innerRadius; }
+    public double getParachute() { return parachute; }
+    public double getMinMass() { return minMass; }
+    public double getTimeStep() { return timeStep; }
+    public double getMainEngineForce() { return  mainEngineForce; }
+    public double getMainEngineMass() { return mainEngineMass; }
+    public double getLateralEngineForce() { return lateralEngineForce; }
+    public double getLateralEngineMass() { return lateralEngineMass; }
+    /* *************************** */
+
+    /* ****** SolarSyste methods ******* */
 
     public void calculateGravity(Planet[] planets) {
         acceleration.set(0, 0, 0);
@@ -96,16 +181,18 @@ public class Shuttle extends Body{
         }
     }
 
-    public Vector getDirection(int axis) {
-        return direction[axis];
+    public void applyForce(Vector force, Vector position) {
+        addAcceleration(force.multiply(1 / mass), position, 0);
     }
 
+    /* ******************************** */
+
+    /* ******* Engines ************* */
     public void mainEngine(double timeStepRatio) {
         addAcceleration(direction[2].multiply(mainEngineForce * timeStepRatio / mass), Vector.ZERO, mainEngineMass * timeStepRatio);
     }
 
     public void lateralEngine(double timeStepRatio, boolean positive, int axisMove, int axisRot, double error) {
-        //TODO F * t / m = v and not a
         int sign = 1;
         if(!positive)
             sign = -1;
@@ -114,25 +201,20 @@ public class Shuttle extends Body{
                 -lateralEngineMass * timeStepRatio);
     }
 
+
     public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {
         lateralEngine(time, positive, axisMove, axisRot, 0);
     }
 
-    public void applyForce(Vector force, Vector position) {
-        addAcceleration(force.multiply(1 / mass), position, 0);
-    }
-
-    public Vector getInitialVelocity() { return init;}
-
-    public double getDragArea() {
-        //half of the surface
-        return 2 * Math.PI * radius * radius;
-    }
-
     public void useParachute() {
+        // TODO make planet changeable
         double atmosphere = SolarSystem.planets[10].getAtmosphericPressureComparedToEarthPressure();
         acceleration = acceleration.sum(velocity.multiply(-parachute * atmosphere));
     }
+
+    /* ***************************** */
+
+    /* ********* Landing ********* */
 
     public void stopRotation(double tolerance, double timeStep) {   //timeStep: step of the simulation, lateral engines can work with smaller time step
         //TODO tolerance? lateralEngine bug
@@ -245,10 +327,13 @@ public class Shuttle extends Body{
         }
     }
 
+    /* ************************* */
+
+    /* ***** Testing ******* */
     public static void main(String[] args){
         if(args[0].equals("align")) {
             Planet p = new Planet("p", Vector.ZERO, Vector.ZERO, 0, 0);
-            Shuttle s = new Shuttle(new Vector(0, 0, 0), 20000, 500, 10, 3, 100 * 10000, -100, 250 * 10000, -10, p);
+            Shuttle s = new Shuttle(new Vector(0, 0, 0), 20000, 500, 10, 3, 100 * 10000, -100, 250 * 10000, -10, 0.2, p);
             Vector axis = new Vector(0, 0, -1);
             System.out.println("Z: " + s.getDirection(2) + ", Dot: " + s.getDirection(2).dot(axis) / (s.getDirection(2).length() * axis.length()));
             System.out.println("Acc: " + s.getAcceleration() + ", Mass: " + s.getMass());
@@ -262,7 +347,7 @@ public class Shuttle extends Body{
 
         if(args[0].equals("brake")) {
             Planet p = new Planet("p", Vector.ZERO, Vector.ZERO, 0, 0);
-            Shuttle s = new Shuttle(new Vector(0, 0, 10000), 2000, 500, 10, 3, 100*10000, -100, 80*10000, -10, p);
+            Shuttle s = new Shuttle(new Vector(0, 0, 10000), 2000, 500, 10, 3, 100*10000, -100, 80*10000, -10, 0.2, p);
             s.alignTo(s.getInitialVelocity().multiply(-1), true, 100, 0, 0);
             System.out.println("Velocity: " + s.getVelocity() + " Acceleration: " + s.getAcceleration());
             for (int i = 0; i < 100; i++) {
