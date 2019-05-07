@@ -1,6 +1,6 @@
 public class Shuttle extends Body{
     private static final double epsilon = 1E-10;
-    private Vector[] direction; //object coordiante system
+    private Vector[] direction; //object coordinate system
     private Vector angularSpeed;
 
     private double innerRadius;    //shuttle as a sphere shell, radius in body class
@@ -150,7 +150,9 @@ public class Shuttle extends Body{
         addAcceleration(force.multiply(1 / mass), position, 0);
     }
 
-    public Vector getInitialVelocity() { return init;}
+    public Vector getInitialVelocity() {
+        return init;
+    }
 
     public double getDragArea() {
         //half of the surface
@@ -177,7 +179,7 @@ public class Shuttle extends Body{
         //assume it is not rotating
         //for velocity, planet-shuttle, ...
 
-        //select the engine that approximate best the aligment (max dot product), repeat until it is done (rotAxis < tolerance)
+        //select the engine that approximate best the alignment (max dot product), repeat until it is done (rotAxis < tolerance)
 
         //Vector rotAxis = direction[2].cross(axis);
         double totTime = 0;
@@ -187,7 +189,7 @@ public class Shuttle extends Body{
             double dot = -Double.MAX_VALUE;
             double tmp = 0;
 
-            //select the axis with the maximu dot product with the axis -> best approximation of the rotation using only a single engine
+            //select the axis with the maximum dot product with the axis -> best approximation of the rotation using only a single engine
             for(int i = 0; i < direction.length; i++) {
                 tmp = direction[i].dot(rotAxis);
                 if(tmp > dot) {

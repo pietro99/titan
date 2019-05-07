@@ -32,16 +32,16 @@ public class FourAdamsBashfort {
         return wi;
     }
 
-/* Implicit method  -> TODO compare
+//Implicit method  -> TODO compare
     public Vector getNext(Vector state) {
-        w1 = w1.add(state.multiply(251).add(f.multiply(646)).add(f1.multiply(-264)).add(f2.multiply(106)).add(f3.multiply(-19)).multiply(timeStep / 720));
+        wi = wi.sum(state.multiply(251).sum(f.multiply(646)).sum(f1.multiply(-264)).sum(f2.multiply(106)).sum(f3.multiply(-19)).multiply(timeStep / 720));
         f3 = f2;
         f2 = f1;
         f1 = f;
         f = state;
-        return w1;
+        return wi;
     }
-*/
+
 
     public void setNext(Vector state) {
         f = state;
