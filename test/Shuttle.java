@@ -56,7 +56,7 @@ public class Shuttle extends Body{
         this.radius = radius;
         this.inertia = 0.4 * (Math.pow(this.radius, 5) - Math.pow(this.innerRadius, 5)) / (Math.pow(this.radius, 3) - Math.pow(this.innerRadius, 3)); //mass simplified
 
-        this.mainEngineMass = mainEngineMass;
+        this.mainEngineMass = mainEngineMass;   //per timeStep
         this.mainEngineForce = mainEngineForce;
         this.lateralEngineMass = lateralEngineMass;
         this.lateralEngineForce = lateralEngineForce;
@@ -100,19 +100,18 @@ public class Shuttle extends Body{
         return direction[axis];
     }
 
-    public void mainEngine(double time) {
-        //TODO F * t / m = v and not a
-        addAcceleration(direction[2].multiply(mainEngineForce * time / mass), Vector.ZERO, mainEngineMass * time);
+    public void mainEngine(double timeStepRatio) {
+        addAcceleration(direction[2].multiply(mainEngineForce * timeStepRatio / mass), Vector.ZERO, mainEngineMass * timeStepRatio);
     }
 
-    public void lateralEngine(double time, boolean positive, int axisMove, int axisRot, double error) {
+    public void lateralEngine(double timeStepRatio, boolean positive, int axisMove, int axisRot, double error) {
         //TODO F * t / m = v and not a
         int sign = 1;
         if(!positive)
             sign = -1;
-        addAcceleration(direction[axisMove].multiply(lateralEngineForce * time * sign * (1 + Math.random() * error / mass)),
+        addAcceleration(direction[axisMove].multiply(lateralEngineForce * timeStepRatio * sign * (1 + Math.random() * error / mass)),
                 direction[axisRot].multiply(radius * (1 + error * Math.random())),
-                -lateralEngineMass * time);
+                -lateralEngineMass * timeStepRatio);
     }
 
     public void lateralEngine(double time, boolean positive, int axisMove, int axisRot) {
@@ -145,6 +144,7 @@ public class Shuttle extends Body{
     }
 
     public void alignTo(Vector axis, boolean sameDirection, double timeStep, double tolerance, double accuracy) {
+        //TODO use timeStepRatio instead of complete
         if(!sameDirection)
             axis = axis.multiply(-1);
         double dot = direction[2].dot(axis) / Math.sqrt(direction[2].squareLength() * axis.squareLength());
@@ -202,12 +202,12 @@ public class Shuttle extends Body{
             if(direction[2].dot(velocity) > 0) {
                 System.out.println("Wrong alignment");
             }else {
-                //TODO mistake in time calculation
-                time = Math.abs((vel - targetVelocity) * mass / (mainEngineForce * timeStep));
-                System.out.println("Time: " + time);
+                //TODO mistake in time calculation -> over stimate
+                time = Math.abs((vel - targetVelocity) * mass / mainEngineForce);
+                System.out.println("Time: " + time + " Step: " + timeStep);
                 if (time > timeStep) {
                     //brake during all the timeStep
-                    mainEngine(timeStep);
+                    mainEngine(1);
                 } else {
                     //less than one time step
                     //assume a constant acceleration
@@ -263,10 +263,10 @@ public class Shuttle extends Body{
 
         if(args[0].equals("brake")) {
             Planet p = new Planet("p", Vector.ZERO, Vector.ZERO, 0, 0);
-            Shuttle s = new Shuttle(new Vector(0, 0, 10000), 20000, 500, 10, 3, 100*10000, -50, 80*10000, -10, p);
+            Shuttle s = new Shuttle(new Vector(0, 0, 10000), 2000, 500, 10, 3, 100*10000, -100, 80*10000, -10, p);
             s.alignTo(s.getInitialVelocity().multiply(-1), true, 100, 0, 0);
             System.out.println("Velocity: " + s.getVelocity() + " Acceleration: " + s.getAcceleration());
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 100; i++) {
                 System.out.println("Acc: " + s.getAcceleration());
                 s.update(10);
                 s.brake(0, 50, 10);
