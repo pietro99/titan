@@ -1,10 +1,9 @@
 public class Physics {
     public static final double G = 6.67408E-11;
-    public static final double earthDensity = 1;    //TODO moved in Planet.java
-    public static final double titanDensity = 1.2;
+    public static final double EPS = 1E-15;
 
-    private static final double dragConstant = 0.1; //TODO check value
-    private static final double drag = 0.25;          //TODO
+    private static final double dragConstant = 0.1;
+    private static final double drag = 0.25;
 
     public static Vector dragAcceleration(Planet p, Shuttle shuttle) {
         double height = p.getPosition().subtract(shuttle.getPosition()).length() - p.getRadius();

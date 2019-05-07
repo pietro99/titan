@@ -23,5 +23,6 @@ public abstract class Body {
     public void update(double deltaT) {
         velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
         position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
+        acceleration = new Vector(0, 0, 0);
     }
 }
