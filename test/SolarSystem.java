@@ -59,7 +59,7 @@ public class SolarSystem extends Group{
 		resetAcceleration();
 		calculateGravityforPlanets();
 		calculateGravityForShuttleAndUpdatePosition();
-		checkCrush();
+		checkCrash();
 		if(shuttle!=null) {
 			bestDistance = shuttle.getPosition().distance(planets[10].getPosition());
 			bestPos = shuttle.getPosition();
@@ -114,7 +114,7 @@ public class SolarSystem extends Group{
 		
 	}
 
-	private void checkCrush() {
+	private void checkCrash() {
 		if(shuttle!= null) {
 			//if crashes on Titan:
 			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius() + planets[10].getDistanceAtmosphere(), 2)) {
