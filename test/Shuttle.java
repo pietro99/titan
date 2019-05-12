@@ -165,7 +165,7 @@ public class Shuttle extends Body{
 
             //update mass
             mass += deltaMass;
-            if (radius.squareLength() < epsilon) {
+            if (radius.squareLength() > epsilon) {
                 angularSpeed = angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
             }
         }
@@ -217,11 +217,34 @@ public class Shuttle extends Body{
     /* ********* Landing ********* */
 
     public void stopRotation(double tolerance, double timeStep) {   //timeStep: step of the simulation, lateral engines can work with smaller time step
-        //TODO tolerance? lateralEngine bug
-        Vector time = angularSpeed.multiply(mass / lateralEngineForce);
-        for(int i = 0; i < 3; i++){
-            if(angularSpeed.get(i) > tolerance)
-                lateralEngine(time.get(i), angularSpeed.get(i) < 0, i == 2 ? 1 : 2, i, 0);
+        Vector time = new Vector(0, 0, 0);
+        //from angular speed formula
+        time = angularSpeed.abs().multiply(inertia * mass / (radius * lateralEngineForce));
+        for(int i = 0; i < 3; i++) {
+            if(angularSpeed.get(i) > tolerance) {
+                if(time.get(i) > timeStep) {
+                    //use lateral engine
+                    lateralEngine(time.get(i), angularSpeed.get(i) < 0, i == 2 ? 1 : 2, i, 0);
+                }else {
+                    //consume mass
+                    mass += lateralEngineMass * time.get(i);
+
+                    System.out.println("Mass: " + mass);
+
+                    //angle
+                    double angle = angularSpeed.get(i) * time.get(i) * 0.5;    //assume constant change of speed
+                    System.out.println(angle);
+                    //update rotation
+                    for(int j = 0; j < 3; j++) {
+                        if(j != i)
+                            direction[j] = direction[j].rotate(direction[i], angle);
+                    }
+
+                    //add acceleration effect   -> select the right axis
+                    velocity = velocity.sum(direction[i == 2 ? 1: 2].multiply(lateralEngineForce / mass * time.get(i)));
+                    angularSpeed.set(i, 0);
+                }
+            }
         }
     }
 
@@ -278,14 +301,12 @@ public class Shuttle extends Body{
         //assumet that it has the right direction
         double vel = velocity.length();
         double time = 0;
-        System.out.println("Vel: " + velocity + " V: " + vel);
+        //System.out.println("Vel: " + velocity + " V: " + vel);
         if(Math.abs(vel - targetVelocity) > tolerance) {
-            if(direction[2].dot(velocity) > 0) {
-                System.out.println("Wrong alignment");
-            }else {
+            if (direction[2].dot(velocity) < 0) {    //make sure that it is the right direction
                 //TODO mistake in time calculation -> over stimate
                 time = Math.abs((vel - targetVelocity) * mass / mainEngineForce);
-                System.out.println("Time: " + time + " Step: " + timeStep);
+
                 if (time > timeStep) {
                     //brake during all the timeStep
                     mainEngine(1);
@@ -293,15 +314,17 @@ public class Shuttle extends Body{
                     //less than one time step
                     //assume a constant acceleration
                     Vector acc = direction[2].multiply(mainEngineForce / mass);
-                    System.out.println("Delta: " + acc);
+
+                    //update mass
                     mass += mainEngineMass * time;
+
+                    //change of position during the brake
                     position = position.sum(velocity.multiply(time).sum(acc.multiply(0.5 * time * time)));
-                    System.out.println(velocity + " > " + velocity.sum(acc.multiply(time)));
+
+                    //update velocity
                     velocity = velocity.sum(acc.multiply(time));
                 }
             }
-        }else {
-            System.out.println("No brake");
         }
     }
 
@@ -330,34 +353,51 @@ public class Shuttle extends Body{
     /* ************************* */
 
     /* ***** Testing ******* */
+    public void setAngularSpeed(Vector speed) {
+        this.angularSpeed = speed;
+    }
+
     public static void main(String[] args){
-        if(args[0].equals("align")) {
-            Planet p = new Planet("p", Vector.ZERO, Vector.ZERO, 0, 0);
-            Shuttle s = new Shuttle(new Vector(0, 0, 0), 20000, 500, 10, 3, 100 * 10000, -100, 250 * 10000, -10, 0.2, p);
-            Vector axis = new Vector(0, 0, -1);
-            System.out.println("Z: " + s.getDirection(2) + ", Dot: " + s.getDirection(2).dot(axis) / (s.getDirection(2).length() * axis.length()));
-            System.out.println("Acc: " + s.getAcceleration() + ", Mass: " + s.getMass());
-            for(int i = 0; i < 5; i++) {
-                s.update(0.05);
-                s.alignTo(axis, true, 0.05, 0, 0);
+        if(args.length > 0) {
+            if (args[0].equals("stop")) {
+                Planet p = new Planet("p", Vector.ZERO, Vector.ZERO, 0, 0);
+                Shuttle s = new Shuttle(new Vector(0, 0, 10), 20000, 500, 10, 3, 1000 * 10000, -100, 250 * 10000, -25, 0.2, p);
+                s.setAngularSpeed(new Vector(2, 3, 1));
+                for(int i = 0; i < 5; i++) {
+                    s.update(0.05);
+                    System.out.println("Speed: " + s.getAngularSpeed());
+                    s.stopRotation(0, 0.05);
+                }
+            }
+
+            if (args[0].equals("align")) {
+                Planet p = new Planet("p", Vector.ZERO, Vector.ZERO, 0, 0);
+                Shuttle s = new Shuttle(new Vector(0, 0, 0), 20000, 500, 10, 3, 100 * 10000, -100, 250 * 10000, -10, 0.2, p);
+                Vector axis = new Vector(0, 0, -1);
                 System.out.println("Z: " + s.getDirection(2) + ", Dot: " + s.getDirection(2).dot(axis) / (s.getDirection(2).length() * axis.length()));
                 System.out.println("Acc: " + s.getAcceleration() + ", Mass: " + s.getMass());
+                for (int i = 0; i < 5; i++) {
+                    s.update(0.05);
+                    s.alignTo(axis, true, 0.05, 0, 0);
+                    System.out.println("Z: " + s.getDirection(2) + ", Dot: " + s.getDirection(2).dot(axis) / (s.getDirection(2).length() * axis.length()));
+                    System.out.println("Acc: " + s.getAcceleration() + ", Mass: " + s.getMass());
+                }
             }
-        }
 
-        if(args[0].equals("brake")) {
-            Planet p = new Planet("p", Vector.ZERO, Vector.ZERO, 0, 0);
-            Shuttle s = new Shuttle(new Vector(0, 0, 10000), 2000, 500, 10, 3, 100*10000, -100, 80*10000, -10, 0.2, p);
-            s.alignTo(s.getInitialVelocity().multiply(-1), true, 100, 0, 0);
-            System.out.println("Velocity: " + s.getVelocity() + " Acceleration: " + s.getAcceleration());
-            for (int i = 0; i < 100; i++) {
-                System.out.println("Acc: " + s.getAcceleration());
+            if (args[0].equals("brake")) {
+                Planet p = new Planet("p", Vector.ZERO, Vector.ZERO, 0, 0);
+                Shuttle s = new Shuttle(new Vector(0, 0, 10000), 2000, 500, 10, 3, 100 * 10000, -100, 80 * 10000, -10, 0.2, p);
+                s.alignTo(s.getInitialVelocity().multiply(-1), true, 100, 0, 0);
+                System.out.println("Velocity: " + s.getVelocity() + " Acceleration: " + s.getAcceleration());
+                for (int i = 0; i < 100; i++) {
+                    System.out.println("Acc: " + s.getAcceleration());
+                    s.update(10);
+                    s.brake(0, 50, 10);
+                }
                 s.update(10);
-                s.brake(0, 50, 10);
+                System.out.println("Mass: " + s.getMass());
+                System.out.println("Velocity: " + s.getVelocity());
             }
-            s.update(10);
-            System.out.println("Mass: " + s.getMass());
-            System.out.println("Velocity: " + s.getVelocity());
         }
     }
 }

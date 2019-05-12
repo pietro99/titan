@@ -75,14 +75,16 @@ public class Vector {
 	}
 
 	public double get(int i) {
-		if(i == 0)
-			return X;
-		else if(i == 1)
-			return Y;
-		else if(i == 2)
-			return Z;
-		else
-			throw new IndexOutOfBoundsException("3D vector but " + i + " given");
+		switch(i) {
+			case 0:
+				return X;
+			case 1:
+				return Y;
+			case 2:
+				return Z;
+			default:
+				throw new IndexOutOfBoundsException("3D vector but " + i + " given");
+		}
 	}
 
 	public double getZ() { return Z; }
@@ -109,6 +111,22 @@ public class Vector {
 		Y = y;
 		Z = z;
 	}
+	public void set(int i, double val) {
+		switch (i) {
+			case 0:
+				X = val;
+				break;
+			case 1:
+				Y = val;
+				break;
+			case 2:
+				Z = val;
+				break;
+			default:
+				throw new IndexOutOfBoundsException("3D vector but " + i + " given");
+		}
+	}
+
 	public boolean isNaN() {
 	    return Double.isNaN(X) || Double.isNaN(Y) || Double.isNaN(Z);
     }
@@ -116,4 +134,9 @@ public class Vector {
     public Vector project(Vector other) {
 		return other.multiply(dot(other)/ (other.squareLength()));
 	}
+
+	public Vector abs() {
+		return new Vector(Math.abs(X), Math.abs(Y), Math.abs(Z));
+	}
+
 }
