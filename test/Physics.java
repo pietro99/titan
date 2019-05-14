@@ -37,7 +37,7 @@ public class Physics {
             if(args[0].equals("drag")) {
                 Planet p1 = new Planet("titan", new Vector(2000, 2000, 2000), Vector.ZERO, 500, 500, 600, 1.5);
                 Planet p2 = new Planet("titan", Vector.ZERO, Vector.ZERO, 100, 100, 600, 1.5);
-                Shuttle s = new Shuttle(new Vector(10, 10, 10), 1000, 1000, 5, 10, 10, 10, 6, 6, p2);
+                Shuttle s = new Shuttle(new Vector(10, 10, 10), 1000, 1000, 5, 10, 10, 10, 6, 6, 0.1, p2);
                 Vector acc;
                 for(int i = 0; i < 60; i++) {
                     s.update(10);
@@ -47,7 +47,7 @@ public class Physics {
             }else if(args[0].equals("wind")) {
                 Planet p1 = new Planet("titan", Vector.ZERO, Vector.ZERO, 500, 500, 1000, 1.5);
                 Planet p2 = new Planet("titan", Vector.ZERO, Vector.ZERO, 700, 500, 600, 1.5);
-                Shuttle s = new Shuttle(new Vector(0, 0, 1), 1000, 1000, 5, 10, 10, 10, 6, 6, p2);
+                Shuttle s = new Shuttle(new Vector(0, 0, 1), 1000, 1000, 5, 10, 10, 10, 6, 6, 0.1, p2);
                 Vector[] f;
                 System.out.println(p1.getPosition().subtract(s.getPosition()).length());
                 for(int i = 0; i < 10; i++) {
