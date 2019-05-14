@@ -59,6 +59,7 @@ public class SolarSystem extends Group{
 		resetAcceleration();
 		calculateGravityforPlanets();
 		calculateGravityForShuttleAndUpdatePosition();
+		shuttle.land(planets[10], TIME);
 		checkCrash();
 		if(shuttle!=null) {
 			bestDistance = shuttle.getPosition().distance(planets[10].getPosition());
@@ -124,7 +125,9 @@ public class SolarSystem extends Group{
 				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
 				System.out.println("LANDED ON TITAN");
 				System.out.println("Direction Z: " + shuttle.getDirection(2));
-				System.out.println("Angle: " + Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
+				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
+				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
+				System.out.println("Speed: " + shuttle.getVelocity());
 				done = true;
 				System.exit(0);
 			}

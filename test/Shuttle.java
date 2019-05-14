@@ -398,6 +398,12 @@ public class Shuttle extends Body{
                 System.out.println("Mass: " + s.getMass());
                 System.out.println("Velocity: " + s.getVelocity());
             }
+        } else {
+            final String[] commands = new String[]{"stop", "align", "brake"};
+            System.out.println("Commands:");
+            for(String s: commands) {
+                System.out.println("\t" + s);
+            }
         }
     }
 }
