@@ -1,7 +1,7 @@
 
 
 
-import com.sun.prism.Material;
+//import com.sun.prism.Material;
 
 import javafx.scene.Group;
 import javafx.scene.effect.Light;
@@ -15,7 +15,7 @@ import javafx.scene.shape.Sphere;
 public class SolarSystem extends Group{
 	
 	private int counter=0;
-	private double TIME = 0.05;
+	public static double TIME = 0.05;
 	boolean slow = false;
 	
 	public static Planet[] planets = new Planet[11];
@@ -73,7 +73,7 @@ public class SolarSystem extends Group{
 		}
 		
 		//reset force and acceleration
-		resetAcceleration();
+
 		calculateGravityforPlanets();
 		calculateGravityForShuttleAndUpdatePosition();
 		checkCrush();
@@ -83,6 +83,7 @@ public class SolarSystem extends Group{
 			bestTitan = planets[10].getPosition();
 		}
 		updatePlanetsPosition();
+		resetAcceleration();
 	}
 	
 	
@@ -98,6 +99,7 @@ public class SolarSystem extends Group{
 	private void calculateGravityForShuttleAndUpdatePosition() {
 		if(shuttle != null) {
 			shuttle.calculateGravity(planets);
+			shuttle.land(planets[10], TIME);
 			shuttle.update(TIME);
 		}
 	}
@@ -125,7 +127,8 @@ public class SolarSystem extends Group{
 		vel = vel.normalize();
 		vel = vel.multiply(80*10000);
 		vel = vel.sum(planets[10].velocity);
-		shuttle = new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255 ), 100);
+		//shuttle = new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255 ), 100);
+		shuttle = Shuttle.getStandardShuttle();
 	//	System.out.prinlnt(shuttle.getVelocity());
 		//192417.8004932324, -925027.0853926808, -558.466505544255 landing in 1 year
 		
@@ -135,10 +138,17 @@ public class SolarSystem extends Group{
 		if(shuttle!= null) {
 			//if crashes on Titan:
 			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
-				System.out.println("shuttle initial vector speed: "+shuttle.init);
-				System.out.println("shuttle initial speed: "+shuttle.init.length());
-				System.out.println("distance shuttle-titan"+shuttle.getPosition().distance(planets[10].getPosition()));
+				Vector v = shuttle.getVelocity().subtract(planets[10].getVelocity());
+				System.out.println("shuttle initial vector speed: " + shuttle.init);
+				System.out.println("shuttle initial speed: " + shuttle.init.length());
+				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
 				System.out.println("LANDED ON TITAN");
+				System.out.println("Direction Z: " + shuttle.getDirection(2));
+				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
+				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
+				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
+				System.out.println("Speed: " + v.length());
+				System.out.println("Angular speed (deg): " + shuttle.getAngularSpeed().multiply(180 / Math.PI));
 				done = true;
 				System.exit(0);
 			}
@@ -271,21 +281,19 @@ public class SolarSystem extends Group{
 	private void initiatePlanets() {
 	//the coordinates origin is the sun for the planets and titan, the moon uses the earth as origin instead
 							//		 name						 PosX					  PosY					PosZ                                     VelX                   VelY                   VelZ               Radius       Mass
-		planets[0] = new Planet(    "sun",        new Vector(     0,                       0,                    0),                   new Vector(        0,                      0,                     0),              695700,   1988500E+23);
-		planets[1] = new Planet("mercury",    new Vector(-5.843237462283994E+07,-2.143781663349622E+07,3.608679295141068E+06),     new Vector(6.693497964118796E+00*10000,-4.362708337948559E+01*10000,-4.178969254985038E+00*10000),   2440,     3.302E23);
-		planets[2] = new Planet(  "venus",      new Vector(-2.580458154996926E+06,-1.087011239119300E+08,-1.342601858592726E+06),    new Vector(3.477728421647656E+01*10000,-9.612123998925466E-01*10000,-2.020103291838695E+00*10000),   6051.84,  48.685E23);
-		planets[3] = new Planet(  "earth",      new Vector(-1.490108621500159E+08,-2.126396301163715E+06,1.388910094132880E+02),     new Vector(-6.271192280390987E-02*10000,-2.988491242814953E+01*10000,1.101633412416092E-03*10000),   6371.01,  5.97219E24);
-		planets[4] = new Planet(   "mars",       new Vector(2.324287216682393E+07,2.314995121129051E+08,4.280415324853942E+06),       new Vector(-2.319279679672309E+01*10000,4.479321568516172E+00*10000,6.629375340168080E-01*10000),    3389.92,  6.4171E23);
-		
-		planets[5] = new Planet("jupiter",    new Vector(-2.356728008848499E+08,-7.610014493571992E+08,8.434013543900371E+06),     new Vector(1.233529763939601E+01*10000,-3.252405720855331E+00*10000,-2.624998782087296E-01*10000),   69911,    1898.13E24);
-		planets[6] = new Planet( "saturn",     new Vector(3.547591201282651E+08,-1.461948963315429E+09,1.129264446065086E+07),      new Vector(8.868556258040849E+00*10000,2.246063396151365E+00*10000,-3.919338649448527E-01*10000),    58232,    5.6834E26);
-		planets[7] = new Planet( "uranus",     new Vector(2.520721627475109E+09,1.570265333451912E+09,-2.681126672206974E+07),      new Vector(-3.638527457446034E+00*10000,5.459445391405725E+00*10000,6.723572113095622E-02*10000),    25362,    86.813E24);
-		planets[8] = new Planet("neptune",    new Vector(4.344787259046247E+09,-1.083664330264994E+09,-7.782633401672775E+07),     new Vector(1.292292607032268E+00*10000,5.304279525500773E+00*10000,-1.390977388629209E-01*10000),    24624,    102.413E24);
-		
-		planets[9] = new Planet(   "moon",       new Vector(-1.493626859901140E+08,-2.212378435248749E+06,3.162933122716530E+04),     new Vector(1.540496550112790E-01*10000,-3.094661877857872E+01*10000,2.193857468353855E-02*10000),     1737.4,   7.349E22);
-		planets[10]= new Planet(  "titan",      new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07),      new Vector(1.208193089270527E+01*10000,-1.813839579262785E+00*10000,1.381017323560965E+00*10000),    2575.5,   13455.3E19);
-		
-		
+		planets[0] = new Planet(    "sun", new Vector(     0,                       0,                    0),                   new Vector(        0,                      0,                     0),                                695700,   1988500E+23, 0, 0);
+		planets[1] = new Planet("mercury", new Vector(-5.843237462283994E+07,-2.143781663349622E+07,3.608679295141068E+06),     new Vector(6.693497964118796E+00*10000,-4.362708337948559E+01*10000,-4.178969254985038E+00*10000),   2440,     3.302E23,0,0);
+		planets[2] = new Planet(  "venus", new Vector(-2.580458154996926E+06,-1.087011239119300E+08,-1.342601858592726E+06),    new Vector(3.477728421647656E+01*10000,-9.612123998925466E-01*10000,-2.020103291838695E+00*10000),   6051.84,  48.685E23,0,0);
+		planets[3] = new Planet(  "earth", new Vector(-1.490108621500159E+08,-2.126396301163715E+06,1.388910094132880E+02),     new Vector(-6.271192280390987E-02*10000,-2.988491242814953E+01*10000,1.101633412416092E-03*10000),   6371.01,  5.97219E24,100,1);
+		planets[4] = new Planet(   "mars", new Vector(2.324287216682393E+07,2.314995121129051E+08,4.280415324853942E+06),       new Vector(-2.319279679672309E+01*10000,4.479321568516172E+00*10000,6.629375340168080E-01*10000),    3389.92,  6.4171E23,0,0);
+
+		planets[5] = new Planet("jupiter", new Vector(-2.356728008848499E+08,-7.610014493571992E+08,8.434013543900371E+06),     new Vector(1.233529763939601E+01*10000,-3.252405720855331E+00*10000,-2.624998782087296E-01*10000),   69911,    1898.13E24,0,0);
+		planets[6] = new Planet("saturn", new Vector(3.547591201282651E+08,-1.461948963315429E+09,1.129264446065086E+07),       new Vector(8.868556258040849E+00*10000,2.246063396151365E+00*10000,-3.919338649448527E-01*10000),    58232,    5.6834E26,0,0);
+		planets[7] = new Planet("uranus", new Vector(2.520721627475109E+09,1.570265333451912E+09,-2.681126672206974E+07),       new Vector(-3.638527457446034E+00*10000,5.459445391405725E+00*10000,6.723572113095622E-02*10000),    25362,    86.813E24,0,0);
+		planets[8] = new Planet("neptune", new Vector(4.344787259046247E+09,-1.083664330264994E+09,-7.782633401672775E+07),     new Vector(1.292292607032268E+00*10000,5.304279525500773E+00*10000,-1.390977388629209E-01*10000),    24624,    102.413E24,0,0);
+
+		planets[9] = new Planet("moon", new Vector(-1.493626859901140E+08,-2.212378435248749E+06,3.162933122716530E+04),        new Vector(1.540496550112790E-01*10000,-3.094661877857872E+01*10000,2.193857468353855E-02*10000),     1737.4,   7.349E22,0,0);
+		planets[10]= new Planet("titan", new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07),        new Vector(1.208193089270527E+01*10000,-1.813839579262785E+00*10000,1.381017323560965E+00*10000),     2575.5,   13455.3E19, 600, 1.5);
 	}
 
 	private void resetAcceleration() {
