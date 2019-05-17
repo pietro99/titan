@@ -46,23 +46,12 @@ public class SolarSystem extends Group{
 		initiatePlanets();
 		initiateSpheres();
 		initiateShuttle();
-		
-
-		
-
-		
 	}
-	
-
 
 	//method for updating solar system
 	public void updateSolarSystem() {
-
 		calculateGravity();
-		
 		updateGUI();
-		
-			
 		}
 		
 
@@ -160,19 +149,19 @@ public class SolarSystem extends Group{
 			}
 		}
 	}
-	
+
 	private void updateGUI() {
 		for(int i=0; i<planets.length; i++) {
-	       	planetSpheres[i].setLayoutX((planets[i].getPosition().getX()/scale)+movingFactor.getX());
-	        planetSpheres[i].setLayoutY((planets[i].getPosition().getY()/scale)+movingFactor.getY());
+			planetSpheres[i].setLayoutX((planets[i].getPosition().getX()/scale)+movingFactor.getX());
+			planetSpheres[i].setLayoutY((planets[i].getPosition().getY()/scale)+movingFactor.getY());
 		}
 		if(shuttle != null) {
 			shuttleSphere.setLayoutX((shuttle.getPosition().getX() / scale) + movingFactor.getX());
 			shuttleSphere.setLayoutY((shuttle.getPosition().getY() / scale) + movingFactor.getY());
 		}
-//		else 
+//		else
 //			shuttleSphere.fillProperty().set(Color.BLACK);
-		
+
 	}
 
 	private void initiateSpheres() {
@@ -212,7 +201,7 @@ public class SolarSystem extends Group{
 		Image imgTitan = new Image("titan.jpg");
 		titanmt.setDiffuseMap(imgTitan);
 		
-		
+
 		
 		Light.Point light = new Light.Point();
 		light.setX(0);
