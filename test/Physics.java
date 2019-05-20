@@ -2,8 +2,8 @@ public class Physics {
     public static final double G = 6.67408E-11;
     public static final double EPS = 1E-15;
 
-    private static final double dragConstant = 0.1;
-    private static final double drag = 0.25;
+    private static final double dragConstant = 10;
+    private static final double drag = 25;
 
     public static Vector dragAcceleration(Planet p, Shuttle shuttle) {
         double height = p.getPosition().subtract(shuttle.getPosition()).length() - p.getRadius();
@@ -24,10 +24,11 @@ public class Physics {
             //wind = shuttle.getDirection(0).multiply(Math.random()).sum(shuttle.getDirection(1).multiply(Math.random()));
             wind = shuttle.getPosition().subtract(p.getPosition()).cross(Vector.random()).normalize();
             wind = wind.sum(new Vector(change * Math.random() * Math.max(wind.getX(), .1), change * Math.random() * Math.max(wind.getY(), .1), change * Math.random() * Math.max(wind.getZ(), .1)));
-            wind = wind.multiply(height / (scale * shuttle.getMass()));
-
+            //wind = wind.multiply(height / (scale * shuttle.getMass()));
+            wind = wind.normalize().multiply((Math.pow(1.01011793482, Math.sqrt(height) - 1 + scale)) / 3600);
+            //wind = wind.sum(p.getVelocity());
             rot = new Vector(Math.random(), Math.random(), Math.random());
-            rot = rot.multiply(rotScale);
+            rot = rot.multiply(rotScale * wind.length());
         }
         return new Vector[]{wind, rot};
     }

@@ -131,6 +131,7 @@ public class Vector {
 	    return Double.isNaN(X) || Double.isNaN(Y) || Double.isNaN(Z);
     }
 
+    //project this vector on other
     public Vector project(Vector other) {
 		return other.multiply(dot(other)/ (other.squareLength()));
 	}

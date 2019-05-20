@@ -56,23 +56,23 @@ public class SolarSystem extends Group{
 		
 
 	public void calculateGravity() {
-		if(shuttle.getPosition().distance(getTitan().getPosition())<20000&&slow) {
+	/*	if(shuttle.getPosition().distance(getTitan().getPosition())<20000&&slow) {
 			TIME = TIME/10000;
 			slow = false;
-		}
+		}*/
 		
 		//reset force and acceleration
-
+		resetAcceleration();
 		calculateGravityforPlanets();
 		calculateGravityForShuttleAndUpdatePosition();
 		checkCrush();
 		if(shuttle!=null) {
+			bestTime = time;
 			bestDistance = shuttle.getPosition().distance(planets[10].getPosition());
 			bestPos = shuttle.getPosition();
 			bestTitan = planets[10].getPosition();
 		}
 		updatePlanetsPosition();
-		resetAcceleration();
 	}
 	
 	
@@ -131,13 +131,15 @@ public class SolarSystem extends Group{
 				System.out.println("shuttle initial vector speed: " + shuttle.init);
 				System.out.println("shuttle initial speed: " + shuttle.init.length());
 				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
-				System.out.println("LANDED ON TITAN");
 				System.out.println("Direction Z: " + shuttle.getDirection(2));
-				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
+				//System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
+				double dot = planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize());
+				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot));
 				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
 				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
 				System.out.println("Speed: " + v.length());
 				System.out.println("Angular speed (deg): " + shuttle.getAngularSpeed().multiply(180 / Math.PI));
+                System.out.println("!!! LANDED ON TITAN !!!");
 				done = true;
 				System.exit(0);
 			}

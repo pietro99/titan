@@ -61,8 +61,8 @@ public class Runner extends Application{
        //creating the solar system
        solarSystem = new SolarSystem();
        mainPane = new BorderPane();
-       HBox infoBox = createHBox();
-       HBox sideBar = createSideBar();
+      // HBox infoBox = createHBox();
+      // HBox sideBar = createSideBar();
         camera = new PerspectiveCamera();
 
         camera.setNearClip(0.000001);
@@ -74,6 +74,7 @@ public class Runner extends Application{
 
         scene.setCamera(camera);
         scene.setFill(Color.BLACK);
+
         Light.Point light = new Light.Point();
         light.setX(0);
         light.setY(0);
@@ -365,14 +366,14 @@ public class Runner extends Application{
     
  public static void main(String[] args) {
 	 	//call the start method
-	 
+
 	 if(args.length>=1 && args[0].equals("simulation"))
 		 simulation = false;
-	 else 
+	 else
 		 simulation = true;
-	 
+
         launch(args);
-        
+
     }
  
 }
