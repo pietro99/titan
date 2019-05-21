@@ -46,44 +46,33 @@ public class SolarSystem extends Group{
 		initiatePlanets();
 		initiateSpheres();
 		initiateShuttle();
-		
-
-		
-
-		
 	}
-	
-
 
 	//method for updating solar system
 	public void updateSolarSystem() {
-
 		calculateGravity();
-		
 		updateGUI();
-		
-			
 		}
 		
 
 	public void calculateGravity() {
-		if(shuttle.getPosition().distance(getTitan().getPosition())<20000&&slow) {
+	/*	if(shuttle.getPosition().distance(getTitan().getPosition())<20000&&slow) {
 			TIME = TIME/10000;
 			slow = false;
-		}
+		}*/
 		
 		//reset force and acceleration
-
+		resetAcceleration();
 		calculateGravityforPlanets();
 		calculateGravityForShuttleAndUpdatePosition();
 		checkCrush();
 		if(shuttle!=null) {
+			bestTime = time;
 			bestDistance = shuttle.getPosition().distance(planets[10].getPosition());
 			bestPos = shuttle.getPosition();
 			bestTitan = planets[10].getPosition();
 		}
 		updatePlanetsPosition();
-		resetAcceleration();
 	}
 	
 	
@@ -142,13 +131,18 @@ public class SolarSystem extends Group{
 				System.out.println("shuttle initial vector speed: " + shuttle.init);
 				System.out.println("shuttle initial speed: " + shuttle.init.length());
 				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
-				System.out.println("LANDED ON TITAN");
 				System.out.println("Direction Z: " + shuttle.getDirection(2));
-				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
+				//System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
+				double dot = planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize());
+				System.out.println("Angle (deg): " + (180 - (180 / Math.PI) * Math.acos(dot)) + "\t" + dot);
+				System.out.println("Angle (rad): " + (Math.PI - Math.acos(dot)));
 				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
 				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
-				System.out.println("Speed: " + v.length());
-				System.out.println("Angular speed (deg): " + shuttle.getAngularSpeed().multiply(180 / Math.PI));
+				System.out.println("Speed: " + (v.length() / 10000));
+				System.out.println("Angular speed (deg): " + shuttle.getAngularSpeed().multiply(180 / Math.PI) + " -> " + shuttle.getAngularSpeed().multiply(180 / Math.PI).length());
+				System.out.println("Angular speed (rad): " + shuttle.getAngularSpeed() + " -> " + shuttle.getAngularSpeed().length());
+				System.out.println("Mass: " + shuttle.getMass());
+                System.out.println("!!! LANDED ON TITAN !!!");
 				done = true;
 				System.exit(0);
 			}
@@ -160,19 +154,16 @@ public class SolarSystem extends Group{
 			}
 		}
 	}
-	
+
 	private void updateGUI() {
 		for(int i=0; i<planets.length; i++) {
-	       	planetSpheres[i].setLayoutX((planets[i].getPosition().getX()/scale)+movingFactor.getX());
-	        planetSpheres[i].setLayoutY((planets[i].getPosition().getY()/scale)+movingFactor.getY());
+			planetSpheres[i].setLayoutX((planets[i].getPosition().getX()/scale)+movingFactor.getX());
+			planetSpheres[i].setLayoutY((planets[i].getPosition().getY()/scale)+movingFactor.getY());
 		}
 		if(shuttle != null) {
 			shuttleSphere.setLayoutX((shuttle.getPosition().getX() / scale) + movingFactor.getX());
 			shuttleSphere.setLayoutY((shuttle.getPosition().getY() / scale) + movingFactor.getY());
 		}
-//		else 
-//			shuttleSphere.fillProperty().set(Color.BLACK);
-		
 	}
 
 	private void initiateSpheres() {
@@ -212,26 +203,26 @@ public class SolarSystem extends Group{
 		Image imgTitan = new Image("titan.jpg");
 		titanmt.setDiffuseMap(imgTitan);
 		
-		
+
 		
 		Light.Point light = new Light.Point();
 		light.setX(0);
 		light.setY(0);
 		light.setZ(0);;       
 	    Lighting lighting = new Lighting(); 
-	    lighting.setLight(light); 
-		planetSpheres[0] = new Sphere(planets[0].getRadius()/10000);
-		planetSpheres[1] = new Sphere(planets[1].getRadius()/1000);
-		planetSpheres[2] = new Sphere(planets[2].getRadius()/1000);
-		planetSpheres[3] = new Sphere(planets[3].getRadius()/1000);
-		planetSpheres[4] = new Sphere(planets[4].getRadius()/1000);
-		planetSpheres[5] = new Sphere(planets[5].getRadius()/1000);
-		planetSpheres[6] = new Sphere(planets[6].getRadius()/1000);
-		planetSpheres[7] = new Sphere(planets[7].getRadius()/1000);
-		planetSpheres[8] = new Sphere(planets[8].getRadius()/1000);
-		planetSpheres[9] = new Sphere(planets[9].getRadius()/1000);
-		planetSpheres[10] = new Sphere(planets[10].getRadius()/1000);
-		
+	    lighting.setLight(light);
+		planetSpheres[0] = new Sphere(planets[0].getRadius() /10000);
+		planetSpheres[1] = new Sphere(planets[1].getRadius() /1000);
+		planetSpheres[2] = new Sphere(planets[2].getRadius() /1000);
+		planetSpheres[3] = new Sphere(planets[3].getRadius() /1000);
+		planetSpheres[4] = new Sphere(planets[4].getRadius() /1000);
+		planetSpheres[5] = new Sphere(planets[5].getRadius() /1000);
+		planetSpheres[6] = new Sphere(planets[6].getRadius() /1000);
+		planetSpheres[7] = new Sphere(planets[7].getRadius() /1000);
+		planetSpheres[8] = new Sphere(planets[8].getRadius() /1000);
+		planetSpheres[9] = new Sphere(planets[9].getRadius() /1000);
+		planetSpheres[10] = new Sphere(planets[10].getRadius() /1000);
+
 		//settings the textures of the planets
 		planetSpheres[0].setMaterial(sunmt);
 		planetSpheres[1].setMaterial(mercurymt);

@@ -10,39 +10,53 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Camera;
 import javafx.scene.Group;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
  
 public class Runner extends Application{
-	public static SolarSystem solarSystem;
-	public static double mouseX = 0;
-	public static double mouseY = 0;
-	public static Stage primaryStage;
-	public static BorderPane mainPane;
-	public static double frameSeconds = 0.1;
-	public static int count = 0;
-	public static int gen =0;
-	public static boolean simulation = true;
-	double factor = 0.9;
-	Vector oldPos;
-	Vector oldTitan;
-	Shuttle shuttle;
-	Vector bestPos;
-	Vector bestTitan;
-	double err; 
-	double oldErr;
-	List<Circle>shuttleCir = new ArrayList<Circle>();
+    public static SolarSystem solarSystem;
+    public static double mouseX = 0;
+    public static double mouseY = 0;
+    public static Stage primaryStage;
+    public static BorderPane mainPane;
+    public static double frameSeconds = 0.1;
+    public static int count = 0;
+    public static int counter = 0;
+    public boolean isLanding = false;
+    public static int gen =0;
+    public static boolean simulation = false;
+    public static boolean followTitan = false;
+    public static boolean followSaturn = false;
+    public static boolean followShuttle = false;
+    public static boolean followEarth = false;
+    double factor = 1.9;
+    Vector oldPos;
+    Vector oldTitan;
+    Shuttle shuttle;
+    Vector bestPos;
+    Vector bestTitan;
+    double err;
+    double oldErr;
+    List<Circle>shuttleCir = new ArrayList<Circle>();
+    PerspectiveCamera camera;
+    Lander lander;
 	
 	
     public void start(Stage primaryStage) {
@@ -50,16 +64,33 @@ public class Runner extends Application{
        //creating the solar system
        solarSystem = new SolarSystem();
        mainPane = new BorderPane();
-       HBox infoBox = createHBox();
-       HBox sideBar = createSideBar();
-       mainPane.getChildren().add(solarSystem);
-       mainPane.setBottom(infoBox);
-       mainPane.setRight(sideBar);
+      // HBox infoBox = createHBox();
+      // HBox sideBar = createSideBar();
+        camera = new PerspectiveCamera();
+
+        camera.setNearClip(0.000001);
+        mainPane.getChildren().add(solarSystem);
+       //mainPane.setBottom(infoBox);
+       //mainPane.setRight(sideBar);
        
        Scene scene = new Scene(mainPane, 1000, 850, true);
-       
-       
-       //game loop......
+
+        scene.setCamera(camera);
+        scene.setFill(Color.BLACK);
+
+        Light.Point light = new Light.Point();
+        light.setX(0);
+        light.setY(0);
+        light.setZ(0);
+        light.setColor(Color.RED);
+        Lighting lighting = new Lighting();
+        lighting.setLight(light);
+        for(int i= 0; i<solarSystem.getPlanetSpheres().length; i++)
+            solarSystem.getPlanetSpheres()[i].setEffect(lighting);
+        solarSystem.setRotationAxis(Rotate.X_AXIS);
+
+
+        //game loop......
        Timeline timeline = new Timeline();
        timeline.setCycleCount(Timeline.INDEFINITE);
        KeyFrame kf = new KeyFrame(
@@ -95,34 +126,111 @@ public class Runner extends Application{
    		
    		
    		//handler for reaching different planets with keyboard strokes
-   		scene.setOnKeyPressed((new EventHandler<KeyEvent>() {
-   			public void handle(KeyEvent event) {
-				KeyCode code = event.getCode();
-				if(code == KeyCode.S) {
-					solarSystem.setScale(72992.01452560296);
-					solarSystem.setMovingFactor(-4365.039999999958 , 20464.560000000056);
-				}
-				else if(code == KeyCode.DOWN) {
-					setFrameSeconds(getFrameSeconds()*0.0001);
-				}
-				else if(code == KeyCode.C) {
+        scene.setOnKeyPressed((new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent event) {
+                KeyCode code = event.getCode();
+                if(code == KeyCode.W) {
+                    camera.translateZProperty().set(camera.getTranslateZ()+20);
+                }
+                else if(code == KeyCode.S) {
+                    camera.translateZProperty().set(camera.getTranslateZ()-20);
+                }
+                else if(code == KeyCode.LEFT) {
+                    camera.translateXProperty().set(camera.getTranslateX()-20);
+                }
+                else if(code == KeyCode.RIGHT) {
+                    camera.translateXProperty().set(camera.getTranslateX()+20);
+                }
+                else if(code == KeyCode.UP) {
+                    camera.translateYProperty().set(camera.getTranslateY()-20);
+                }
+                else if(code == KeyCode.DOWN) {
+                    camera.translateYProperty().set(camera.getTranslateY()+20);
+                }
+                else if(code == KeyCode.T) {
+                    camera.setTranslateX(0);
+                    camera.setTranslateY(0);
+                    camera.setTranslateZ(0);
+                    if(!followTitan) {
+                        followTitan = true;
+                        followShuttle = false;
+                        followSaturn = false;
+                        followEarth = false;
+                    }
+                    else
+                        followTitan = false;
+                }
+                else if(code == KeyCode.R) {
+                    camera.setTranslateX(0);
+                    camera.setTranslateY(0);
+                    camera.setTranslateZ(0);
+                    if(!followShuttle) {
+                        followShuttle = true;
+                        followSaturn = false;
+                        followTitan = false;
+                        followEarth = false;
+                    }
+                    else
+                        followShuttle = false;
+                }
+                else if(code == KeyCode.U) {
+                    camera.setTranslateX(0);
+                    camera.setTranslateY(0);
+                    camera.setTranslateZ(0);
+                    if(!followSaturn) {
+                        followSaturn = true;
+                        followShuttle = true;
+                        followTitan = false;
+                        followEarth = false;
+                    }
+                    else
+                        followSaturn = false;
+                }
+                else if(code == KeyCode.E) {
+                    if(!followSaturn) {
+                        followSaturn = false;
+                        followShuttle = false;
+                        followTitan = false;
+                        followEarth = true;
+                    }
+                    else
+                        followEarth = false;
+                }
+                else if(code == KeyCode.A) {
+                    solarSystem.setRotate(solarSystem.getRotate()+2);
+                }
+                else if(code == KeyCode.D) {
+                    solarSystem.setRotate(solarSystem.getRotate()-2);
+                }
+                else if(code == KeyCode.DIGIT0) {
+                    solarSystem.setRotate(0);
+                }
+                else if(code == KeyCode.DOWN) {
+                    setFrameSeconds(getFrameSeconds()*0.0001);
+                }
+                else if(code == KeyCode.C) {
 
-					solarSystem.setScale(4e6);
-					solarSystem.setMovingFactor(500,525);
-				}
-				else if(code == KeyCode.F)
-					fullScreen();
-			}
-   		}));
+                    solarSystem.setScale(4e5);
+                    solarSystem.setMovingFactor(500,525);
+                    camera.setTranslateX(0);
+                    camera.setTranslateY(0);
+                    camera.setTranslateZ(0);
+                }
+                else if(code == KeyCode.F)
+                    fullScreen();
+            }
+        }));
    		
    		
    		//handler for scaling with the mouse roll (or trackpad or touchscreen)
    		scene.setOnScroll(new EventHandler<ScrollEvent>() {
    			public void handle(ScrollEvent event) {
-   				if(event.getDeltaY()>0)
-   					solarSystem.setScale(solarSystem.getScale()*0.9);
-   				else
-   					solarSystem.setScale(solarSystem.getScale()*1.1);
+   				if(!isLanding) {
+	   				if(event.getDeltaY()>0)
+	   					solarSystem.setScale(solarSystem.getScale()*0.9);
+	   				else
+	   					solarSystem.setScale(solarSystem.getScale()*1.1);
+   				}
 			}
    		});
        
@@ -167,7 +275,29 @@ public class Runner extends Application{
     //method that updates the frame
     public void update() {
     	solarSystem.updateSolarSystem();
-		count += 250 ;
+        fixCamera();
+        if(solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
+        	if(counter==0) {
+        		isLanding = true;
+        		solarSystem.TIME = solarSystem.TIME/4000;
+        		solarSystem.setScale(4e5);
+        		lander = new Lander(solarSystem.getShuttle(), solarSystem.getTitan());
+        		mainPane.getChildren().remove(solarSystem);
+        		mainPane.getChildren().add(lander);
+        		camera.setTranslateX(-500);
+        		camera.setTranslateY(-500);
+        		camera.setLayoutX(0);
+        		camera.setLayoutY(0);
+        		followTitan = false;
+        		followSaturn = false;
+        		followShuttle = false;
+        		followEarth = false;
+        		counter++;
+        	}
+        	lander.buildScene(solarSystem.getShuttle(), solarSystem.getTitan());
+        }
+
+        count += 250 ;
 		
         if(simulation) {
             if(count >= 3600 * 24 * 365/6) {
@@ -223,7 +353,28 @@ public class Runner extends Application{
 	//878629.7264863193	     -2588414.9687429797  
     }//4.1155308720947456E8 -1.4453512119138913E9 8755575.60203173
     //4.091557040724596E8   -1.4462529557723603E9 8726104.776757749
-    
+
+    private void fixCamera() {
+
+        if(followTitan) {
+            camera.setLayoutX(solarSystem.getPlanetSpheres()[10].getLayoutX()-solarSystem.getMovingFactor().getX());
+            camera.setLayoutY(solarSystem.getPlanetSpheres()[10].getLayoutY()-solarSystem.getMovingFactor().getY());
+        }
+        else if(followSaturn){
+            camera.setLayoutX(solarSystem.getPlanetSpheres()[6].getLayoutX()-solarSystem.getMovingFactor().getX());
+            camera.setLayoutY(solarSystem.getPlanetSpheres()[6].getLayoutY()-solarSystem.getMovingFactor().getY());
+        }
+        else if(followShuttle){
+            camera.setLayoutX(solarSystem.getShuttleSphere().getLayoutX()-solarSystem.getMovingFactor().getX());
+            camera.setLayoutY(solarSystem.getShuttleSphere().getLayoutY()-solarSystem.getMovingFactor().getY());
+        }
+        else if(followEarth){
+            camera.setLayoutX(solarSystem.getPlanetSpheres()[3].getLayoutX()-solarSystem.getMovingFactor().getX());
+            camera.setLayoutY(solarSystem.getPlanetSpheres()[3].getLayoutY()-solarSystem.getMovingFactor().getY());
+        }
+    }
+
+
     public static double getHeight() {
     	return primaryStage.getHeight();
     }
@@ -240,14 +391,12 @@ public class Runner extends Application{
     
  public static void main(String[] args) {
 	 	//call the start method
-	 
+
 	 if(args.length>=1 && args[0].equals("simulation"))
-		 simulation = false;
-	 else 
 		 simulation = true;
-	 
+
         launch(args);
-        
+
     }
  
 }

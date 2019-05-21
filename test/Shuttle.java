@@ -70,7 +70,7 @@ public class Shuttle extends Body{
     }
 
     public static Shuttle getStandardShuttle() {
-        return new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255), 20000, 500, 5, 20, 1000e4, -80, 500e4, -50, 200, SolarSystem.planets[3]);
+        return new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255).multiply(0.999999), 20000, 500, 5, 20, 1000e4, -80, 500e4, -50, 2000, SolarSystem.planets[3]);
     }
 
     /* ************************** */
@@ -80,8 +80,8 @@ public class Shuttle extends Body{
         if(t >= 0) {
             mainEngineForce *= timeStep / t;
             lateralEngineForce *= timeStep / t;
-            //mainEngineMass *= timeStep / t;
-            //lateralEngineMass *= timeStep / t;
+            //mainEngineMass /= timeStep / t;
+            //lateralEngineMass /= timeStep / t;
             timeStep = t;
         }
     }
@@ -159,17 +159,17 @@ public class Shuttle extends Body{
     }
 
     public void addAcceleration(Vector acc, Vector radius, double deltaMass) {
-        if(mass > -deltaMass && mass > minMass) {
+        if((mass > -deltaMass && mass > minMass) || deltaMass == 0) {
             //add acceleration
             acceleration = acceleration.sum(acc);
 
             //update mass
-            //mass += deltaMass; //TODO
+            mass += deltaMass; //TODO
             if (radius.squareLength() > epsilon) {
                 angularSpeed = angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
             }
         }else {
-            System.out.println("No fuel: require " + deltaMass + ", get " + mass);
+           // System.out.println("No fuel: require " + deltaMass + ", get " + mass);
         }
     }
 
@@ -210,13 +210,13 @@ public class Shuttle extends Body{
         lateralEngine(time, positive, axisMove, axisRot, 0);
     }
 
-    public void useParachute() {
+    public void useParachute(Planet p) {
         // TODO make planet changeable
         double atmosphere = SolarSystem.planets[10].getAtmosphericPressureComparedToEarthPressure();
-        System.out.println("Parachute acc: " + velocity.multiply(-parachute * atmosphere));
-        System.out.println("Acc: " + acceleration);
+        //System.out.println("Parachute acc: " + velocity.multiply(-parachute * atmosphere));
+        //System.out.println("Acc: " + acceleration);
 
-        acceleration = acceleration.sum(velocity.multiply(-parachute * atmosphere));
+        acceleration = acceleration.sum(velocity.subtract(p.getVelocity()).multiply(-parachute * atmosphere));
     }
 
     /* ***************************** */
@@ -236,11 +236,8 @@ public class Shuttle extends Body{
                     //consume mass
                     mass += lateralEngineMass * time.get(i);
 
-                    //System.out.println("Mass: " + mass);
-
                     //angle
                     double angle = angularSpeed.get(i) * time.get(i) * 0.5;    //assume constant change of speed
-                    System.out.println(angle);
                     //update rotation
                     for(int j = 0; j < 3; j++) {
                         if(j != i)
@@ -319,6 +316,7 @@ public class Shuttle extends Body{
                     mainEngine(1);
                 } else {
                     System.out.println("Almost the right speed: " + vel);
+                    System.out.println("Distance: " + position.distance(SolarSystem.planets[10].getPosition()));
                     System.out.println("Titan: " + SolarSystem.planets[10].getVelocity().length());
                     //less than one time step
                     //assume a constant acceleration
@@ -339,6 +337,21 @@ public class Shuttle extends Body{
             }
         }
     }
+/*
+    public void brake(double targetVelocity, double tolerance, double timeStep, Body ref) {
+        if(ref == null)
+            brake(targetVelocity, tolerance, timeStep);
+        else {
+            Vector delta = velocity.subtract(ref.getVelocity().multiply(targetVelocity / ref.getVelocity().length()));  //chnge of velocity needed
+            //Local z-coomponent    -> main engine can handle it
+            Vector z = delta.project(direction[2]);
+
+            //residual
+            Vector err = delta.subtract(z);
+            brake(z.length(), tolerance, timeStep);
+        }
+
+    }*/
 
     public void land(Planet planet, double timeStep) {
         Vector dist = position.subtract(planet.getPosition());
@@ -347,26 +360,36 @@ public class Shuttle extends Body{
         if(d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 1e4) {       //start landing
             SolarSystem.TIME = 0.0001;
             setTimeStep(SolarSystem.TIME);
-            stopRotation(.1, timeStep);
-            alignTo(velocity, false, timeStep, 0.1, 0);
-            if(d > (planet.getDistanceAtmosphere() + planet.getRadius())) {         //in atmosphere
-                System.out.println("Near: " + d);
-                brake(2555 + SolarSystem.planets[10].getVelocity().length(), 50, timeStep);  //less than escape velocity
-            }else {
-                System.out.println("In atmosphere");
-                useParachute();
-                Vector[] p = Physics.wind(this, SolarSystem.planets[10], 10, .1, 1);
+            stopRotation(0, timeStep);
 
+            if(d > (planet.getDistanceAtmosphere() + planet.getRadius())) {         //in atmosphere
+                alignTo(planet.getVelocity(), true, timeStep, 0.1, 0);
+                if(d < 4000)
+                    System.out.println("Near: " + d);
+                brake(2000 + SolarSystem.planets[10].getVelocity().length(), 10, timeStep);  //less than escape velocity
+                //brake(2000, 50, timeStep, planet);
+            }else {
+                alignTo(dist, true, timeStep, 0, 0);
+                System.out.println("In atmosphere: " + (d - planet.getRadius()));
+                double dot = dist.normalize().dot(getDirection(2).normalize());
+                //roundoff error
+                if(dot > 1)
+                    dot = 1;
+                else if (dot < -1)
+                    dot = -1;
+                System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot) + " " + dot);
+                double v = getVelocity().distance(planet.getVelocity());
+                System.out.println("Speed: " + (v * 1e-4));
+                useParachute(planet);   //-> we need this to land
+
+                Vector[] p = Physics.wind(this, planet, 100, 100000, 10);
                 acceleration = acceleration.sum(p[0]);
                 angularSpeed = angularSpeed.sum(p[1]);
 
-                Vector drag = Physics.dragAcceleration(SolarSystem.planets[10], this);
+                Vector drag = Physics.dragAcceleration(planet, this);   //-> we need this to land
                 acceleration = acceleration.subtract(drag);
-                if(d > 50) {
-                    brake(200 + SolarSystem.planets[10].getVelocity().length(), 30, timeStep);
-                }else {
-                    brake(SolarSystem.planets[10].getVelocity().length(), 0.1, timeStep);
-                }
+
+                brake(planet.getVelocity().length(), 0, timeStep);
             }
         }
     }
