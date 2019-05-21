@@ -2,8 +2,8 @@ public class Physics {
     public static final double G = 6.67408E-11;
     public static final double EPS = 1E-15;
 
-    private static final double dragConstant = 10;
-    private static final double drag = 25;
+    private static final double dragConstant = 100;
+    private static final double drag = 250;
 
     public static Vector dragAcceleration(Planet p, Shuttle shuttle) {
         double height = p.getPosition().subtract(shuttle.getPosition()).length() - p.getRadius();

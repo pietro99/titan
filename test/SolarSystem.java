@@ -134,7 +134,7 @@ public class SolarSystem extends Group{
 				System.out.println("Direction Z: " + shuttle.getDirection(2));
 				//System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
 				double dot = planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize());
-				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot));
+				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot) + "\t" + dot);
 				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
 				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
 				System.out.println("Speed: " + v.length());
