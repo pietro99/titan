@@ -77,11 +77,9 @@ public class Shuttle extends Body{
 
     /* ********* Setters ******** */
     public void setTimeStep(double t) {
-        if(t >= 0) {
+        if(t >= 0 && t != timeStep) {
             mainEngineForce *= timeStep / t;
             lateralEngineForce *= timeStep / t;
-            //mainEngineMass /= timeStep / t;
-            //lateralEngineMass /= timeStep / t;
             timeStep = t;
         }
     }
@@ -169,7 +167,7 @@ public class Shuttle extends Body{
                 angularSpeed = angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
             }
         }else {
-           // System.out.println("No fuel: require " + deltaMass + ", get " + mass);
+            System.out.println("No fuel: require " + deltaMass + ", get " + mass);
         }
     }
 
@@ -191,7 +189,7 @@ public class Shuttle extends Body{
 
     /* ******* Engines ************* */
     public void mainEngine(double timeStepRatio) {
-        addAcceleration(direction[2].multiply(mainEngineForce * timeStepRatio / mass), Vector.ZERO, mainEngineMass * timeStepRatio);
+        addAcceleration(direction[2].normalize().multiply(mainEngineForce * timeStepRatio / mass), Vector.ZERO, mainEngineMass * timeStepRatio);
         //System.out.println("Delta acc: " + direction[2].multiply(mainEngineForce * timeStepRatio / mass));
         //System.out.println(acceleration);
     }
@@ -307,12 +305,13 @@ public class Shuttle extends Body{
         double time = 0;
         //System.out.println("Vel: " + velocity + " V: " + vel);
         if(Math.abs(vel - targetVelocity) > tolerance) {
-            if (direction[2].dot(velocity) < 0) {    //make sure that it is the right direction
+            //if (direction[2].dot(velocity) < 0) {    //make sure that it is the right direction
                 //TODO mistake in time calculation -> over stimate
                 time = Math.abs((vel - targetVelocity) * mass / mainEngineForce);
 
                 if (time > timeStep) {
                     //brake during all the timeStep
+                    System.out.println("Main engine");
                     mainEngine(1);
                 } else {
                     System.out.println("Almost the right speed: " + vel);
@@ -331,10 +330,10 @@ public class Shuttle extends Body{
                     //update velocity
                     velocity = velocity.sum(acc.multiply(time));
                 }
-            }else {
+           /* }else {
                 System.out.println("Wrong direction");
                 velocity = velocity.normalize().multiply(targetVelocity);
-            }
+            }*/
         }
     }
 /*
@@ -361,12 +360,11 @@ public class Shuttle extends Body{
             SolarSystem.TIME = 0.0001;
             setTimeStep(SolarSystem.TIME);
             stopRotation(0, timeStep);
-
             if(d > (planet.getDistanceAtmosphere() + planet.getRadius())) {         //in atmosphere
                 alignTo(planet.getVelocity(), true, timeStep, 0.1, 0);
                 if(d < 4000)
                     System.out.println("Near: " + d);
-                brake(2000 + SolarSystem.planets[10].getVelocity().length(), 10, timeStep);  //less than escape velocity
+                brake(planet.getVelocity().length(), 10, timeStep);  //less than escape velocity
                 //brake(2000, 50, timeStep, planet);
             }else {
                 alignTo(dist, true, timeStep, 0, 0);
@@ -388,8 +386,7 @@ public class Shuttle extends Body{
 
                 Vector drag = Physics.dragAcceleration(planet, this);   //-> we need this to land
                 acceleration = acceleration.subtract(drag);
-
-                brake(planet.getVelocity().length(), 0, timeStep);
+                //brake(planet.getVelocity().length(), 0, timeStep);    ->TODO ???
             }
         }
     }
