@@ -38,6 +38,8 @@ public class Runner extends Application{
     public static BorderPane mainPane;
     public static double frameSeconds = 0.1;
     public static int count = 0;
+    public static int counter = 0;
+    public boolean isLanding = false;
     public static int gen =0;
     public static boolean simulation = false;
     public static boolean followTitan = false;
@@ -54,6 +56,7 @@ public class Runner extends Application{
     double oldErr;
     List<Circle>shuttleCir = new ArrayList<Circle>();
     PerspectiveCamera camera;
+    Lander lander;
 	
 	
     public void start(Stage primaryStage) {
@@ -222,10 +225,12 @@ public class Runner extends Application{
    		//handler for scaling with the mouse roll (or trackpad or touchscreen)
    		scene.setOnScroll(new EventHandler<ScrollEvent>() {
    			public void handle(ScrollEvent event) {
-   				if(event.getDeltaY()>0)
-   					solarSystem.setScale(solarSystem.getScale()*0.9);
-   				else
-   					solarSystem.setScale(solarSystem.getScale()*1.1);
+   				if(!isLanding) {
+	   				if(event.getDeltaY()>0)
+	   					solarSystem.setScale(solarSystem.getScale()*0.9);
+	   				else
+	   					solarSystem.setScale(solarSystem.getScale()*1.1);
+   				}
 			}
    		});
        
@@ -271,6 +276,26 @@ public class Runner extends Application{
     public void update() {
     	solarSystem.updateSolarSystem();
         fixCamera();
+        if(solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
+        	if(counter==0) {
+        		isLanding = true;
+        		solarSystem.TIME = solarSystem.TIME/4000;
+        		solarSystem.setScale(4e5);
+        		lander = new Lander(solarSystem.getShuttle(), solarSystem.getTitan());
+        		mainPane.getChildren().remove(solarSystem);
+        		mainPane.getChildren().add(lander);
+        		camera.setTranslateX(-500);
+        		camera.setTranslateY(-500);
+        		camera.setLayoutX(0);
+        		camera.setLayoutY(0);
+        		followTitan = false;
+        		followSaturn = false;
+        		followShuttle = false;
+        		followEarth = false;
+        		counter++;
+        	}
+        	lander.buildScene(solarSystem.getShuttle(), solarSystem.getTitan());
+        }
 
         count += 250 ;
 		
@@ -368,8 +393,6 @@ public class Runner extends Application{
 	 	//call the start method
 
 	 if(args.length>=1 && args[0].equals("simulation"))
-		 simulation = false;
-	 else
 		 simulation = true;
 
         launch(args);
