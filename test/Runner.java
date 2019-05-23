@@ -57,7 +57,7 @@ public class Runner extends Application{
     List<Circle>shuttleCir = new ArrayList<Circle>();
     PerspectiveCamera camera;
     Lander lander;
-	
+	Timeline timeline;
 	
     public void start(Stage primaryStage) {
     	this.primaryStage = primaryStage;
@@ -91,7 +91,7 @@ public class Runner extends Application{
 
 
         //game loop......
-       Timeline timeline = new Timeline();
+       /*Timeline*/ timeline = new Timeline();
        timeline.setCycleCount(Timeline.INDEFINITE);
        KeyFrame kf = new KeyFrame(
                Duration.millis(frameSeconds),
@@ -277,9 +277,11 @@ public class Runner extends Application{
     	solarSystem.updateSolarSystem();
         fixCamera();
         if(solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
+        //if(solarSystem.getShuttle().isLanding()) {
+            timeline.setRate(.001);
         	if(counter==0) {
         		isLanding = true;
-        		solarSystem.TIME = solarSystem.TIME/4000;
+        		//solarSystem.TIME = solarSystem.TIME/4000; //->done in land method
         		solarSystem.setScale(4e5);
         		lander = new Lander(solarSystem.getShuttle(), solarSystem.getTitan());
         		mainPane.getChildren().remove(solarSystem);

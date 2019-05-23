@@ -24,6 +24,8 @@ public class Shuttle extends Body{
 
     private double timeStep = 1;
 
+    private boolean landing;
+
     /* ******* Constructor ******** */
     public Shuttle(Vector velocity, double mass){
         this(velocity, mass, mass, 0, 0, 0, 0, 0, 0, 0, SolarSystem.getPlanets()[3]);
@@ -70,7 +72,7 @@ public class Shuttle extends Body{
     }
 
     public static Shuttle getStandardShuttle() {
-        return new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255).multiply(0.999999), 20000, 500, 5, 20, 1000e4, -80, 500e4, -50, 2000, SolarSystem.planets[3]);
+        return new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255).multiply(0.999999), 20000, 500, 5, 20, 1000, -80, 500e4, -50, 2000, SolarSystem.planets[3]);
     }
 
     /* ************************** */
@@ -141,6 +143,17 @@ public class Shuttle extends Body{
     public double getMainEngineMass() { return mainEngineMass; }
     public double getLateralEngineForce() { return lateralEngineForce; }
     public double getLateralEngineMass() { return lateralEngineMass; }
+
+    public boolean isLanding() { return landing; }
+
+    public double getAngle2D(Vector z) {
+        Vector v = direction[2].normalize();
+        Vector u = z.normalize();
+
+        double dot = u.dot(v);      //-> cos angle
+        double cross = u.cross(v).length();  //-> sin angle
+        return Math.acos(dot) * (cross >= 0 ? +1 : -1);
+    }
     /* *************************** */
 
     /* ****** SolarSyste methods ******* */
@@ -357,11 +370,13 @@ public class Shuttle extends Body{
         double d = dist.length();
 
         if(d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 1e4) {       //start landing
+            landing = true;
             SolarSystem.TIME = 0.0001;
+            //SolarSystem.TIME /= .5e3;
             setTimeStep(SolarSystem.TIME);
             stopRotation(0, timeStep);
             if(d > (planet.getDistanceAtmosphere() + planet.getRadius())) {         //in atmosphere
-                alignTo(planet.getVelocity(), true, timeStep, 0.1, 0);
+                alignTo(planet.getVelocity().normalize().subtract(dist.normalize()), true, timeStep, 0.1, 0);
                 if(d < 4000)
                     System.out.println("Near: " + d);
                 brake(planet.getVelocity().length(), 10, timeStep);  //less than escape velocity
@@ -386,8 +401,12 @@ public class Shuttle extends Body{
 
                 Vector drag = Physics.dragAcceleration(planet, this);   //-> we need this to land
                 acceleration = acceleration.subtract(drag);
-                //brake(planet.getVelocity().length(), 0, timeStep);    ->TODO ???
+                //brake(planet.getVelocity().length(), 0, timeStep);    //->TODO ???    if brake then there is always the same landing speed
+                //brake(0, 0, timeStep);    //->TODO ???
+                //brake(1e16, 0, timeStep);    //->TODO ???
             }
+        }else {
+            landing = false;
         }
     }
 

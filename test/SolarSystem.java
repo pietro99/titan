@@ -128,14 +128,22 @@ public class SolarSystem extends Group{
 			//if crashes on Titan:
 			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
 				Vector v = shuttle.getVelocity().subtract(planets[10].getVelocity());
+				Vector dist = shuttle.getPosition().subtract(planets[10].getPosition());
+				double d = dist.length();
+
 				System.out.println("shuttle initial vector speed: " + shuttle.init);
 				System.out.println("shuttle initial speed: " + shuttle.init.length());
 				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
 				System.out.println("Direction Z: " + shuttle.getDirection(2));
 				//System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
-				double dot = planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize());
-				System.out.println("Angle (deg): " + (180 - (180 / Math.PI) * Math.acos(dot)) + "\t" + dot);
-				System.out.println("Angle (rad): " + (Math.PI - Math.acos(dot)));
+				double dot = dist.normalize().dot(shuttle.getDirection(2).normalize());
+				//roundoff error
+				if(dot > 1)
+					dot = 1;
+				else if (dot < -1)
+					dot = -1;
+				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot) + " " + dot);
+				System.out.println("Angle (rad): " + (Math.acos(dot)));
 				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
 				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
 				System.out.println("Speed: " + (v.length() / 10000));
@@ -271,7 +279,7 @@ public class SolarSystem extends Group{
 
 	private void initiatePlanets() {
 	//the coordinates origin is the sun for the planets and titan, the moon uses the earth as origin instead
-							//		 name						 PosX					  PosY					PosZ                                     VelX                   VelY                   VelZ               Radius       Mass
+							//		 name						 PosX					  PosY					PosZ                                     VelX                   VelY                   VelZ             			Radius       Mass
 		planets[0] = new Planet(    "sun", new Vector(     0,                       0,                    0),                   new Vector(        0,                      0,                     0),                                695700,   1988500E+23, 0, 0);
 		planets[1] = new Planet("mercury", new Vector(-5.843237462283994E+07,-2.143781663349622E+07,3.608679295141068E+06),     new Vector(6.693497964118796E+00*10000,-4.362708337948559E+01*10000,-4.178969254985038E+00*10000),   2440,     3.302E23,0,0);
 		planets[2] = new Planet(  "venus", new Vector(-2.580458154996926E+06,-1.087011239119300E+08,-1.342601858592726E+06),    new Vector(3.477728421647656E+01*10000,-9.612123998925466E-01*10000,-2.020103291838695E+00*10000),   6051.84,  48.685E23,0,0);
