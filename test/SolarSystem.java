@@ -293,6 +293,27 @@ public class SolarSystem extends Group{
 
 		planets[9] = new Planet("moon", new Vector(-1.493626859901140E+08,-2.212378435248749E+06,3.162933122716530E+04),        new Vector(1.540496550112790E-01*10000,-3.094661877857872E+01*10000,2.193857468353855E-02*10000),     1737.4,   7.349E22,0,0);
 		planets[10]= new Planet("titan", new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07),        new Vector(1.208193089270527E+01*10000,-1.813839579262785E+00*10000,1.381017323560965E+00*10000),     2575.5,   13455.3E19, 600, 1.5);
+
+		//set velocity/*
+		Vector titanVelocityDayMinus3 = new Vector(6.178641376271634E+00, -1.833777023610783E+00, 1.971184760009602E+00).multiply(10000);      		 // on day 1
+		Vector titanVelocityDayMinus2 = new Vector(8.122765730000186E+00, -2.500412938410761E+00, 2.123832640709379E+00).multiply(10000);   		 // on day 2
+		Vector titanVelocityDayMinus1 = new Vector(1.018081864020847E+01, -2.498253448725608E+00, 1.920443203939330E+00).multiply(10000);        		// on day 3
+		Vector titanVelocityActualDay = new Vector(1.208193089270527E+01, -1.813839579262785E+00, 1.381017323560965E+00).multiply(10000);			//on day 4 -> today
+
+		//set acceleration 	-> use 3-points formula
+		//TODO TIME == 1 day?
+		/*Vector titanAccelerationDayMinus3 = FourAdamsBashfort.forwardDiff(titanVelocityDayMinus3, titanVelocityDayMinus2, titanVelocityDayMinus1, TIME);
+		Vector titanAccelerationDayMinus2 = FourAdamsBashfort.centredDiff(titanVelocityDayMinus3, titanVelocityDayMinus1, TIME);
+		Vector titanAccelerationMinus1 = FourAdamsBashfort.centredDiff(titanVelocityDayMinus2, titanVelocityActualDay, TIME);
+		Vector titanAccelerationActualDay = FourAdamsBashfort.backwardDiff(titanVelocityActualDay, titanVelocityDayMinus1, titanVelocityDayMinus2, TIME);*/
+		Vector titanAccelerationDayMinus3 = FourAdamsBashfort.forwardDiff(titanVelocityDayMinus3, titanVelocityDayMinus2, titanVelocityDayMinus1, 1);
+		Vector titanAccelerationDayMinus2 = FourAdamsBashfort.centredDiff(titanVelocityDayMinus3, titanVelocityDayMinus1, 1);
+		Vector titanAccelerationMinus1 = FourAdamsBashfort.centredDiff(titanVelocityDayMinus2, titanVelocityActualDay, 1);
+		Vector titanAccelerationActualDay = FourAdamsBashfort.backwardDiff(titanVelocityActualDay, titanVelocityDayMinus1, titanVelocityDayMinus2, 1);
+
+		Vector titanPositionActualDay = new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07); // day 4 --- actual day
+
+		planets[10].setNextDataFirst(titanVelocityDayMinus3, titanVelocityDayMinus2,titanVelocityDayMinus1,titanVelocityActualDay,titanAccelerationDayMinus3,titanAccelerationDayMinus2,titanAccelerationMinus1,titanAccelerationActualDay, titanPositionActualDay);
 	}
 
 	private void resetAcceleration() {

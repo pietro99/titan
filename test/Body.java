@@ -27,33 +27,40 @@ public abstract class Body {
 
     public void update(double deltaT) {
 
-        if (nextVelocity == null){
-             velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
-             position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
+        if (nextVelocity == null || true){
+            //  EULER METHOD
+            velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
+            position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
 
-             // next velocity - velocity
-        }
+            /*if(this == SolarSystem.planets[10]) {
+                System.out.println("V: " + SolarSystem.planets[10].getVelocity());
+                //System.out.println("P: " + SolarSystem.getTitan().getPosition());
+            }*/
+        }else{
+            /*nextVelocity.setNext(acceleration);
+            nextPosition.setNext(velocity);
+            velocity = nextVelocity.getNext();
+            position = nextPosition.getNext();*/
 
-        //  EULER METHOD
-        // velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
-        // position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
-        // acceleration = new Vector(0, 0, 0);
 
-        else{
             // System.out.println("it goes into the condition!");
-             nextVelocity.setNext(acceleration);
-             nextPosition.setNext(velocity);
-             velocity = nextVelocity.getNext(acceleration);
-             position = nextPosition.getNext(velocity);
+            velocity = nextVelocity.getNext(acceleration);
+            position = nextPosition.getNext(velocity);
+            System.out.println("V: " + velocity);
+            //System.out.println("P: " + position);
 
 
-           // System.out.println("Diff of velocity: " + velocity.subtract(nextVelocity.getNext(acceleration)));
-           // System.out.println("Diff of position: " + position.subtract(nextPosition.getNext(acceleration)));
-
-            // System.out.println("Difference of acceleration: " + nextVelocity-velocity)
-           // velocity = nextVelocity.getNext(acceleration);
-           // position = nextPosition.getNext(velocity);
+            /*System.out.println("Delta V: " + velocity.subtract(nextVelocity.getNext(velocity)));
+            System.out.println("Delta P: " + position.subtract(nextPosition.getNext(position)));
+            velocity = nextVelocity.get();
+            position = nextPosition.get();*/
         }
 
+    }
+
+    public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay){
+        //Adams solvers
+        nextVelocity = new FourAdamsBashfort(SolarSystem.TIME, VelocityActualDay, AccelerationActualDay, AccelerationDayMinus1, AccelerationDayMinus2,AccelerationDayMinus3);
+        nextPosition = new FourAdamsBashfort(SolarSystem.TIME, PositionActualDay, VelocityActualDay, VelocityDayMinus1, VelocityDayMinus2, VelocityDayMinus3);
     }
 }
