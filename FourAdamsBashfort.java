@@ -38,7 +38,7 @@ public class FourAdamsBashfort {
 
     // Adams Moulton Implicit method  -> TODO compare
     public Vector getNext(Vector state) {
-        wi = wi.sum((state.multiply(251).sum(f.multiply(646)).sum(fMinus1.multiply(-264)).sum(fMinus2.multiply(106)).sum(fMinus3.multiply(-19))).multiply(timeStep / 720));
+        wi = wi.sum(state.multiply(251).sum(f.multiply(646)).sum(fMinus1.multiply(-264)).sum(fMinus2.multiply(106)).sum(fMinus3.multiply(-19)).multiply(timeStep / 720));
         fMinus3 = fMinus2;
         fMinus2 = fMinus1;
         fMinus1 = f;
@@ -46,21 +46,8 @@ public class FourAdamsBashfort {
         return wi;
     }
 
-    public Vector get() { return wi; }
 
     public void setNext(Vector state) {
         f = state;
-    }
-
-    public static Vector centredDiff(Vector pre, Vector next, double h) {
-        return next.subtract(pre).multiply(1/h);
-    }
-
-    public static Vector forwardDiff(Vector curr, Vector next1, Vector next2, double h) {
-        return curr.multiply(-3).sum(next1.multiply(4)).sum(next2.multiply(-1)).multiply(1/h);
-    }
-
-    public static Vector backwardDiff(Vector curr, Vector pre1, Vector pre2, double h) {
-        return curr.multiply(3).sum(pre1.multiply(-4)).sum(pre2).multiply(1/h);
     }
 }

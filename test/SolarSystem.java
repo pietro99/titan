@@ -1,11 +1,22 @@
+
+
+
+//import com.sun.prism.Material;
+
 import javafx.scene.Group;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Sphere;
+import javafx.scene.shape.Sphere;
 
 public class SolarSystem extends Group{
 	
 	private int counter=0;
-	private final double TIME = 0.05;
+	public static double TIME = 0.05;
+	boolean slow = false;
 	
 	public static Planet[] planets = new Planet[11];
 	private static boolean done = false;
@@ -16,17 +27,15 @@ public class SolarSystem extends Group{
 	public static int time = 0;
 	public static int bestTime = 0;
 
-	private static Circle[] planetCircles = new Circle[11];
-	private static Circle shuttleCircle = new Circle(1);
+	private static Sphere[] planetSpheres = new Sphere[11];
+	private static Sphere shuttleSphere = new Sphere(1);
 	//planets size in pixels
-	private final double SUN_SIZE = 6;
-	private final double SMALL_SIZE = 1;
-	private final double EARTH_SIZE = 2;
-	private final double SATURN_SIZE = 4;
-	private final double MEDIUM_SIZE = 3;
-	private final double LARGE_SIZE = 5.5;
+	private final double SUN_SIZE = 60;
+	private final double SMALL_SIZE = 10;
+	private final double MEDIUM_SIZE = 30;
+	private final double LARGE_SIZE = 50.5;
 	
-	private static double scale = 4e6;//scaling factor
+	private static double scale = 4e5;//scaling factor
 	private static Vector movingFactor = new Vector(500,525,0);
 	
 	public SolarSystem() {
@@ -35,33 +44,30 @@ public class SolarSystem extends Group{
 		time = 0;
 		
 		initiatePlanets();
-		initiateCircles();
+		initiateSpheres();
 		initiateShuttle();
 	}
-	
-
 
 	//method for updating solar system
 	public void updateSolarSystem() {
-
 		calculateGravity();
-		
 		updateGUI();
-		
-			
 		}
 		
 
 	public void calculateGravity() {
-		time++;
+	/*	if(shuttle.getPosition().distance(getTitan().getPosition())<20000&&slow) {
+			TIME = TIME/10000;
+			slow = false;
+		}*/
 		
 		//reset force and acceleration
 		resetAcceleration();
 		calculateGravityforPlanets();
 		calculateGravityForShuttleAndUpdatePosition();
-		shuttle.land(planets[10], TIME);
-		checkCrash();
+		checkCrush();
 		if(shuttle!=null) {
+			bestTime = time;
 			bestDistance = shuttle.getPosition().distance(planets[10].getPosition());
 			bestPos = shuttle.getPosition();
 			bestTitan = planets[10].getPosition();
@@ -82,6 +88,7 @@ public class SolarSystem extends Group{
 	private void calculateGravityForShuttleAndUpdatePosition() {
 		if(shuttle != null) {
 			shuttle.calculateGravity(planets);
+			shuttle.land(planets[10], TIME);
 			shuttle.update(TIME);
 		}
 	}
@@ -109,25 +116,41 @@ public class SolarSystem extends Group{
 		vel = vel.normalize();
 		vel = vel.multiply(80*10000);
 		vel = vel.sum(planets[10].velocity);
-		shuttle = new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255 ), 100);
+		//shuttle = new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255 ), 100);
+		shuttle = Shuttle.getStandardShuttle();
 	//	System.out.prinlnt(shuttle.getVelocity());
 		//192417.8004932324, -925027.0853926808, -558.466505544255 landing in 1 year
 		
 	}
 
-	private void checkCrash() {
+	private void checkCrush() {
 		if(shuttle!= null) {
 			//if crashes on Titan:
-			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius() + planets[10].getDistanceAtmosphere(), 2)) {
-			//if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
+			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
+				Vector v = shuttle.getVelocity().subtract(planets[10].getVelocity());
+				Vector dist = shuttle.getPosition().subtract(planets[10].getPosition());
+				double d = dist.length();
+
 				System.out.println("shuttle initial vector speed: " + shuttle.init);
 				System.out.println("shuttle initial speed: " + shuttle.init.length());
 				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
-				System.out.println("LANDED ON TITAN");
 				System.out.println("Direction Z: " + shuttle.getDirection(2));
-				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
-				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
-				System.out.println("Speed: " + shuttle.getVelocity());
+				//System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
+				double dot = dist.normalize().dot(shuttle.getDirection(2).normalize());
+				//roundoff error
+				if(dot > 1)
+					dot = 1;
+				else if (dot < -1)
+					dot = -1;
+				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot) + " " + dot);
+				System.out.println("Angle (rad): " + (Math.acos(dot)));
+				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
+				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
+				System.out.println("Speed: " + (v.length() / 10000));
+				System.out.println("Angular speed (deg): " + shuttle.getAngularSpeed().multiply(180 / Math.PI) + " -> " + shuttle.getAngularSpeed().multiply(180 / Math.PI).length());
+				System.out.println("Angular speed (rad): " + shuttle.getAngularSpeed() + " -> " + shuttle.getAngularSpeed().length());
+				System.out.println("Mass: " + shuttle.getMass());
+                System.out.println("!!! LANDED ON TITAN !!!");
 				done = true;
 				System.exit(0);
 			}
@@ -139,66 +162,124 @@ public class SolarSystem extends Group{
 			}
 		}
 	}
-	
+
 	private void updateGUI() {
 		for(int i=0; i<planets.length; i++) {
-	       	planetCircles[i].setLayoutX((planets[i].getPosition().getX()/scale)+movingFactor.getX());
-	        planetCircles[i].setLayoutY((planets[i].getPosition().getY()/scale)+movingFactor.getY());
+			planetSpheres[i].setLayoutX((planets[i].getPosition().getX()/scale)+movingFactor.getX());
+			planetSpheres[i].setLayoutY((planets[i].getPosition().getY()/scale)+movingFactor.getY());
 		}
 		if(shuttle != null) {
-			shuttleCircle.setLayoutX((shuttle.getPosition().getX() / scale) + movingFactor.getX());
-			shuttleCircle.setLayoutY((shuttle.getPosition().getY() / scale) + movingFactor.getY());
+			shuttleSphere.setLayoutX((shuttle.getPosition().getX() / scale) + movingFactor.getX());
+			shuttleSphere.setLayoutY((shuttle.getPosition().getY() / scale) + movingFactor.getY());
 		}
-		else 
-			shuttleCircle.fillProperty().set(Color.BLACK);
+	}
+
+	private void initiateSpheres() {
+	//Spheres for the GUI
+		PhongMaterial earthmt = new PhongMaterial();
+		Image imgEarth = new Image("earth.jpg");
+		earthmt.setDiffuseMap(imgEarth);
+		PhongMaterial jupitermt = new PhongMaterial();
+		Image imgJupiter = new Image("jupiter.jpg");
+		jupitermt.setDiffuseMap(imgJupiter);
+		PhongMaterial venusmt = new PhongMaterial();
+		Image imgVenus = new Image("venus.jpg");
+		venusmt.setDiffuseMap(imgJupiter);
+		PhongMaterial uranusmt = new PhongMaterial();
+		Image imgUranus = new Image("uranus.jpg");
+		uranusmt.setDiffuseMap(imgUranus);
+		PhongMaterial sunmt = new PhongMaterial();
+		Image imgSun = new Image("sun.jpg");
+		sunmt.setSelfIlluminationMap(imgSun);
+		sunmt.setDiffuseMap(imgSun);
+		PhongMaterial marsmt = new PhongMaterial();
+		Image imgMars = new Image("mars.jpg");
+		marsmt.setDiffuseMap(imgMars);
+		PhongMaterial mercurymt = new PhongMaterial();
+		Image imgMercury = new Image("mercury.jpg");
+		mercurymt.setDiffuseMap(imgMercury);
+		PhongMaterial saturnmt = new PhongMaterial();
+		Image imgSaturn = new Image("saturn.jpg");
+		saturnmt.setDiffuseMap(imgSaturn);
+		PhongMaterial neptunemt = new PhongMaterial();
+		Image imgNeptune = new Image("neptune.jpg");
+		neptunemt.setDiffuseMap(imgNeptune);
+		PhongMaterial moonmt = new PhongMaterial();
+		Image imgMoon = new Image("moon.jpg");
+		moonmt.setDiffuseMap(imgMoon);
+		PhongMaterial titanmt = new PhongMaterial();
+		Image imgTitan = new Image("titan.jpg");
+		titanmt.setDiffuseMap(imgTitan);
+		
+
+		
+		Light.Point light = new Light.Point();
+		light.setX(0);
+		light.setY(0);
+		light.setZ(0);;       
+	    Lighting lighting = new Lighting(); 
+	    lighting.setLight(light);
+		planetSpheres[0] = new Sphere(planets[0].getRadius() /10000);
+		planetSpheres[1] = new Sphere(planets[1].getRadius() /1000);
+		planetSpheres[2] = new Sphere(planets[2].getRadius() /1000);
+		planetSpheres[3] = new Sphere(planets[3].getRadius() /1000);
+		planetSpheres[4] = new Sphere(planets[4].getRadius() /1000);
+		planetSpheres[5] = new Sphere(planets[5].getRadius() /1000);
+		planetSpheres[6] = new Sphere(planets[6].getRadius() /1000);
+		planetSpheres[7] = new Sphere(planets[7].getRadius() /1000);
+		planetSpheres[8] = new Sphere(planets[8].getRadius() /1000);
+		planetSpheres[9] = new Sphere(planets[9].getRadius() /1000);
+		planetSpheres[10] = new Sphere(planets[10].getRadius() /1000);
+
+		//settings the textures of the planets
+		planetSpheres[0].setMaterial(sunmt);
+		planetSpheres[1].setMaterial(mercurymt);
+		planetSpheres[2].setMaterial(venusmt);
+		planetSpheres[3].setMaterial(earthmt);
+		planetSpheres[4].setMaterial(marsmt);
+		planetSpheres[5].setMaterial(jupitermt);
+		planetSpheres[6].setMaterial(saturnmt);
+		planetSpheres[7].setMaterial(uranusmt);
+		planetSpheres[8].setMaterial(neptunemt);
+		planetSpheres[9].setMaterial(moonmt);
+		planetSpheres[10].setMaterial(titanmt);
+		
+		
+		
+		
+		//color the Spheres
+//		planetSpheres[0].fillProperty().set(Color.YELLOW);
+//		planetSpheres[1].fillProperty().set(Color.BLUE);
+//		planetSpheres[2].fillProperty().set(Color.CHOCOLATE);
+//		planetSpheres[3].fillProperty().set(Color.GREEN);
+//		planetSpheres[4].fillProperty().set(Color.BROWN);
+//		planetSpheres[5].fillProperty().set(Color.BURLYWOOD);
+//		planetSpheres[6].fillProperty().set(Color.ANTIQUEWHITE);
+//		planetSpheres[7].fillProperty().set(Color.ROYALBLUE);
+//		planetSpheres[8].fillProperty().set(Color.SLATEBLUE);
+//		planetSpheres[9].fillProperty().set(Color.GRAY);
+//		planetSpheres[10].fillProperty().set(Color.GRAY);
+//		
+		shuttleSphere = new Sphere(1);
+//		shuttleSphere.fillProperty().set(Color.RED);
+		
+		
+	 // add the Spheres to the SolarSystem group
+		for(int i=0; i<planetSpheres.length; i++) 
+			getChildren().add(planetSpheres[i]);
+		
+		getChildren().add(shuttleSphere);
+		
 		
 	}
 
-	private void initiateCircles() {
-	//circles for the GUI
-		planetCircles[0] = new Circle(SUN_SIZE);
-		planetCircles[1] = new Circle(EARTH_SIZE);
-		planetCircles[2] = new Circle(EARTH_SIZE);
-		planetCircles[3] = new Circle(EARTH_SIZE);
-		planetCircles[4] = new Circle(EARTH_SIZE);
-		planetCircles[5] = new Circle(LARGE_SIZE);
-		planetCircles[6] = new Circle(SATURN_SIZE);
-		planetCircles[7] = new Circle(MEDIUM_SIZE);
-		planetCircles[8] = new Circle(MEDIUM_SIZE);
-		planetCircles[9] = new Circle(SMALL_SIZE);
-		planetCircles[10] = new Circle(SMALL_SIZE);
-		
-		
-		
-		//color the circles
-		planetCircles[0].fillProperty().set(Color.YELLOW);
-		planetCircles[1].fillProperty().set(Color.BLUE);
-		planetCircles[2].fillProperty().set(Color.CHOCOLATE);
-		planetCircles[3].fillProperty().set(Color.GREEN);
-		planetCircles[4].fillProperty().set(Color.BROWN);
-		planetCircles[5].fillProperty().set(Color.BURLYWOOD);
-		planetCircles[6].fillProperty().set(Color.ANTIQUEWHITE);
-		planetCircles[7].fillProperty().set(Color.ROYALBLUE);
-		planetCircles[8].fillProperty().set(Color.SLATEBLUE);
-		planetCircles[9].fillProperty().set(Color.GRAY);
-		planetCircles[10].fillProperty().set(Color.GRAY);
-		
-		shuttleCircle = new Circle(SMALL_SIZE);
-		shuttleCircle.fillProperty().set(Color.RED);
-		
-		
-	 // add the circles to the SolarSystem group
-		for(int i=0; i<planetCircles.length; i++) 
-			getChildren().add(planetCircles[i]);
-		
-		getChildren().add(shuttleCircle);
-		
-		
-	}
+	
+
+
 
 	private void initiatePlanets() {
 	//the coordinates origin is the sun for the planets and titan, the moon uses the earth as origin instead
-							//		 name						 PosX				PosY				PosZ                                     VelX                              VelY                        VelZ                  Radius      Mass               distance of the atmosphere    Atmospheric pressure compared to earth pressure
+							//		 name						 PosX					  PosY					PosZ                                     VelX                   VelY                   VelZ             			Radius       Mass
 		planets[0] = new Planet(    "sun", new Vector(     0,                       0,                    0),                   new Vector(        0,                      0,                     0),                                695700,   1988500E+23, 0, 0);
 		planets[1] = new Planet("mercury", new Vector(-5.843237462283994E+07,-2.143781663349622E+07,3.608679295141068E+06),     new Vector(6.693497964118796E+00*10000,-4.362708337948559E+01*10000,-4.178969254985038E+00*10000),   2440,     3.302E23,0,0);
 		planets[2] = new Planet(  "venus", new Vector(-2.580458154996926E+06,-1.087011239119300E+08,-1.342601858592726E+06),    new Vector(3.477728421647656E+01*10000,-9.612123998925466E-01*10000,-2.020103291838695E+00*10000),   6051.84,  48.685E23,0,0);
@@ -212,6 +293,27 @@ public class SolarSystem extends Group{
 
 		planets[9] = new Planet("moon", new Vector(-1.493626859901140E+08,-2.212378435248749E+06,3.162933122716530E+04),        new Vector(1.540496550112790E-01*10000,-3.094661877857872E+01*10000,2.193857468353855E-02*10000),     1737.4,   7.349E22,0,0);
 		planets[10]= new Planet("titan", new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07),        new Vector(1.208193089270527E+01*10000,-1.813839579262785E+00*10000,1.381017323560965E+00*10000),     2575.5,   13455.3E19, 600, 1.5);
+
+		//set velocity/*
+		Vector titanVelocityDayMinus3 = new Vector(6.178641376271634E+00, -1.833777023610783E+00, 1.971184760009602E+00).multiply(10000);      		 // on day 1
+		Vector titanVelocityDayMinus2 = new Vector(8.122765730000186E+00, -2.500412938410761E+00, 2.123832640709379E+00).multiply(10000);   		 // on day 2
+		Vector titanVelocityDayMinus1 = new Vector(1.018081864020847E+01, -2.498253448725608E+00, 1.920443203939330E+00).multiply(10000);        		// on day 3
+		Vector titanVelocityActualDay = new Vector(1.208193089270527E+01, -1.813839579262785E+00, 1.381017323560965E+00).multiply(10000);			//on day 4 -> today
+
+		//set acceleration 	-> use 3-points formula
+		//TODO TIME == 1 day?
+		/*Vector titanAccelerationDayMinus3 = FourAdamsBashfort.forwardDiff(titanVelocityDayMinus3, titanVelocityDayMinus2, titanVelocityDayMinus1, TIME);
+		Vector titanAccelerationDayMinus2 = FourAdamsBashfort.centredDiff(titanVelocityDayMinus3, titanVelocityDayMinus1, TIME);
+		Vector titanAccelerationMinus1 = FourAdamsBashfort.centredDiff(titanVelocityDayMinus2, titanVelocityActualDay, TIME);
+		Vector titanAccelerationActualDay = FourAdamsBashfort.backwardDiff(titanVelocityActualDay, titanVelocityDayMinus1, titanVelocityDayMinus2, TIME);*/
+		Vector titanAccelerationDayMinus3 = FourAdamsBashfort.forwardDiff(titanVelocityDayMinus3, titanVelocityDayMinus2, titanVelocityDayMinus1, 1);
+		Vector titanAccelerationDayMinus2 = FourAdamsBashfort.centredDiff(titanVelocityDayMinus3, titanVelocityDayMinus1, 1);
+		Vector titanAccelerationMinus1 = FourAdamsBashfort.centredDiff(titanVelocityDayMinus2, titanVelocityActualDay, 1);
+		Vector titanAccelerationActualDay = FourAdamsBashfort.backwardDiff(titanVelocityActualDay, titanVelocityDayMinus1, titanVelocityDayMinus2, 1);
+
+		Vector titanPositionActualDay = new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07); // day 4 --- actual day
+
+		planets[10].setNextDataFirst(titanVelocityDayMinus3, titanVelocityDayMinus2,titanVelocityDayMinus1,titanVelocityActualDay,titanAccelerationDayMinus3,titanAccelerationDayMinus2,titanAccelerationMinus1,titanAccelerationActualDay, titanPositionActualDay);
 	}
 
 	private void resetAcceleration() {
@@ -274,11 +376,11 @@ public class SolarSystem extends Group{
 	public static Planet[] getPlanets() {
 		return planets;
 	}
-	public static Circle getShuttleCircle() {
-		return shuttleCircle;
+	public static Sphere getShuttleSphere() {
+		return shuttleSphere;
 	}
-	public static Circle[] getPlanetCircles() {
-		return planetCircles;
+	public static Sphere[] getPlanetSpheres() {
+		return planetSpheres;
 	}
 	public static Planet getPlanet(int i) {
 		return planets[i];
