@@ -29,7 +29,7 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
- 
+
 public class Runner extends Application{
     public static SolarSystem solarSystem;
     public static double mouseX = 0;
@@ -57,23 +57,23 @@ public class Runner extends Application{
     List<Circle>shuttleCir = new ArrayList<Circle>();
     PerspectiveCamera camera;
     Lander lander;
-	Timeline timeline;
-	
+    Timeline timeline;
+
     public void start(Stage primaryStage) {
-    	this.primaryStage = primaryStage;
-       //creating the solar system
-       solarSystem = new SolarSystem();
-       mainPane = new BorderPane();
-      // HBox infoBox = createHBox();
-      // HBox sideBar = createSideBar();
+        this.primaryStage = primaryStage;
+        //creating the solar system
+        solarSystem = new SolarSystem();
+        mainPane = new BorderPane();
+        // HBox infoBox = createHBox();
+        // HBox sideBar = createSideBar();
         camera = new PerspectiveCamera();
 
         camera.setNearClip(0.000001);
-        mainPane.getChildren().add(solarSystem);
-       //mainPane.setBottom(infoBox);
-       //mainPane.setRight(sideBar);
-       
-       Scene scene = new Scene(mainPane, 1000, 850, true);
+        mainPane.getChildren().add(solarSystem.getGUI());
+        //mainPane.setBottom(infoBox);
+        //mainPane.setRight(sideBar);
+
+        Scene scene = new Scene(mainPane, 1000, 850, true);
 
         scene.setCamera(camera);
         scene.setFill(Color.BLACK);
@@ -85,47 +85,47 @@ public class Runner extends Application{
         light.setColor(Color.RED);
         Lighting lighting = new Lighting();
         lighting.setLight(light);
-        for(int i= 0; i<solarSystem.getPlanetSpheres().length; i++)
-            solarSystem.getPlanetSpheres()[i].setEffect(lighting);
-        solarSystem.setRotationAxis(Rotate.X_AXIS);
+        for(int i= 0; i<solarSystem.getGUI().getPlanetSpheres().length; i++)
+            solarSystem.getGUI().getPlanetSpheres()[i].setEffect(lighting);
+        solarSystem.getGUI().setRotationAxis(Rotate.X_AXIS);
 
 
         //game loop......
-       /*Timeline*/ timeline = new Timeline();
-       timeline.setCycleCount(Timeline.INDEFINITE);
-       KeyFrame kf = new KeyFrame(
-               Duration.millis(frameSeconds),
-               new EventHandler<ActionEvent>() {
-                   public void handle(ActionEvent ae) {
-                	   //update the frame
-                	
-                       update();
-                   }
-               });
-       timeline.getKeyFrames().add(kf);
-       timeline.play();
-       //.................
-       
-       
-       
-   		//handlers for moving the map with the mouse
-   		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-   			public void handle(MouseEvent event) {
-   				double Xdifference = mouseX-event.getX();
-				double Ydifference = mouseY-event.getY();
-				solarSystem.setMovingFactor(solarSystem.getMovingFactor().getX()-(Xdifference/25), solarSystem.getMovingFactor().getY()-(Ydifference/25));
-			}
-   		});
-   		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-   			public void handle(MouseEvent event) {
-				mouseX = event.getSceneX();
-				mouseY = event.getSceneY();
-			}
-   		});
-   		
-   		
-   		
-   		//handler for reaching different planets with keyboard strokes
+        /*Timeline*/ timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        KeyFrame kf = new KeyFrame(
+                Duration.millis(frameSeconds),
+                new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent ae) {
+                        //update the frame
+
+                        update();
+                    }
+                });
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+        //.................
+
+
+
+        //handlers for moving the map with the mouse
+        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                double Xdifference = mouseX-event.getX();
+                double Ydifference = mouseY-event.getY();
+                solarSystem.getGUI().setMovingFactor(solarSystem.getGUI().getMovingFactor().getX()-(Xdifference/25), solarSystem.getGUI().getMovingFactor().getY()-(Ydifference/25));
+            }
+        });
+        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                mouseX = event.getSceneX();
+                mouseY = event.getSceneY();
+            }
+        });
+
+
+
+        //handler for reaching different planets with keyboard strokes
         scene.setOnKeyPressed((new EventHandler<KeyEvent>() {
             public void handle(KeyEvent event) {
                 KeyCode code = event.getCode();
@@ -197,21 +197,23 @@ public class Runner extends Application{
                         followEarth = false;
                 }
                 else if(code == KeyCode.A) {
-                    solarSystem.setRotate(solarSystem.getRotate()+2);
+                    solarSystem.getGUI().setRotate(solarSystem.getGUI().getRotate()+2);
                 }
                 else if(code == KeyCode.D) {
-                    solarSystem.setRotate(solarSystem.getRotate()-2);
+                    solarSystem.getGUI().setRotate(solarSystem.getGUI().getRotate()-2);
                 }
                 else if(code == KeyCode.DIGIT0) {
-                    solarSystem.setRotate(0);
+                    solarSystem.getGUI().setRotate(0);
                 }
                 else if(code == KeyCode.DOWN) {
                     setFrameSeconds(getFrameSeconds()*0.0001);
+
                 }
+
                 else if(code == KeyCode.C) {
 
-                    solarSystem.setScale(4e5);
-                    solarSystem.setMovingFactor(500,525);
+                    solarSystem.getGUI().setScale(4e5);
+                    solarSystem.getGUI().setMovingFactor(500,525);
                     camera.setTranslateX(0);
                     camera.setTranslateY(0);
                     camera.setTranslateZ(0);
@@ -220,87 +222,88 @@ public class Runner extends Application{
                     fullScreen();
             }
         }));
-   		
-   		
-   		//handler for scaling with the mouse roll (or trackpad or touchscreen)
-   		scene.setOnScroll(new EventHandler<ScrollEvent>() {
-   			public void handle(ScrollEvent event) {
-   				if(!isLanding) {
-	   				if(event.getDeltaY()>0)
-	   					solarSystem.setScale(solarSystem.getScale()*0.9);
-	   				else
-	   					solarSystem.setScale(solarSystem.getScale()*1.1);
-   				}
-			}
-   		});
-       
-   		
-   		
-       primaryStage.setTitle("Mission To Titan");
-       primaryStage.setScene(scene);
-       //primaryStage.setFullScreen(true);
-       primaryStage.show();
+
+
+        //handler for scaling with the mouse roll (or trackpad or touchscreen)
+        scene.setOnScroll(new EventHandler<ScrollEvent>() {
+            public void handle(ScrollEvent event) {
+                if(!isLanding) {
+                    if(event.getDeltaY()>0)
+                        solarSystem.getGUI().setScale(solarSystem.getGUI().getScale()*0.9);
+                    else
+                        solarSystem.getGUI().setScale(solarSystem.getGUI().getScale()*1.1);
+                }
+            }
+        });
+
+
+
+        primaryStage.setTitle("Mission To Titan");
+        primaryStage.setScene(scene);
+        //primaryStage.setFullScreen(true);
+        primaryStage.show();
     }
-    
-    
+
+
     public HBox createHBox() {
-    	HBox infoBox = new HBox();
-    	infoBox.setPrefSize(0, 60);
+        HBox infoBox = new HBox();
+        infoBox.setPrefSize(0, 60);
         infoBox.setStyle("-fx-background-color: #336699;");
         Label time = new Label("time: ");
         Label scale = new Label("scale: ");
         infoBox.getChildren().addAll(time, scale);
-        
+
         return infoBox;
-        
+
     }
 
     public HBox createSideBar() {
-    	HBox infoBox = new HBox();
-    	infoBox.setPrefSize(0, 60);
+        HBox infoBox = new HBox();
+        infoBox.setPrefSize(0, 60);
         infoBox.setStyle("-fx-background-color: #336699;");
         Label time = new Label("time: ");
         Label scale = new Label("scale: ");
         infoBox.getChildren().addAll(time, scale);
-       
+
         return infoBox;
-        
+
     }
-    
+
     public void fullScreen() {
-    	primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(true);
     }
-    
-    
+
+
     //method that updates the frame
     public void update() {
-    	solarSystem.updateSolarSystem();
+        solarSystem.updateSolarSystem();
         fixCamera();
         if(solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
-        //if(solarSystem.getShuttle().isLanding()) {
+            //if(solarSystem.getShuttle().isLanding()) {
             timeline.setRate(.001);
-        	if(counter==0) {
-        		isLanding = true;
-        		//solarSystem.TIME = solarSystem.TIME/4000; //->done in land method
-        		solarSystem.setScale(4e5);
-        		lander = new Lander(solarSystem.getShuttle(), solarSystem.getTitan());
-        		mainPane.getChildren().remove(solarSystem);
-        		mainPane.getChildren().add(lander);
-        		camera.setTranslateX(-500);
-        		camera.setTranslateY(-500);
-        		camera.setLayoutX(0);
-        		camera.setLayoutY(0);
-        		followTitan = false;
-        		followSaturn = false;
-        		followShuttle = false;
-        		followEarth = false;
-        		counter++;
-        	}
-        	lander.buildScene(solarSystem.getShuttle(), solarSystem.getTitan());
+            if(counter==0) {
+                isLanding = true;
+                //solarSystem.TIME = solarSystem.TIME/4000; //->done in land method
+                solarSystem.getGUI().setScale(4e5);
+                lander = new Lander(solarSystem);
+                mainPane.getChildren().remove(solarSystem.getGUI());
+                mainPane.getChildren().add(lander);
+                camera.setTranslateX(-500);
+                camera.setTranslateY(-500);
+                camera.setLayoutX(0);
+                camera.setLayoutY(0);
+                followTitan = false;
+                followSaturn = false;
+                followShuttle = false;
+                followEarth = false;
+                counter++;
+
+            }
+            lander.buildScene(solarSystem);
         }
 
         count += 250 ;
-		
+
         if(simulation) {
             if(count >= 3600 * 24 * 365/6) {
                 gen++;
@@ -338,7 +341,7 @@ public class Runner extends Application{
                 oldErr = err;
 
                 mainPane.getChildren().clear();
-                mainPane.getChildren().add(solarSystem);
+                mainPane.getChildren().add(solarSystem.getGUI());
 
 
                 System.out.println("Select: " + shuttle.init);
@@ -351,54 +354,54 @@ public class Runner extends Application{
                 count = 0;
             }
         }
-		
-	//878629.7264863193	     -2588414.9687429797  
+
+        //878629.7264863193	     -2588414.9687429797
     }//4.1155308720947456E8 -1.4453512119138913E9 8755575.60203173
     //4.091557040724596E8   -1.4462529557723603E9 8726104.776757749
 
     private void fixCamera() {
 
         if(followTitan) {
-            camera.setLayoutX(solarSystem.getPlanetSpheres()[10].getLayoutX()-solarSystem.getMovingFactor().getX());
-            camera.setLayoutY(solarSystem.getPlanetSpheres()[10].getLayoutY()-solarSystem.getMovingFactor().getY());
+            camera.setLayoutX(solarSystem.getGUI().getPlanetSpheres()[10].getLayoutX()-solarSystem.getGUI().getMovingFactor().getX());
+            camera.setLayoutY(solarSystem.getGUI().getPlanetSpheres()[10].getLayoutY()-solarSystem.getGUI().getMovingFactor().getY());
         }
         else if(followSaturn){
-            camera.setLayoutX(solarSystem.getPlanetSpheres()[6].getLayoutX()-solarSystem.getMovingFactor().getX());
-            camera.setLayoutY(solarSystem.getPlanetSpheres()[6].getLayoutY()-solarSystem.getMovingFactor().getY());
+            camera.setLayoutX(solarSystem.getGUI().getPlanetSpheres()[6].getLayoutX()-solarSystem.getGUI().getMovingFactor().getX());
+            camera.setLayoutY(solarSystem.getGUI().getPlanetSpheres()[6].getLayoutY()-solarSystem.getGUI().getMovingFactor().getY());
         }
         else if(followShuttle){
-            camera.setLayoutX(solarSystem.getShuttleSphere().getLayoutX()-solarSystem.getMovingFactor().getX());
-            camera.setLayoutY(solarSystem.getShuttleSphere().getLayoutY()-solarSystem.getMovingFactor().getY());
+            camera.setLayoutX(solarSystem.getGUI().getShuttleSphere().getLayoutX()-solarSystem.getGUI().getMovingFactor().getX());
+            camera.setLayoutY(solarSystem.getGUI().getShuttleSphere().getLayoutY()-solarSystem.getGUI().getMovingFactor().getY());
         }
         else if(followEarth){
-            camera.setLayoutX(solarSystem.getPlanetSpheres()[3].getLayoutX()-solarSystem.getMovingFactor().getX());
-            camera.setLayoutY(solarSystem.getPlanetSpheres()[3].getLayoutY()-solarSystem.getMovingFactor().getY());
+            camera.setLayoutX(solarSystem.getGUI().getPlanetSpheres()[3].getLayoutX()-solarSystem.getGUI().getMovingFactor().getX());
+            camera.setLayoutY(solarSystem.getGUI().getPlanetSpheres()[3].getLayoutY()-solarSystem.getGUI().getMovingFactor().getY());
         }
     }
 
 
     public static double getHeight() {
-    	return primaryStage.getHeight();
+        return primaryStage.getHeight();
     }
     public static double getWidth() {
-    	return primaryStage.getWidth();
+        return primaryStage.getWidth();
     }
     public static void setFrameSeconds(double time) {
-    	frameSeconds = time;
+        frameSeconds = time;
     }
     public static double getFrameSeconds() {
-    	return frameSeconds;
+        return frameSeconds;
     }
-    
-    
- public static void main(String[] args) {
-	 	//call the start method
 
-	 if(args.length>=1 && args[0].equals("simulation"))
-		 simulation = true;
+
+    public static void main(String[] args) {
+        //call the start method
+
+        if(args.length>=1 && args[0].equals("simulation"))
+            simulation = true;
 
         launch(args);
 
     }
- 
+
 }

@@ -158,16 +158,6 @@ public class Shuttle extends Body{
 
     /* ****** SolarSyste methods ******* */
 
-    public void calculateGravity(Planet[] planets) {
-        acceleration.set(0, 0, 0);
-        if(mass != 0)
-            for(int i = 0; i < planets.length; i++) {
-                Vector distance = planets[i].getPosition().subtract(this.getPosition());
-                double d = distance.squareLength();
-                distance = distance.normalize();
-                acceleration = acceleration.sum(distance.multiply(Physics.G * planets[i].getMass() / d));
-            }
-    }
 
     public void addAcceleration(Vector acc, Vector radius, double deltaMass) {
         if((mass > -deltaMass && mass > minMass) || deltaMass == 0) {
@@ -192,10 +182,6 @@ public class Shuttle extends Body{
                 direction[i] = direction[i].rotate(angularSpeed, angularSpeed.length() * deltaT);    //rotate directions -> rotate engines   //TODO integral
             }
         }
-    }
-
-    public void applyForce(Vector force, Vector position) {
-        addAcceleration(force.multiply(1 / mass), position, 0);
     }
 
     /* ******************************** */
@@ -285,7 +271,7 @@ public class Shuttle extends Body{
             direction[0] = direction[0].rotate(direction[2], angle);
             direction[1] = direction[1].rotate(direction[2], angle);
             //x2 rotation, acceleration and deceleration
-                                            //acc = force * time * % rotation perfomed * accuracy factor                                 radius          mass
+            //acc = force * time * % rotation perfomed * accuracy factor                                 radius          mass
             addAcceleration(direction[1].multiply(lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time / 2);
             addAcceleration(direction[1].multiply(-lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time / 2);
 
@@ -319,30 +305,30 @@ public class Shuttle extends Body{
         //System.out.println("Vel: " + velocity + " V: " + vel);
         if(Math.abs(vel - targetVelocity) > tolerance) {
             //if (direction[2].dot(velocity) < 0) {    //make sure that it is the right direction
-                //TODO mistake in time calculation -> over stimate
-                time = Math.abs((vel - targetVelocity) * mass / mainEngineForce);
+            //TODO mistake in time calculation -> over stimate
+            time = Math.abs((vel - targetVelocity) * mass / mainEngineForce);
 
-                if (time > timeStep) {
-                    //brake during all the timeStep
-                    System.out.println("Main engine");
-                    mainEngine(1);
-                } else {
-                    System.out.println("Almost the right speed: " + vel);
-                    System.out.println("Distance: " + position.distance(SolarSystem.planets[10].getPosition()));
-                    System.out.println("Titan: " + SolarSystem.planets[10].getVelocity().length());
-                    //less than one time step
-                    //assume a constant acceleration
-                    Vector acc = direction[2].multiply(mainEngineForce / mass);
+            if (time > timeStep) {
+                //brake during all the timeStep
+                System.out.println("Main engine");
+                mainEngine(1);
+            } else {
+                System.out.println("Almost the right speed: " + vel);
+                System.out.println("Distance: " + position.distance(SolarSystem.planets[10].getPosition()));
+                System.out.println("Titan: " + SolarSystem.planets[10].getVelocity().length());
+                //less than one time step
+                //assume a constant acceleration
+                Vector acc = direction[2].multiply(mainEngineForce / mass);
 
-                    //update mass
-                    mass += mainEngineMass * time;
+                //update mass
+                mass += mainEngineMass * time;
 
-                    //change of position during the brake
-                    position = position.sum(velocity.multiply(time).sum(acc.multiply(0.5 * time * time)));
+                //change of position during the brake
+                position = position.sum(velocity.multiply(time).sum(acc.multiply(0.5 * time * time)));
 
-                    //update velocity
-                    velocity = velocity.sum(acc.multiply(time));
-                }
+                //update velocity
+                velocity = velocity.sum(acc.multiply(time));
+            }
            /* }else {
                 System.out.println("Wrong direction");
                 velocity = velocity.normalize().multiply(targetVelocity);
@@ -371,9 +357,9 @@ public class Shuttle extends Body{
 
         if(d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 1e4) {       //start landing
             landing = true;
-            SolarSystem.TIME = 0.0001;
+            SolarSystem.setTimeStep(0.0001);
             //SolarSystem.TIME /= .5e3;
-            setTimeStep(SolarSystem.TIME);
+            setTimeStep(SolarSystem.getTimeStep());
             stopRotation(0, timeStep);
             if(d > (planet.getDistanceAtmosphere() + planet.getRadius())) {         //in atmosphere
                 alignTo(planet.getVelocity().normalize().subtract(dist.normalize()), true, timeStep, 0.1, 0);
