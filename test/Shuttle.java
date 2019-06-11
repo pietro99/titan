@@ -167,7 +167,7 @@ public class Shuttle extends Body{
             //update mass
             mass += deltaMass; //TODO
             if (radius.squareLength() > epsilon) {
-                angularSpeed = angularSpeed.sum(radius.cross(acc).multiply(1 / inertia));  //TODO integral
+                angularSpeed = angularSpeed.sum(radius.cross(acc).multiply(timeStep / inertia));  //TODO integral
             }
         }else {
             System.out.println("No fuel: require " + deltaMass + ", get " + mass);

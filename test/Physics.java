@@ -1,5 +1,6 @@
 public class Physics {
-    public static final double G = 6.67408E-11;
+    public static final double G = 6.67408E-11; //m^3 * kg^-1 * s^-2
+    //public static final double G = 6.67408E-20; //km^3 * kg^-1 * s^-2
     public static final double EPS = 1E-15;
 
     //private static final double dragConstant = 100;

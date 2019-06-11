@@ -27,33 +27,13 @@ public abstract class Body {
 
     public void update(double deltaT) {
 
-        if (nextVelocity == null || true){
+        if (nextVelocity == null /*|| true*/){
             //  EULER METHOD
             velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
             position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
-
-            /*if(this == SolarSystem.planets[10]) {
-                System.out.println("V: " + SolarSystem.planets[10].getVelocity());
-                //System.out.println("P: " + SolarSystem.getTitan().getPosition());
-            }*/
         }else{
-            /*nextVelocity.setNext(acceleration);
-            nextPosition.setNext(velocity);
-            velocity = nextVelocity.getNext();
-            position = nextPosition.getNext();*/
-
-
-            // System.out.println("it goes into the condition!");
             velocity = nextVelocity.getNext(acceleration);
             position = nextPosition.getNext(velocity);
-            System.out.println("V: " + velocity);
-            //System.out.println("P: " + position);
-
-
-            /*System.out.println("Delta V: " + velocity.subtract(nextVelocity.getNext(velocity)));
-            System.out.println("Delta P: " + position.subtract(nextPosition.getNext(position)));
-            velocity = nextVelocity.get();
-            position = nextPosition.get();*/
         }
 
     }
