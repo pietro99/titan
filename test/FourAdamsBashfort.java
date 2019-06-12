@@ -26,7 +26,7 @@ public class FourAdamsBashfort {
         //calculate next step
         if(f == null)
             return null;
-        wi = wi.sum(f.multiply(55).sum(fMinus1.multiply(-59)).sum(fMinus2.multiply(37)).sum(fMinus3.multiply(-9)).multiply(timeStep / 24));  // /24 or /12?
+        wi = wi.sum(f.multiply(55).sum(fMinus1.multiply(-59)).sum(fMinus2.multiply(37)).sum(fMinus3.multiply(-9)).multiply(timeStep / 24));
         //update values
         fMinus3 = fMinus2;
         fMinus2 = fMinus1;
@@ -36,7 +36,7 @@ public class FourAdamsBashfort {
     }
 
 
-    // Adams Moulton Implicit method  -> TODO compare
+    // Adams Moulton Implicit method
     public Vector getNext(Vector state) {
         //wi = wi.sum((state.multiply(251 / 720).sum(f.multiply(646 / 720)).sum(fMinus1.multiply(-264 / 720)).sum(fMinus2.multiply(106 / 720)).sum(fMinus3.multiply(-19 / 720))).multiply(timeStep));
 
@@ -49,8 +49,16 @@ public class FourAdamsBashfort {
         delta = delta.multiply(timeStep / 720);
 
         wi = wi.sum(delta);
-        /*if(Math.random() >.9)
-            System.out.println(wi);*/
+
+        fMinus3 = fMinus2;
+        fMinus2 = fMinus1;
+        fMinus1 = f;
+        f = state;
+        return wi;
+    }
+
+    public Vector getNext2(Vector state) {
+        wi = wi.sum((state.multiply(5).sum(f.multiply(8)).sum(fMinus1.multiply(-1))).multiply(timeStep / 12));
         fMinus3 = fMinus2;
         fMinus2 = fMinus1;
         fMinus1 = f;

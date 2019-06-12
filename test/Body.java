@@ -31,8 +31,15 @@ public abstract class Body {
             velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
             position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
         }else{
+            //Adams-Moulton
             velocity = nextVelocity.getNext(acceleration);
             position = nextPosition.getNext(velocity);
+
+            //Adams-Bashforth
+            /*nextVelocity.setNext(acceleration);
+            nextPosition.setNext(velocity);
+            velocity = nextVelocity.getNext();
+            position = nextPosition.getNext();*/
         }
 
     }
