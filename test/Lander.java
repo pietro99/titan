@@ -64,8 +64,8 @@ public class Lander extends Group {
     	
     	shuttleLayout = shuttleOldLayout.sum(differencePosition);
 
-    	rocket.setLayoutX(shuttleLayout.getX()/SolarSystem.getScale()*100);
-        rocket.setLayoutY(shuttleLayout.getY()/SolarSystem.getScale()*100);
+    	rocket.setLayoutX(shuttleLayout.getX()/SolarSystemGUI.getScale()*100);
+        rocket.setLayoutY(shuttleLayout.getY()/SolarSystemGUI.getScale()*100);
         //rocket.setRotate((180 / Math.PI) * shuttle.getAngle2D(distance.multiply(-1)));
     	if(counter%1000==0 && DEBUG) {
         	System.out.println("distance: "+distance);

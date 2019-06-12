@@ -31,8 +31,6 @@ public class SolarSystem {
 
 	//calculate gravity based on the GravityMethod Interface
 	public void calculateGravity() {
-
-
 		//reset force and acceleration
 		gravityCalculator.calculateForce();
 		if(shuttle != null) {
@@ -54,10 +52,10 @@ public class SolarSystem {
 
 	//initiate shuttle with initial velocity:
 	private void initiateShuttle() {
-		Vector vel = new Vector(planets[3].getPosition().subtract(planets[10].getPosition().multiply(-1)));
+		/*Vector vel = new Vector(getEarth().getPosition().subtract(planets[10].getPosition().multiply(-1)));
 		vel = vel.normalize();
 		vel = vel.multiply(80*10000);
-		vel = vel.sum(planets[10].velocity);
+		vel = vel.sum(planets[10].velocity);*/
 		//shuttle = new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255 ), 100);
 		shuttle = Shuttle.getStandardShuttle();
 

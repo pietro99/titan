@@ -285,7 +285,7 @@ public class Runner extends Application{
                 isLanding = true;
                 //solarSystem.TIME = solarSystem.TIME/4000; //->done in land method
                 solarSystem.getGUI().setScale(4e5);
-                lander = new Lander(solarSystem);
+                lander = new Lander(solarSystem.getShuttle(), solarSystem.getTitan());
                 mainPane.getChildren().remove(solarSystem.getGUI());
                 mainPane.getChildren().add(lander);
                 camera.setTranslateX(-500);
@@ -299,7 +299,7 @@ public class Runner extends Application{
                 counter++;
 
             }
-            lander.buildScene(solarSystem);
+            lander.buildScene(solarSystem.getShuttle(), solarSystem.getTitan());
         }
 
         count += 250 ;

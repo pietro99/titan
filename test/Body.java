@@ -26,8 +26,7 @@ public abstract class Body {
     }
 
     public void update(double deltaT) {
-
-        if (nextVelocity == null /*|| true*/){
+        if (nextVelocity == null){
             //  EULER METHOD
             velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
             position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
@@ -40,7 +39,7 @@ public abstract class Body {
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay){
         //Adams solvers
-        nextVelocity = new FourAdamsBashfort(SolarSystem.TIME, VelocityActualDay, AccelerationActualDay, AccelerationDayMinus1, AccelerationDayMinus2,AccelerationDayMinus3);
-        nextPosition = new FourAdamsBashfort(SolarSystem.TIME, PositionActualDay, VelocityActualDay, VelocityDayMinus1, VelocityDayMinus2, VelocityDayMinus3);
+        nextVelocity = new FourAdamsBashfort(SolarSystem.getTimeStep(), VelocityActualDay, AccelerationActualDay, AccelerationDayMinus1, AccelerationDayMinus2,AccelerationDayMinus3);
+        nextPosition = new FourAdamsBashfort(SolarSystem.getTimeStep(), PositionActualDay, VelocityActualDay, VelocityDayMinus1, VelocityDayMinus2, VelocityDayMinus3);
     }
 }

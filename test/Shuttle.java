@@ -69,10 +69,12 @@ public class Shuttle extends Body{
         this.mainEngineForce = mainEngineForce;
         this.lateralEngineMass = lateralEngineMass;
         this.lateralEngineForce = lateralEngineForce;
+
+        this.setNextDataFirst(this.init, this.init, this.init, this.init, Vector.ZERO, this.init.multiply(1 / 3), this.init.multiply(2 / 3),this.init, this.position);
     }
 
     public static Shuttle getStandardShuttle() {
-        return new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255).multiply(0.999999), 20000, 500, 5, 20, 1000, -80, 500e4, -50, 2000, SolarSystem.planets[3]);
+        return new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255).multiply(0.999999 * 0 + 1.01), 20000, 500, 5, 20, 1000, -80, 500e4, -50, 2000, SolarSystem.planets[3]);
     }
 
     /* ************************** */
