@@ -19,8 +19,9 @@ public class SolarSystem {
 	public SolarSystem() {
 		initiatePlanets();
 		initiateShuttle();
-		gravityCalculator = new Euler(this);
-		solarSystemGUI = new SolarSystemGUI(this);
+		/*gravityCalculator = new Euler(this);
+		solarSystemGUI = new SolarSystemGUI(this);*/
+		setShuttle(shuttle);
 	}
 
 	//update solar system
@@ -52,12 +53,12 @@ public class SolarSystem {
 
 	//initiate shuttle with initial velocity:
 	private void initiateShuttle() {
-		Vector vel = new Vector(getEarth().getPosition().subtract(planets[10].getPosition().multiply(-1)));
+		/*Vector vel = new Vector(getEarth().getPosition().subtract(planets[10].getPosition().multiply(-1)));
 		vel = vel.normalize();
 		vel = vel.multiply(80*10000);
-		vel = vel.sum(planets[10].velocity);
+		vel = vel.sum(planets[10].velocity);*/
 		//shuttle = new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255 ), 100);
-		shuttle = Shuttle.getStandardShuttle(vel);
+		shuttle = Shuttle.getStandardShuttle();
 	}
 
 	//check if the shuttle crashed:
@@ -94,8 +95,13 @@ public class SolarSystem {
 			}
 			else {//crashes somewhere else:
 				for(int j = 0; j < planets.length - 1; j++) {
-					if(shuttle!=null && shuttle.getPosition().subtract(planets[j].getPosition()).squareLength() < Math.pow(planets[j].getRadius(), 2) && planets[j] != getEarth())
-						shuttle = null;
+					if(shuttle!=null && shuttle.getPosition().subtract(planets[j].getPosition()).squareLength() < Math.pow(planets[j].getRadius(), 2)) {
+						if(planets[j] != getEarth()) {
+							shuttle = null;
+							System.out.println("Wrong planet");
+						}else
+							System.out.println("Hit Earth");
+					}
 				}
 			}
 		}
@@ -147,6 +153,8 @@ public class SolarSystem {
 	}
 	public void setShuttle(Shuttle newShuttle) {
 		shuttle = newShuttle;
+		gravityCalculator = new Euler(this);
+		solarSystemGUI = new SolarSystemGUI(this);
 	}
 	public static Planet[] getPlanets() {
 		return planets;

@@ -80,7 +80,7 @@ public class SolarSystemGUI extends Group {
         planetSpheres[3] = new Sphere(solarSystem.getEarth().getRadius() /1000);
         planetSpheres[4] = new Sphere(solarSystem.getMars().getRadius() /1000);
         planetSpheres[5] = new Sphere(solarSystem.getJupiter().getRadius() /1000);
-        planetSpheres[6] = new Sphere(solarSystem.getSaturn().getRadius() /1000);
+        planetSpheres[6] = new Sphere(solarSystem.getSaturn().getRadius() /100000);
         planetSpheres[7] = new Sphere(solarSystem.getUranus().getRadius() /1000);
         planetSpheres[8] = new Sphere(solarSystem.getNeptune().getRadius() /1000);
         planetSpheres[9] = new Sphere(solarSystem.getMoon().getRadius() /1000);
@@ -100,7 +100,7 @@ public class SolarSystemGUI extends Group {
         planetSpheres[10].setMaterial(titanmt);
 
 
-        shuttleSphere = new Sphere(1);
+        shuttleSphere = new Sphere(2);
 //		shuttleSphere.fillProperty().set(Color.RED);
 
 

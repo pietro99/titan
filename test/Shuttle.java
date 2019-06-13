@@ -53,7 +53,7 @@ public class Shuttle extends Body{
         this.velocity = velocity;
         this.mass = mass;
         this.angularSpeed = new Vector(0, 0,0);
-        this.init = velocity;
+        this.init = new Vector(velocity);
 
         this.minMass = minMass;
 
@@ -69,13 +69,17 @@ public class Shuttle extends Body{
         this.mainEngineForce = mainEngineForce;
         this.lateralEngineMass = lateralEngineMass;
         this.lateralEngineForce = lateralEngineForce;
-
+        System.out.println("INIT: " + init);
         this.setNextDataFirst(this.init, this.init, this.init, this.init, Vector.ZERO, this.init.multiply(1 / 3), this.init.multiply(2 / 3),this.init, this.position);
     }
 
     public static Shuttle getStandardShuttle() {
         //return new Shuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255).multiply(0.999999 * 0 + 1.01), 20000, 500, 5, 20, 1000, -80, 500e4, -50, 2000, SolarSystem.planets[3]);
-        return getStandardShuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255).multiply(0.999999 * 0 + 1.01));
+        //return getStandardShuttle(new Vector(192417.8004932324, -925027.0853926808, -558.466505544255));
+        //return getStandardShuttle(new Vector(522329.18378110224, -1376412.6059415718, 8723.181875644595));
+        //return getStandardShuttle(new Vector(443046.99525267974, -1306664.8064509863, 8872.41117955623).multiply(0.8));
+        //return getStandardShuttle(new Vector(1044657.1895703765, -2752825.624261847, 17446.512633296163));
+        return getStandardShuttle(new Vector(381800.2163455189, -1149217.8900735674, 4136.636811081316));
     }
     public static Shuttle getStandardShuttle(Vector vel) {
         return new Shuttle(vel, 20000, 500, 5, 20, 1000, -80, 500e4, -50, 2000, SolarSystem.planets[3]);
@@ -359,8 +363,10 @@ public class Shuttle extends Body{
     public void land(Planet planet, double timeStep) {
         Vector dist = position.subtract(planet.getPosition());
         double d = dist.length();
-
+        if(d < 2e7)
+            System.out.println(d);
         if(d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 1e4) {       //start landing
+            System.out.println("Landing: " + d);
             landing = true;
             SolarSystem.setTimeStep(0.0001);
             //SolarSystem.TIME /= .5e3;

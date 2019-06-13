@@ -46,8 +46,8 @@ public abstract class Body {
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay){
         //Adams solvers
-        nextVelocity = new FourAdamsBashfort(SolarSystem.getTimeStep(), VelocityActualDay, AccelerationActualDay, AccelerationDayMinus1, AccelerationDayMinus2,AccelerationDayMinus3);
-        nextPosition = new FourAdamsBashfort(SolarSystem.getTimeStep(), PositionActualDay, VelocityActualDay, VelocityDayMinus1, VelocityDayMinus2, VelocityDayMinus3);
+        nextVelocity = new FourAdamsBashfort(SolarSystem.getTimeStep() / 4, VelocityActualDay, AccelerationActualDay, AccelerationDayMinus1, AccelerationDayMinus2,AccelerationDayMinus3);
+        nextPosition = new FourAdamsBashfort(SolarSystem.getTimeStep() / 4, PositionActualDay, VelocityActualDay, VelocityDayMinus1, VelocityDayMinus2, VelocityDayMinus3);
         /*nextVelocity.setNext(AccelerationActualDay);
         nextPosition.setNext(VelocityActualDay);*/
     }

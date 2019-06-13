@@ -104,6 +104,8 @@ public class Runner extends Application{
                 });
         timeline.getKeyFrames().add(kf);
         timeline.play();
+        if(simulation)
+            timeline.setRate(10);
         //.................
 
 
@@ -278,8 +280,10 @@ public class Runner extends Application{
     public void update() {
         solarSystem.updateSolarSystem();
         fixCamera();
-        if(solarSystem.getShuttle() == null)
+        if(solarSystem.getShuttle() == null) {
+            System.out.println("FAIL");
             System.exit(0);
+        }
         if(!simulation && solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
             //if(solarSystem.getShuttle().isLanding()) {
             timeline.setRate(.001);
@@ -308,14 +312,14 @@ public class Runner extends Application{
 
         if(simulation) {
             //seceonds in 1 hour * hours in 1 day * days in 1 year
-            if(count >= 3600 * 24 * 365/6) {
+            if(count >= 3600 * 24 * 365) {
                 gen++;
 
                 shuttle = solarSystem.getShuttle();
                 bestPos = shuttle.getPosition();
                 //192417.8004932324 -925027.0853926808 -558.466505544255
                 bestTitan = solarSystem.getTitan().getPosition();
-                solarSystem = new SolarSystem();
+
                 err = shuttle.getPosition().distance(solarSystem.getTitan().getPosition());
                 //1.313989273851E9
                 if(oldErr>err) {
@@ -334,21 +338,22 @@ public class Runner extends Application{
                 double newX = initX + addX;
                 double newY = initY + addY;
                 double newZ = initZ + addZ;
-                shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
-                solarSystem.setShuttle(shuttle);
-                System.out.println(err);
-                System.out.println(solarSystem.shuttle.getPosition().distance(solarSystem.getTitan().getPosition()));
+                //solarSystem = new SolarSystem();
+                //shuttle = new Shuttle(new Vector(newX, newY, newZ), 20000);
+                //shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
+                //solarSystem = new SolarSystem(shuttle);
+                //solarSystem.setShuttle(shuttle);
+                //System.out.println(err);
+                //System.out.println(solarSystem.shuttle.getPosition().distance(solarSystem.getTitan().getPosition()));
 
                 //shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
                 //shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
 
-                oldErr = err;
 
-                mainPane.getChildren().clear();
-                mainPane.getChildren().add(solarSystem.getGUI());
 
 
                 System.out.println("Select: " + shuttle.init);
+
                 System.out.println("Position: " + solarSystem.bestPos);
                 System.out.println("Titan: " + solarSystem.bestTitan);
                 System.out.println("Time: " + solarSystem.bestTime);
@@ -356,6 +361,12 @@ public class Runner extends Application{
                 System.out.println("Error: " + err);
                 //System.out.println(SolarSystem.shuttle.getPosition().subtract(SolarSystem.planets[10].getPosition()).length());
                 count = 0;
+                solarSystem = new SolarSystem();
+                shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
+                solarSystem.setShuttle(shuttle);
+                oldErr = err;
+                mainPane.getChildren().clear();
+                mainPane.getChildren().add(solarSystem.getGUI());
             }
         }
 
@@ -401,8 +412,9 @@ public class Runner extends Application{
     public static void main(String[] args) {
         //call the start method
 
-        if(args.length>=1 && args[0].equals("simulation"))
+        if(args.length>=1 && args[0].equals("simulation")) {
             simulation = true;
+        }
 
         launch(args);
 
