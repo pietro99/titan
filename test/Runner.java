@@ -46,7 +46,7 @@ public class Runner extends Application{
     public static boolean followSaturn = false;
     public static boolean followShuttle = false;
     public static boolean followEarth = false;
-    double factor = 1.9;
+    double factor = 1.8;
     Vector oldPos;
     Vector oldTitan;
     Shuttle shuttle;
@@ -278,7 +278,9 @@ public class Runner extends Application{
     public void update() {
         solarSystem.updateSolarSystem();
         fixCamera();
-        if(solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
+        if(solarSystem.getShuttle() == null)
+            System.exit(0);
+        if(!simulation && solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
             //if(solarSystem.getShuttle().isLanding()) {
             timeline.setRate(.001);
             if(counter==0) {
@@ -305,6 +307,7 @@ public class Runner extends Application{
         count += 250 ;
 
         if(simulation) {
+            //seceonds in 1 hour * hours in 1 day * days in 1 year
             if(count >= 3600 * 24 * 365/6) {
                 gen++;
 
@@ -331,12 +334,13 @@ public class Runner extends Application{
                 double newX = initX + addX;
                 double newY = initY + addY;
                 double newZ = initZ + addZ;
+                shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
                 solarSystem.setShuttle(shuttle);
                 System.out.println(err);
                 System.out.println(solarSystem.shuttle.getPosition().distance(solarSystem.getTitan().getPosition()));
 
-                shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
-
+                //shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
+                //shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
 
                 oldErr = err;
 
