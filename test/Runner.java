@@ -46,7 +46,7 @@ public class Runner extends Application{
     public static boolean followSaturn = false;
     public static boolean followShuttle = false;
     public static boolean followEarth = false;
-    double factor = 1.8;
+    double factor = 2;
     Vector oldPos;
     Vector oldTitan;
     Shuttle shuttle;
@@ -105,7 +105,9 @@ public class Runner extends Application{
         timeline.getKeyFrames().add(kf);
         timeline.play();
         if(simulation)
-            timeline.setRate(10);
+            timeline.setRate(20);
+        else
+            timeline.setRate(5);
         //.................
 
 
@@ -286,7 +288,7 @@ public class Runner extends Application{
         }
         if(!simulation && solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
             //if(solarSystem.getShuttle().isLanding()) {
-            timeline.setRate(.001);
+            timeline.setRate(.005);
             if(counter==0) {
                 isLanding = true;
                 //solarSystem.TIME = solarSystem.TIME/4000; //->done in land method
@@ -312,7 +314,7 @@ public class Runner extends Application{
 
         if(simulation) {
             //seceonds in 1 hour * hours in 1 day * days in 1 year
-            if(count >= 3600 * 24 * 365) {
+            if(count >= 3600 * 24 * 365 * 2) {
                 gen++;
 
                 shuttle = solarSystem.getShuttle();

@@ -29,6 +29,8 @@ public class Physics {
 
             rot = new Vector(Math.random(), Math.random(), Math.random());
             rot = rot.multiply(rotScale * wind.length());
+            if(rot.isNaN())
+                rot = new Vector(Math.random(), Math.random(), Math.random()).multiply(rotScale);
         }
         return new Vector[]{wind, rot};
     }

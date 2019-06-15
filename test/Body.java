@@ -32,8 +32,9 @@ public abstract class Body {
             position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
         }else{
             //Adams-Bashforth
-            nextVelocity.setNext(acceleration);
             nextPosition.setNext(velocity);
+            nextVelocity.setNext(acceleration);
+
             velocity = nextVelocity.getNext();
             position = nextPosition.getNext();
 

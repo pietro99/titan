@@ -27,6 +27,8 @@ public class Euler implements GravityMethod {
             for(int j = 1; j < bodies.length - i; j++) {        //other planet
                 Vector distance = bodies[i].getPosition().subtract(bodies[i + j].getPosition());	//from j to i
                 double d = distance.squareLength();
+                if(d == 0)
+                    d = 10;
                 distance = distance.normalize();
                 bodies[i + j].addAcceleration(distance.multiply(gravity(bodies[i], d)));
                 bodies[i].addAcceleration(distance.multiply(-1 * gravity(bodies[i+j], d)));

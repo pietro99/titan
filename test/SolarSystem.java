@@ -97,7 +97,7 @@ public class SolarSystem {
 				for(int j = 0; j < planets.length - 1; j++) {
 					if(shuttle!=null && shuttle.getPosition().subtract(planets[j].getPosition()).squareLength() < Math.pow(planets[j].getRadius(), 2)) {
 						if(planets[j] != getEarth()) {
-							shuttle = null;
+							//shuttle = null;
 							System.out.println("Wrong planet");
 						}else
 							System.out.println("Hit Earth");
