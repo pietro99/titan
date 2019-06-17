@@ -37,30 +37,30 @@ public class Runner extends Application{
     public static Stage primaryStage;
     public static BorderPane mainPane;
     public static double frameSeconds = 0.1;
-    public static int count = 0;
+    //public static int count = 0;
     public static int counter = 0;
     public boolean isLanding = false;
-    public static int gen =0;
+    //public static int gen =0;
     public static boolean simulation = false;
+    public static boolean back = false;
     public static boolean followTitan = false;
     public static boolean followSaturn = false;
     public static boolean followShuttle = false;
     public static boolean followEarth = false;
-    double factor = 2;
+    //double factor = 2;
     Vector oldPos;
     Vector oldTitan;
     Shuttle shuttle;
-    Vector bestPos;
-    Vector bestTitan;
-    Planet target;
-    double err;
-    double oldErr;
+    //Vector bestPos;
+    //Vector bestTitan;
+    //double err;
+    //double oldErr;
     List<Circle>shuttleCir = new ArrayList<Circle>();
     PerspectiveCamera camera;
     Lander lander;
     Timeline timeline;
     private static Simulation simulator;
-    
+
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         //creating the solar system
@@ -248,6 +248,13 @@ public class Runner extends Application{
         primaryStage.setScene(scene);
         //primaryStage.setFullScreen(true);
         primaryStage.show();
+
+        if(simulation) {
+            if(back)
+                simulator = Simulation.getTitanEarth(solarSystem);
+            else
+                simulator = Simulation.getEarthTitan(solarSystem);
+        }
     }
 
 
@@ -284,14 +291,14 @@ public class Runner extends Application{
     public void update() {
         solarSystem.updateSolarSystem();
         fixCamera();
-        if(solarSystem.getShuttle() == null) {
+        if (solarSystem.getShuttle() == null) {
             System.out.println("FAIL");
             System.exit(0);
         }
-        if(!simulation && solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition())<=1000000) {
+        if (!simulation && solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition()) <= 1000000) {
             //if(solarSystem.getShuttle().isLanding()) {
             timeline.setRate(.005);
-            if(counter==0) {
+            if (counter == 0) {
                 isLanding = true;
                 //solarSystem.TIME = solarSystem.TIME/4000; //->done in land method
                 solarSystem.getGUI().setScale(4e5);
@@ -309,60 +316,35 @@ public class Runner extends Application{
                 counter++;
             }
             lander.buildScene(solarSystem.getShuttle(), solarSystem.getTitan());
+        } else {
+            isLanding = false;
         }
-        isLanding = false;
-        count += 250 ;
+        //count += 250 ;
 
-        if(simulation) {
-            //seceonds in 1 hour * hours in 1 day * days in 1 year
-            if(count >= 3600 * 24 * 365 * 2) {
-                gen++;
-                shuttle = solarSystem.getShuttle();
-                bestPos = shuttle.getPosition();
-                //192417.8004932324 -925027.0853926808 -558.466505544255
-                bestTitan = solarSystem.getTitan().getPosition();
-
-                err = shuttle.getPosition().distance(solarSystem.getTitan().getPosition());
-                //1.313989273851E9
-                if(oldErr>err) {
-                    factor+=0.01;
-                }
-
-                Vector correction = bestTitan.subtract(bestPos);// 80619.14074576352
-
-                double initX = shuttle.init.getX();
-                double initY = shuttle.init.getY();
-                double initZ = shuttle.init.getZ();
-                double scaling = Math.pow(err, (0.32+(count/7e8))*factor);
-                double addX = correction.getX()/scaling;
-                double addY = correction.getY()/scaling;
-                double addZ = correction.getZ()/scaling;
-                double newX = initX + addX;
-                double newY = initY + addY;
-                double newZ = initZ + addZ;
-
-                System.out.println("Select: " + shuttle.init);
-                System.out.println("Position: " + solarSystem.bestPos);
-                System.out.println("Titan: " + solarSystem.bestTitan);
-                System.out.println("Time: " + solarSystem.bestTime);
-                System.out.println("Correction: " + correction);
-                System.out.println("Error: " + err);
-                count = 0;
-                solarSystem = new SolarSystem();
-                shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
-                solarSystem.setShuttle(shuttle);
-                oldErr = err;
+        if (simulation && solarSystem != null && simulator != null && !back) {
+            simulator.addStep(250);
+            SolarSystem tmp = simulator.tryNext();
+            if (tmp != null) {
+                solarSystem = tmp;
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(solarSystem.getGUI());
             }
         }
-
-        //878629.7264863193	     -2588414.9687429797
-    }//4.1155308720947456E8 -1.4453512119138913E9 8755575.60203173
-    //4.091557040724596E8   -1.4462529557723603E9 8726104.776757749
+        if(simulation && back && solarSystem.getDone()) {
+            simulator.addStep(250);
+            SolarSystem tmp = simulator.tryNext();
+            if (tmp != null) {
+                solarSystem = tmp;
+                mainPane.getChildren().clear();
+                mainPane.getChildren().add(solarSystem.getGUI());
+            }
+        }
+        if(solarSystem.getDone() && !simulation) {
+            System.exit(0);
+        }
+    }
 
     private void fixCamera() {
-
         if(followTitan) {
             camera.setLayoutX(solarSystem.getGUI().getPlanetSpheres()[10].getLayoutX()-solarSystem.getGUI().getMovingFactor().getX());
             camera.setLayoutY(solarSystem.getGUI().getPlanetSpheres()[10].getLayoutY()-solarSystem.getGUI().getMovingFactor().getY());
@@ -402,9 +384,9 @@ public class Runner extends Application{
         if(args.length>=1 && args[0].equals("simulation")) {
             simulation = true;
         }
-        /*if((args.length>=1 && args[0].equals("back")) || (args.length>=2 && args[1].equals("back"))) {
+        if((args.length>=1 && args[0].equals("back")) || (args.length>=2 && args[1].equals("back"))) {
             back = true;
-        }*/
+        }
 
         launch(args);
 

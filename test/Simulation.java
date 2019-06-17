@@ -14,6 +14,10 @@ public class Simulation {
     private Vector init;
 
     public Simulation(SolarSystem s, int start, int target, int limit) {
+        this(s, start, target, limit, s.getShuttle().getInitialVelocity());
+    }
+
+    public Simulation(SolarSystem s, int start, int target, int limit, Vector init) {
         this.target = target;
         this.start = start;
         this.limit = limit;
@@ -24,9 +28,10 @@ public class Simulation {
         bestTarget = s.getPlanets()[target].getPosition();
         error = getError();
         system = s;
-        init = system.getShuttle().getInitialVelocity();
+        if(init == null)
+            init = bestTarget.subtract(bestPos).multiply(1 / limit);
+        this.init = init;
     }
-
     public void addStep(int c) {
         count += c;
     }
@@ -81,10 +86,10 @@ public class Simulation {
     }
 
     public static Simulation getEarthTitan(SolarSystem s) {
-        return new Simulation(s, 3, 11, 3600 * 24 * 365 * 2);
+        return new Simulation(s, 3, 10, 3600 * 24 * 365 * 2, null);
     }
 
     public static Simulation getTitanEarth(SolarSystem s) {
-        return new Simulation(s, 11, 11, (3600 * 24 * 365 * 2) * 2);
+        return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2) * 2, null);
     }
 }
