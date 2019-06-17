@@ -85,7 +85,7 @@ public class SolarSystem {
 				System.out.println("Angle (rad): " + (Math.acos(dot)));
 				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
 				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
-				System.out.println("Speed: " + (v.length() / 10000));
+				System.out.println("Speed: " + (v.length() / 1e4));
 				System.out.println("Angular speed (deg): " + shuttle.getAngularSpeed().multiply(180 / Math.PI) + " -> " + shuttle.getAngularSpeed().multiply(180 / Math.PI).length());
 				System.out.println("Angular speed (rad): " + shuttle.getAngularSpeed() + " -> " + shuttle.getAngularSpeed().length());
 				System.out.println("Mass: " + shuttle.getMass());
@@ -98,7 +98,7 @@ public class SolarSystem {
 					if(shuttle!=null && shuttle.getPosition().subtract(planets[j].getPosition()).squareLength() < Math.pow(planets[j].getRadius(), 2)) {
 						if(planets[j] != getEarth()) {
 							//shuttle = null;
-							System.out.println("Wrong planet");
+							//System.out.println("Wrong planet");
 						}else
 							System.out.println("Hit Earth");
 					}
@@ -153,7 +153,7 @@ public class SolarSystem {
 	}
 	public void setShuttle(Shuttle newShuttle) {
 		shuttle = newShuttle;
-		gravityCalculator = new Euler(this);
+		gravityCalculator = new Gravity(this);
 		solarSystemGUI = new SolarSystemGUI(this);
 	}
 	public static Planet[] getPlanets() {

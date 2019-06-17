@@ -3,6 +3,7 @@ public class Shuttle extends Body{
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
 
+    public final double fuelCost = 1;   //cost / mass
     private static final double epsilon = 1E-10;
     private Vector[] direction; //object coordiante system
     private Vector angularSpeed;
@@ -83,12 +84,16 @@ public class Shuttle extends Body{
         //return getStandardShuttle(new Vector(381800.2163455189, -1149217.8900735674, 4136.636811081316));     //close titan 6 months
         //return getStandardShuttle(new Vector(381605.51557622006, -1148736.3302332184, 4127.753788215523));    //hit saturn 6 montha
         //return getStandardShuttle(new Vector(176154.29933254703, -831468.409196778, -894.8628493431781));       //close titan 1 year, few orbits
-        //return getStandardShuttle(new Vector(176148.06943044582, -831464.4838398469, -892.0608999642003));      //63.5 km 1 year
-        return getStandardShuttle(new Vector(176148.0730347496, -831464.488020747, -892.086879038433));       //400m
+        return getStandardShuttle(new Vector(176148.06943044582, -831464.4838398469, -892.0608999642003));      //63.5 km 1 year
+        //return getStandardShuttle(new Vector(176148.0730347496, -831464.488020747, -892.086879038433));       //400m
 
     }
     public static Shuttle getStandardShuttle(Vector vel) {
-        return new Shuttle(vel, 20000, 500, 5, 20, 1000e8, -80, 500e8, -50, 2000e4, SolarSystem.planets[3]);
+        return new Shuttle(vel, 20000, 500, 5, 20, 1000e8, -1e6, 500e8, -2e4, 2000, SolarSystem.planets[3]);
+    }
+
+    public static Shuttle getStandardShuttle(Vector vel, Body start) {
+        return new Shuttle(vel, 20000, 500, 5, 20, 1000e8, -1e6, 500e8, -2e4, 2000, start);
     }
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay) {
@@ -105,6 +110,9 @@ public class Shuttle extends Body{
             mainEngineMass *= t / timeStep;
             lateralEngineMass *= t / timeStep;
             timeStep = t;
+            nextVelocity.setTimeStep(t/4);
+            nextPosition.setTimeStep(t/4);
+            nextAngle.setTimeStep(t/4);
         }
     }
     public void setMainEngineForce(double f) {
@@ -203,7 +211,8 @@ public class Shuttle extends Body{
             super.update(deltaT);
         else {
             //position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
-            //velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
+            velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
+            position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
         }
         //rotation
         if(angularSpeed.squareLength() > epsilon) {
@@ -237,11 +246,7 @@ public class Shuttle extends Body{
     }
 
     public void useParachute(Planet p) {
-        // TODO make planet changeable
         double atmosphere = SolarSystem.planets[10].getAtmosphericPressureComparedToEarthPressure();
-        //System.out.println("Parachute acc: " + velocity.multiply(-parachute * atmosphere));
-        //System.out.println("Acc: " + acceleration);
-
         acceleration = acceleration.sum(velocity.subtract(p.getVelocity()).multiply(-parachute * atmosphere));
     }
 
@@ -396,21 +401,18 @@ public class Shuttle extends Body{
     public void land(Planet planet, double timeStep) {
         Vector dist = position.subtract(planet.getPosition());
         double d = dist.length();
-        /*if(d < 1e5)
-            System.out.println(d);*/
-        //if(d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 5e4) {       //start landing
-        if (d < 10000) {
+        if(d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 5e4) {       //start landing
+            System.out.println("Cost estimate: " + costEstimate(planet));
             System.out.println("Landing: " + (d - planet.getRadius()));
-            System.out.println(velocity.length());
+            //velocity = dist.normalize().multiply(-velocity.length() + 100e4);
             landing = true;
             SolarSystem.setTimeStep(0.0001);
             setTimeStep(SolarSystem.getTimeStep());
             stopRotation(0, timeStep);
+            //brake(planet.getVelocity().normalize().multiply(100e4).sum(planet.getVelocity()), planet.getVelocity());
             if(d > (planet.getDistanceAtmosphere() + planet.getRadius())) {         //in atmosphere
                 alignTo(planet.getVelocity().normalize().subtract(dist.normalize()), true, timeStep, 0.1, 0);
-                //if(velocity.dot(dist) < 0)
-                    //brake(dist.normalize().multiply(-100e4), planet.getVelocity());
-                    brake(planet.getVelocity().normalize().multiply(50e4).sum(planet.getVelocity()), planet.getVelocity());
+                brake(planet.getVelocity().normalize().multiply(50e4).sum(planet.getVelocity()), planet.getVelocity());
             }else {
                 alignTo(dist, true, timeStep, 0, 0);
 
@@ -426,22 +428,26 @@ public class Shuttle extends Body{
                 System.out.println("Speed: " + (v * 1e-4));
                 useParachute(planet);   //-> we need this to land
 
-                Vector[] p = Physics.wind(this, planet, 100, 100000, 1);
+                Vector[] p = Physics.wind(this, planet, 100, 100000, 100);
 
                 acceleration = acceleration.sum(p[0]);
-                System.out.println("Angular speed: " + angularSpeed);
                 angularSpeed = angularSpeed.sum(p[1]);
-                System.out.println("Angular speed: " + angularSpeed);
                 Vector drag = Physics.dragAcceleration(planet, this);   //-> we need this to land
                 acceleration = acceleration.subtract(drag);
                 //if(velocity.dot(dist) < 0)
                     //brake(dist.normalize().multiply(-1e4), planet.getVelocity());
-                    brake(planet.getVelocity().normalize().multiply(1e4).sum(planet.getVelocity()), planet.getVelocity());
+                brake(planet.getVelocity().normalize().multiply(1e4).sum(planet.getVelocity()), planet.getVelocity());
 
             }
         }else {
             landing = false;
         }
+    }
+
+    public double costEstimate(Planet p) {
+        double v = velocity.subtract(p.getVelocity()).squareLength();
+        double h = position.distance(p.getPosition());
+        return -mainEngineMass * fuelCost * v * mass / (2 * h * mainEngineForce);
     }
 
     /* ************************* */

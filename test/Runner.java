@@ -52,6 +52,7 @@ public class Runner extends Application{
     Shuttle shuttle;
     Vector bestPos;
     Vector bestTitan;
+    Planet target;
     double err;
     double oldErr;
     List<Circle>shuttleCir = new ArrayList<Circle>();
@@ -316,7 +317,6 @@ public class Runner extends Application{
             //seceonds in 1 hour * hours in 1 day * days in 1 year
             if(count >= 3600 * 24 * 365 * 2) {
                 gen++;
-
                 shuttle = solarSystem.getShuttle();
                 bestPos = shuttle.getPosition();
                 //192417.8004932324 -925027.0853926808 -558.466505544255
@@ -340,28 +340,13 @@ public class Runner extends Application{
                 double newX = initX + addX;
                 double newY = initY + addY;
                 double newZ = initZ + addZ;
-                //solarSystem = new SolarSystem();
-                //shuttle = new Shuttle(new Vector(newX, newY, newZ), 20000);
-                //shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
-                //solarSystem = new SolarSystem(shuttle);
-                //solarSystem.setShuttle(shuttle);
-                //System.out.println(err);
-                //System.out.println(solarSystem.shuttle.getPosition().distance(solarSystem.getTitan().getPosition()));
-
-                //shuttle = new Shuttle(new Vector(newX, newY, newZ), 1000);//1.313989273851E9  13.432187276681386 -10.572101352235507 -2.7413417329502545
-                //shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
-
-
-
 
                 System.out.println("Select: " + shuttle.init);
-
                 System.out.println("Position: " + solarSystem.bestPos);
                 System.out.println("Titan: " + solarSystem.bestTitan);
                 System.out.println("Time: " + solarSystem.bestTime);
                 System.out.println("Correction: " + correction);
                 System.out.println("Error: " + err);
-                //System.out.println(SolarSystem.shuttle.getPosition().subtract(SolarSystem.planets[10].getPosition()).length());
                 count = 0;
                 solarSystem = new SolarSystem();
                 shuttle = Shuttle.getStandardShuttle(new Vector(newX, newY, newZ));
@@ -417,6 +402,9 @@ public class Runner extends Application{
         if(args.length>=1 && args[0].equals("simulation")) {
             simulation = true;
         }
+        /*if((args.length>=1 && args[0].equals("back")) || (args.length>=2 && args[1].equals("back"))) {
+            back = true;
+        }*/
 
         launch(args);
 

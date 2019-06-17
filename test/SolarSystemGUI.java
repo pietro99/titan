@@ -11,6 +11,7 @@ public class SolarSystemGUI extends Group {
     private  Sphere shuttleSphere = new Sphere(1);
 
     private static double scale = 4e5;//scaling factor
+    double  radiusScale = 600;
     private static Vector movingFactor = new Vector(500,525,0);
 
     public SolarSystemGUI(SolarSystem solarSystem){
@@ -22,6 +23,10 @@ public class SolarSystemGUI extends Group {
         for(int i=0; i<solarSystem.getPlanets().length; i++) {
             planetSpheres[i].setLayoutX((solarSystem.getPlanet(i).getPosition().getX()/scale)+movingFactor.getX());
             planetSpheres[i].setLayoutY((solarSystem.getPlanet(i).getPosition().getY()/scale)+movingFactor.getY());
+            if(i == 0)
+                planetSpheres[i].setRadius(solarSystem.getPlanets()[i].getRadius() / (scale * 10) * radiusScale);
+            else
+                planetSpheres[i].setRadius(solarSystem.getPlanets()[i].getRadius() / scale * radiusScale);
         }
         if(solarSystem.getShuttle() != null) {
             shuttleSphere.setLayoutX((solarSystem.getShuttle().getPosition().getX() / scale) + movingFactor.getX());
@@ -74,17 +79,18 @@ public class SolarSystemGUI extends Group {
         light.setZ(0);;
         Lighting lighting = new Lighting();
         lighting.setLight(light);
-        planetSpheres[0] = new Sphere(solarSystem.getSun().getRadius() /10000);
-        planetSpheres[1] = new Sphere(solarSystem.getMercury().getRadius() /1000);
-        planetSpheres[2] = new Sphere(solarSystem.getVenus().getRadius() /1000);
-        planetSpheres[3] = new Sphere(solarSystem.getEarth().getRadius() /1000);
-        planetSpheres[4] = new Sphere(solarSystem.getMars().getRadius() /1000);
-        planetSpheres[5] = new Sphere(solarSystem.getJupiter().getRadius() /1000);
-        planetSpheres[6] = new Sphere(solarSystem.getSaturn().getRadius() /100000);
-        planetSpheres[7] = new Sphere(solarSystem.getUranus().getRadius() /1000);
-        planetSpheres[8] = new Sphere(solarSystem.getNeptune().getRadius() /1000);
-        planetSpheres[9] = new Sphere(solarSystem.getMoon().getRadius() /1000);
-        planetSpheres[10] = new Sphere(solarSystem.getTitan().getRadius() /1000);
+
+        planetSpheres[0] = new Sphere(solarSystem.getSun().getRadius() /(10 * radiusScale));
+        planetSpheres[1] = new Sphere(solarSystem.getMercury().getRadius() /radiusScale);
+        planetSpheres[2] = new Sphere(solarSystem.getVenus().getRadius() /radiusScale);
+        planetSpheres[3] = new Sphere(solarSystem.getEarth().getRadius() /radiusScale);
+        planetSpheres[4] = new Sphere(solarSystem.getMars().getRadius() /radiusScale);
+        planetSpheres[5] = new Sphere(solarSystem.getJupiter().getRadius() /radiusScale);
+        planetSpheres[6] = new Sphere(solarSystem.getSaturn().getRadius() /radiusScale);
+        planetSpheres[7] = new Sphere(solarSystem.getUranus().getRadius() /radiusScale);
+        planetSpheres[8] = new Sphere(solarSystem.getNeptune().getRadius() /radiusScale);
+        planetSpheres[9] = new Sphere(solarSystem.getMoon().getRadius() /radiusScale);
+        planetSpheres[10] = new Sphere(solarSystem.getTitan().getRadius() /(2 * radiusScale));
 
         //settings the textures of the planets
         planetSpheres[0].setMaterial(sunmt);

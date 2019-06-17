@@ -84,6 +84,7 @@ public class FourAdamsBashfort {
         return curr.multiply(3).sum(pre1.multiply(-4)).sum(pre2).multiply(1/h);
     }
 
-    public static void main(String[] args) {
+    public void setTimeStep(double t) {
+        timeStep = t;
     }
 }
