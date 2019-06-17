@@ -81,24 +81,26 @@ public class SolarSystem {
 					dot = 1;
 				else if (dot < -1)
 					dot = -1;
-				System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot) + " " + dot);
+				//System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot) + " " + dot);
 				System.out.println("Angle (rad): " + (Math.acos(dot)));
 				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(shuttle.getVelocity()) / (shuttle.getVelocity().length() * shuttle.getDirection(2).length())));
-				System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
+				//System.out.println("Angle - velocity: " + (180 / Math.PI) * Math.acos(shuttle.getDirection(2).dot(v) / (v.length() * shuttle.getDirection(2).length())));
 				System.out.println("Speed: " + (v.length() / 1e4));
-				System.out.println("Angular speed (deg): " + shuttle.getAngularSpeed().multiply(180 / Math.PI) + " -> " + shuttle.getAngularSpeed().multiply(180 / Math.PI).length());
+				//System.out.println("Angular speed (deg): " + shuttle.getAngularSpeed().multiply(180 / Math.PI) + " -> " + shuttle.getAngularSpeed().multiply(180 / Math.PI).length());
 				System.out.println("Angular speed (rad): " + shuttle.getAngularSpeed() + " -> " + shuttle.getAngularSpeed().length());
 				System.out.println("Mass: " + shuttle.getMass());
+				System.out.println("Cost estimate: " + shuttle.getCostEstimate());
+				System.out.println("Cost: " + shuttle.cost());
 				System.out.println("!!! LANDED ON TITAN !!!");
 				done = true;
-				System.exit(0);
+				//System.exit(0);
 			}
 			else {//crashes somewhere else:
 				for(int j = 0; j < planets.length - 1; j++) {
 					if(shuttle!=null && shuttle.getPosition().subtract(planets[j].getPosition()).squareLength() < Math.pow(planets[j].getRadius(), 2)) {
 						if(planets[j] != getEarth()) {
 							//shuttle = null;
-							//System.out.println("Wrong planet");
+							System.out.println("Wrong planet");
 						}else
 							System.out.println("Hit Earth");
 					}
@@ -170,5 +172,8 @@ public class SolarSystem {
 	}
 	public static double getTimeStep(){
 		return timeStep;
+	}
+	public boolean getDone() {
+		return done;
 	}
 }

@@ -3,7 +3,10 @@ public class Shuttle extends Body{
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
 
-    public final double fuelCost = 1;   //cost / mass
+    public final double fuelCost = 0.5547615714017767;   //cost / mass
+    //1.68 euro/gallon / (3.78541 l/gallion * 0.8 kg/l)
+    //https://www.indexmundi.com/
+    //https://www.indexmundi.com/commodities/?commodity=jet-fuel&months=12&currency=eur
     private static final double epsilon = 1E-10;
     private Vector[] direction; //object coordiante system
     private Vector angularSpeed;
@@ -20,12 +23,15 @@ public class Shuttle extends Body{
     private double lateralEngineMass;
 
     private double minMass;
+    private double initMass;
 
     private double parachute;
 
     private double timeStep = 1;
 
     private boolean landing;
+
+    private double costEst;
 
     private FourAdamsBashfort nextAngle;
     /* ******* Constructor ******** */
@@ -54,6 +60,7 @@ public class Shuttle extends Body{
         //set physical data
         this.velocity = velocity;
         this.mass = mass;
+        this.initMass = mass;
         this.angularSpeed = new Vector(0, 0,0);
         this.init = new Vector(velocity);
 
@@ -89,7 +96,7 @@ public class Shuttle extends Body{
 
     }
     public static Shuttle getStandardShuttle(Vector vel) {
-        return new Shuttle(vel, 20000, 500, 5, 20, 1000e8, -1e6, 500e8, -2e4, 2000, SolarSystem.planets[3]);
+        return getStandardShuttle(vel, SolarSystem.planets[3]);
     }
 
     public static Shuttle getStandardShuttle(Vector vel, Body start) {
@@ -377,7 +384,7 @@ public class Shuttle extends Body{
         Vector lateral = delta.subtract(main);
         double mainTime = main.length() / mainEngineForce;
         double latTime = lateral.length() / lateralEngineForce;
-        System.out.println("Time: " + mainTime + " " + latTime);
+        //System.out.println("Time: " + mainTime + " " + latTime);
         if(mainTime > timeStep) {
             mainTime = timeStep;
             main = main.multiply(timeStep / mainTime);
@@ -402,8 +409,8 @@ public class Shuttle extends Body{
         Vector dist = position.subtract(planet.getPosition());
         double d = dist.length();
         if(d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 5e4) {       //start landing
-            System.out.println("Cost estimate: " + costEstimate(planet));
-            System.out.println("Landing: " + (d - planet.getRadius()));
+            costEst = costEstimate(planet);
+            //System.out.println("Landing: " + (d - planet.getRadius()));
             //velocity = dist.normalize().multiply(-velocity.length() + 100e4);
             landing = true;
             SolarSystem.setTimeStep(0.0001);
@@ -423,9 +430,9 @@ public class Shuttle extends Body{
                     dot = 1;
                 else if (dot < -1)
                     dot = -1;
-                System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot) + " " + dot);
+                //System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(dot) + " " + dot);
                 double v = getVelocity().distance(planet.getVelocity());
-                System.out.println("Speed: " + (v * 1e-4));
+                //System.out.println("Speed: " + (v * 1e-4));
                 useParachute(planet);   //-> we need this to land
 
                 Vector[] p = Physics.wind(this, planet, 100, 100000, 100);
@@ -445,9 +452,20 @@ public class Shuttle extends Body{
     }
 
     public double costEstimate(Planet p) {
-        double v = velocity.subtract(p.getVelocity()).squareLength();
+        double v = velocity.subtract(p.getVelocity()).squareLength() / 1e4;
         double h = position.distance(p.getPosition());
-        return -mainEngineMass * fuelCost * v * mass / (2 * h * mainEngineForce);
+        double a =  v  / (2 * h);
+        double steps = Math.ceil(a * mass / mainEngineForce);   //F / Fstep
+        //return -mainEngineMass * fuelCost * v * mass / (2 * h * mainEngineForce);   //check formula
+        //return steps * -mainEngineMass * fuelCost;
+        return mainEngineForce / a  * fuelCost;
+    }
+
+    public double cost() {
+        return (initMass - mass) * fuelCost;
+    }
+    public double getCostEstimate() {
+        return  costEst;
     }
 
     /* ************************* */

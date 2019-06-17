@@ -59,7 +59,8 @@ public class Runner extends Application{
     PerspectiveCamera camera;
     Lander lander;
     Timeline timeline;
-
+    private static Simulation simulator;
+    
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         //creating the solar system
@@ -306,11 +307,10 @@ public class Runner extends Application{
                 followShuttle = false;
                 followEarth = false;
                 counter++;
-
             }
             lander.buildScene(solarSystem.getShuttle(), solarSystem.getTitan());
         }
-
+        isLanding = false;
         count += 250 ;
 
         if(simulation) {
