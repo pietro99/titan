@@ -22,6 +22,7 @@ public class SolarSystem {
 		/*gravityCalculator = new Euler(this);
 		solarSystemGUI = new SolarSystemGUI(this);*/
 		setShuttle(shuttle);
+		done = false;
 	}
 
 	//update solar system
@@ -35,9 +36,9 @@ public class SolarSystem {
 		//reset force and acceleration
 		gravityCalculator.calculateForce();
 		if(shuttle != null) {
-			bestDistance = shuttle.getPosition().distance(planets[10].getPosition());
-			bestPos = shuttle.getPosition();
-			bestTitan = planets[10].getPosition();
+			//bestDistance = shuttle.getPosition().distance(planets[10].getPosition());
+			//bestPos = shuttle.getPosition();
+			//bestTitan = planets[10].getPosition();
 			//update shuttle position
 			shuttle.update(timeStep);
 		}
@@ -65,7 +66,7 @@ public class SolarSystem {
 	private void checkCrush() {
 		if(shuttle!= null) {
 			//if crashes on Titan:
-			if(shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
+			if(/*!Runner.back &&*/ shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
 				Vector v = shuttle.getVelocity().subtract(planets[10].getVelocity());
 				Vector dist = shuttle.getPosition().subtract(planets[10].getPosition());
 				double d = dist.length();
@@ -100,7 +101,7 @@ public class SolarSystem {
 					if(shuttle!=null && shuttle.getPosition().subtract(planets[j].getPosition()).squareLength() < Math.pow(planets[j].getRadius(), 2)) {
 						if(planets[j] != getEarth()) {
 							//shuttle = null;
-							System.out.println("Wrong planet");
+							//System.out.println("Wrong planet");
 						}else
 							System.out.println("Hit Earth");
 					}

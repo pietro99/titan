@@ -29,9 +29,12 @@ public class Simulation {
         error = getError();
         system = s;
         if(init == null)
-            init = bestTarget.subtract(bestPos).multiply(1 / limit);
+            init = bestTarget.subtract(bestPos);
         this.init = init;
+        System.out.println("Start: " + s.getPlanets()[start].getName());
+        System.out.println("Target: " + s.getPlanets()[target].getName());
     }
+
     public void addStep(int c) {
         count += c;
     }
@@ -57,7 +60,7 @@ public class Simulation {
             System.out.println("Correction: " + correction);
             System.out.println("Error: " + error);
 
-            Vector newInit = shuttle.getInitialVelocity().sum(correction.multiply(1 / getScaling(newErr)));
+            Vector newInit = init.sum(correction.multiply(1 / getScaling(newErr))); //TODO distinguish between titan-earth init and earth-titan init
             count = 0;
             system = new SolarSystem();
             shuttle = Shuttle.getStandardShuttle(newInit, system.getPlanets()[start]);
@@ -90,6 +93,12 @@ public class Simulation {
     }
 
     public static Simulation getTitanEarth(SolarSystem s) {
-        return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2) * 2, null);
+        final int start = 10;
+        final int target = 3;
+        Vector startTarget = s.getPlanets()[start].getPosition().subtract(s.getPlanets()[target].getPosition());
+        int sign = -1;
+        if(startTarget.dot(s.getShuttle().getInitialVelocity()) < 0)
+            sign = 1;
+        return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2) * 2, s.getShuttle().getInitialVelocity().multiply(sign));
     }
 }

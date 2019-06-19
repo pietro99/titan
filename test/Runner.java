@@ -316,30 +316,42 @@ public class Runner extends Application{
                 counter++;
             }
             lander.buildScene(solarSystem.getShuttle(), solarSystem.getTitan());
-        } else {
+        } /*else {
             isLanding = false;
-        }
+        }*/
         //count += 250 ;
 
+        //simulation to titan
         if (simulation && solarSystem != null && simulator != null && !back) {
             simulator.addStep(250);
+            //System.out.println(solarSystem.getShuttle().getPosition());
             SolarSystem tmp = simulator.tryNext();
             if (tmp != null) {
+                System.out.println("New attemp");
                 solarSystem = tmp;
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(solarSystem.getGUI());
             }
         }
-        if(simulation && back && solarSystem.getDone()) {
+
+        //simulation back to titan
+        if(simulation && back && solarSystem != null && simulator != null && solarSystem.getDone()) {
             simulator.addStep(250);
             SolarSystem tmp = simulator.tryNext();
             if (tmp != null) {
                 solarSystem = tmp;
+                System.out.println("New attemp");
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(solarSystem.getGUI());
             }
         }
-        if(solarSystem.getDone() && !simulation) {
+
+        //travel to titan and back to earth
+        if(!simulation && back) {
+            //TODO
+        }
+
+        if(solarSystem.getDone() && (!simulation || !back)) {
             System.exit(0);
         }
     }

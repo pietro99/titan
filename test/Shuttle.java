@@ -3,7 +3,7 @@ public class Shuttle extends Body{
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
 
-    public final double fuelCost = 0.5547615714017767;   //cost / mass
+    public final double fuelCost = 0.5547615714017767;   //cost euro / kg
     //1.68 euro/gallon / (3.78541 l/gallion * 0.8 kg/l)
     //https://www.indexmundi.com/
     //https://www.indexmundi.com/commodities/?commodity=jet-fuel&months=12&currency=eur
@@ -78,7 +78,7 @@ public class Shuttle extends Body{
         this.mainEngineForce = mainEngineForce;
         this.lateralEngineMass = lateralEngineMass;
         this.lateralEngineForce = lateralEngineForce;
-        System.out.println("INIT: " + init);
+        //System.out.println("INIT: " + init);
         this.setNextDataFirst(this.init, this.init, this.init, this.init, Vector.ZERO, this.init.multiply(1 / 3), this.init.multiply(2 / 3),this.init, this.position);
     }
 
@@ -100,7 +100,11 @@ public class Shuttle extends Body{
     }
 
     public static Shuttle getStandardShuttle(Vector vel, Body start) {
-        return new Shuttle(vel, 20000, 500, 5, 20, 1000e8, -1e6, 500e8, -2e4, 2000, start);
+        return new Shuttle(vel, 20000, 500, 5, 20, 100e8, -1e6, 500e8, -2e4, 2000, start);
+    }
+
+    public static Shuttle getBackShuttle(Shuttle shuttle, Vector vel, Body start) {
+        return new Shuttle(vel, shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
     }
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay) {
@@ -214,12 +218,14 @@ public class Shuttle extends Body{
     }
 
     public void update(double deltaT) {
-        if(!landing)
+        if(!landing) {
             super.update(deltaT);
-        else {
+        }else {
             //position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
-            velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
-            position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
+            if(!acceleration.isNaN()) {
+                velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
+                position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
+            }
         }
         //rotation
         if(angularSpeed.squareLength() > epsilon) {
@@ -413,7 +419,8 @@ public class Shuttle extends Body{
             //System.out.println("Landing: " + (d - planet.getRadius()));
             //velocity = dist.normalize().multiply(-velocity.length() + 100e4);
             landing = true;
-            SolarSystem.setTimeStep(0.0001);
+            if(!Runner.simulation)
+                SolarSystem.setTimeStep(0.0001);
             setTimeStep(SolarSystem.getTimeStep());
             stopRotation(0, timeStep);
             //brake(planet.getVelocity().normalize().multiply(100e4).sum(planet.getVelocity()), planet.getVelocity());
@@ -435,7 +442,7 @@ public class Shuttle extends Body{
                 //System.out.println("Speed: " + (v * 1e-4));
                 useParachute(planet);   //-> we need this to land
 
-                Vector[] p = Physics.wind(this, planet, 100, 100000, 100);
+                Vector[] p = Physics.wind(this, planet, 100, 0.2, 1);
 
                 acceleration = acceleration.sum(p[0]);
                 angularSpeed = angularSpeed.sum(p[1]);
