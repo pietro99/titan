@@ -1,4 +1,5 @@
 public class Simulation {
+    public static int delta = 250;
     private int target;
     private int start;
     private int count;
@@ -20,9 +21,10 @@ public class Simulation {
     public Simulation(SolarSystem s, int start, int target, int limit, Vector init) {
         this.target = target;
         this.start = start;
-        this.limit = limit;
+        this.limit = limit + delta;
 
         gen = 0;
+        count = 0;
 
         bestPos = s.getShuttle().getPosition();
         bestTarget = s.getPlanets()[target].getPosition();
@@ -33,6 +35,7 @@ public class Simulation {
         this.init = init;
         System.out.println("Start: " + s.getPlanets()[start].getName());
         System.out.println("Target: " + s.getPlanets()[target].getName());
+        System.out.println("init: " + this.init);
     }
 
     public void addStep(int c) {
@@ -40,7 +43,7 @@ public class Simulation {
     }
 
     public SolarSystem tryNext() {  //TODO travel back
-        if(count >= limit) {
+        if(count > limit) {
             gen++;
             Shuttle shuttle = system.getShuttle();
             bestPos = shuttle.getPosition();
@@ -54,6 +57,8 @@ public class Simulation {
 
             Vector correction = bestTarget.subtract(bestPos);
 
+            System.out.println("Start: " + system.getPlanets()[start].getName());
+            System.out.println("Target: " + system.getPlanets()[target].getName());
             System.out.println("Select: " + init);
             System.out.println("Position: " + bestPos);
             System.out.println("Target: " + bestTarget);
@@ -89,16 +94,15 @@ public class Simulation {
     }
 
     public static Simulation getEarthTitan(SolarSystem s) {
-        return new Simulation(s, 3, 10, 3600 * 24 * 365 * 2, null);
+
+        return new Simulation(s, 3, 10, 3600 * 24 * 365 * 2 , null);
     }
 
     public static Simulation getTitanEarth(SolarSystem s) {
         final int start = 10;
         final int target = 3;
-        Vector startTarget = s.getPlanets()[start].getPosition().subtract(s.getPlanets()[target].getPosition());
-        int sign = -1;
-        if(startTarget.dot(s.getShuttle().getInitialVelocity()) < 0)
-            sign = 1;
-        return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2) * 2, s.getShuttle().getInitialVelocity().multiply(sign));
+
+        return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2), Shuttle.getStandardShuttle().getInitialVelocity().multiply(-1));
+        //return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2), new Vector(0, 1e8, 0));
     }
 }

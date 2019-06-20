@@ -60,6 +60,7 @@ public class Runner extends Application{
     Lander lander;
     Timeline timeline;
     private static Simulation simulator;
+    private static boolean onTitan = false;
 
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -106,9 +107,9 @@ public class Runner extends Application{
                 });
         timeline.getKeyFrames().add(kf);
         timeline.play();
-        if(simulation)
+       /* if(simulation)
             timeline.setRate(20);
-        else
+        else*/
             timeline.setRate(5);
         //.................
 
@@ -289,7 +290,9 @@ public class Runner extends Application{
 
     //method that updates the frame
     public void update() {
-        solarSystem.updateSolarSystem();
+        if(!solarSystem.getDone()) {
+            solarSystem.updateSolarSystem();
+        }
         fixCamera();
         if (solarSystem.getShuttle() == null) {
             System.out.println("FAIL");
@@ -335,11 +338,17 @@ public class Runner extends Application{
         }
 
         //simulation back to titan
-        if(simulation && back && solarSystem != null && simulator != null && solarSystem.getDone()) {
+        if(simulation && back && solarSystem.getDone()) {
+            onTitan = true;
+        }
+        if(simulation && back && solarSystem != null && simulator != null && onTitan) {
+            solarSystem.setDone(false);
             simulator.addStep(250);
             SolarSystem tmp = simulator.tryNext();
             if (tmp != null) {
+                onTitan = false;
                 solarSystem = tmp;
+                solarSystem.setShuttle(Shuttle.getStandardShuttle());
                 System.out.println("New attemp");
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(solarSystem.getGUI());
@@ -388,7 +397,9 @@ public class Runner extends Application{
     public static double getFrameSeconds() {
         return frameSeconds;
     }
-
+    public static boolean getOnTitan() {
+        return onTitan;
+    }
 
     public static void main(String[] args) {
         //call the start method

@@ -30,7 +30,7 @@ public class Shuttle extends Body{
     private double timeStep = 1;
 
     private boolean landing;
-
+    public boolean allowLanding = true;
     private double costEst;
 
     private FourAdamsBashfort nextAngle;
@@ -91,7 +91,7 @@ public class Shuttle extends Body{
         //return getStandardShuttle(new Vector(381800.2163455189, -1149217.8900735674, 4136.636811081316));     //close titan 6 months
         //return getStandardShuttle(new Vector(381605.51557622006, -1148736.3302332184, 4127.753788215523));    //hit saturn 6 montha
         //return getStandardShuttle(new Vector(176154.29933254703, -831468.409196778, -894.8628493431781));       //close titan 1 year, few orbits
-        return getStandardShuttle(new Vector(176148.06943044582, -831464.4838398469, -892.0608999642003));      //63.5 km 1 year
+        return getStandardShuttle(new Vector(176148.06943044582, -831464.4838398469, -892.0608999642003).multiply(1));      //63.5 km 1 year
         //return getStandardShuttle(new Vector(176148.0730347496, -831464.488020747, -892.086879038433));       //400m
 
     }
@@ -414,7 +414,7 @@ public class Shuttle extends Body{
     public void land(Planet planet, double timeStep) {
         Vector dist = position.subtract(planet.getPosition());
         double d = dist.length();
-        if(d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 5e4) {       //start landing
+        if(allowLanding && d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 5e4) {       //start landing
             costEst = costEstimate(planet);
             //System.out.println("Landing: " + (d - planet.getRadius()));
             //velocity = dist.normalize().multiply(-velocity.length() + 100e4);
@@ -430,7 +430,7 @@ public class Shuttle extends Body{
             }else {
                 alignTo(dist, true, timeStep, 0, 0);
 
-                System.out.println("In atmosphere: " + (d - planet.getRadius()));
+                System.out.println("In atmosphere: " + (d - planet.getRadius()) + " " + planet.getName());
                 double dot = dist.normalize().dot(getDirection(2).normalize());
                 //roundoff error
                 if(dot > 1)
@@ -442,7 +442,7 @@ public class Shuttle extends Body{
                 //System.out.println("Speed: " + (v * 1e-4));
                 useParachute(planet);   //-> we need this to land
 
-                Vector[] p = Physics.wind(this, planet, 100, 0.2, 1);
+                Vector[] p = Physics.wind(this, planet, 1, 0.2, 1);
 
                 acceleration = acceleration.sum(p[0]);
                 angularSpeed = angularSpeed.sum(p[1]);
@@ -450,8 +450,7 @@ public class Shuttle extends Body{
                 acceleration = acceleration.subtract(drag);
                 //if(velocity.dot(dist) < 0)
                     //brake(dist.normalize().multiply(-1e4), planet.getVelocity());
-                brake(planet.getVelocity().normalize().multiply(1e4).sum(planet.getVelocity()), planet.getVelocity());
-
+                brake(planet.getVelocity().normalize().multiply(0e4).sum(planet.getVelocity()), planet.getVelocity());
             }
         }else {
             landing = false;
@@ -463,9 +462,9 @@ public class Shuttle extends Body{
         double h = position.distance(p.getPosition());
         double a =  v  / (2 * h);
         double steps = Math.ceil(a * mass / mainEngineForce);   //F / Fstep
-        //return -mainEngineMass * fuelCost * v * mass / (2 * h * mainEngineForce);   //check formula
+        return -mainEngineMass * fuelCost * v * mass / (2 * h * mainEngineForce);   //check formula
         //return steps * -mainEngineMass * fuelCost;
-        return mainEngineForce / a  * fuelCost;
+      //  return mainEngineForce / a  * fuelCost;
     }
 
     public double cost() {

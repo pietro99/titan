@@ -36,9 +36,6 @@ public class SolarSystem {
 		//reset force and acceleration
 		gravityCalculator.calculateForce();
 		if(shuttle != null) {
-			//bestDistance = shuttle.getPosition().distance(planets[10].getPosition());
-			//bestPos = shuttle.getPosition();
-			//bestTitan = planets[10].getPosition();
 			//update shuttle position
 			shuttle.update(timeStep);
 		}
@@ -66,11 +63,13 @@ public class SolarSystem {
 	private void checkCrush() {
 		if(shuttle!= null) {
 			//if crashes on Titan:
-			if(/*!Runner.back &&*/ shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
+			//if(!Runner.back && shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
+			if(/*!Runner.back &&*/ shuttle.getPosition().subtract(planets[10].getPosition()).length() - planets[10].getRadius() < 10) {
 				Vector v = shuttle.getVelocity().subtract(planets[10].getVelocity());
 				Vector dist = shuttle.getPosition().subtract(planets[10].getPosition());
 				double d = dist.length();
 
+				System.out.println("Distance: " + (d - planets[10].getRadius()));
 				System.out.println("shuttle initial vector speed: " + shuttle.init);
 				System.out.println("shuttle initial speed: " + shuttle.init.length());
 				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
@@ -93,6 +92,7 @@ public class SolarSystem {
 				System.out.println("Cost estimate: " + shuttle.getCostEstimate());
 				System.out.println("Cost: " + shuttle.cost());
 				System.out.println("!!! LANDED ON TITAN !!!");
+				shuttle.allowLanding = false;
 				done = true;
 				//System.exit(0);
 			}
@@ -176,5 +176,8 @@ public class SolarSystem {
 	}
 	public boolean getDone() {
 		return done;
+	}
+	public void setDone(boolean b) {
+		done = b;
 	}
 }

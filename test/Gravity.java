@@ -23,13 +23,19 @@ public class Gravity implements GravityMethod {
     }
 
     private void calculateGravity() {
-        shuttle.land(solarSystem.getTitan(), SolarSystem.getTimeStep());
+        if(!Runner.getOnTitan())
+            shuttle.land(solarSystem.getTitan(), SolarSystem.getTimeStep());
+        else
+            shuttle.land(solarSystem.getEarth(), SolarSystem.getTimeStep());
+
         for(int i = 0; i < bodies.length; i++) {	//first planet
             for(int j = 1; j < bodies.length - i; j++) {        //other planet
                 Vector distance = bodies[i].getPosition().subtract(bodies[i + j].getPosition());	//from j to i
                 double d = distance.squareLength();
-                if(d == 0)
-                    d = 10;
+                if(d < 1000) {
+                    d = 1000;
+                    distance = distance.normalize().multiply(1000);
+                }
                 distance = distance.normalize();
                 bodies[i + j].addAcceleration(distance.multiply(gravity(bodies[i], d)));
                 bodies[i].addAcceleration(distance.multiply(-1 * gravity(bodies[i+j], d)));

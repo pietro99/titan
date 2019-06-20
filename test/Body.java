@@ -24,22 +24,23 @@ public abstract class Body {
     public void addAcceleration(Vector acc) {
         acceleration = acceleration.sum(acc);
     }
-  //  int count = 0;
+    //int count = 0;
     public void update(double deltaT) {
-        if (nextVelocity == null){
+        if (nextVelocity == null /*|| true*/){
             //  EULER METHOD
             velocity = velocity.sum(velocity.sum(acceleration.multiply(deltaT))).multiply(0.5);
             position = position.sum(position.sum(velocity.multiply(deltaT))).multiply(0.5);
-/*            if(count == 10) {
+            /*count++;
+            if(count == 6910) {
                 System.out.println(SolarSystem.getPlanets()[10].getPosition());
                 System.exit(0);
             }*/
         }else{
             /*count++;
-            if(count == 10) {
+            if(count == 6910) {
                 System.out.println(SolarSystem.getPlanets()[10].getPosition());
                 System.exit(0);
-            }*/
+            }**/
             //Adams-Bashforth
             nextPosition.setNext(velocity);
             nextVelocity.setNext(acceleration);
