@@ -40,22 +40,18 @@ public class Runner extends Application{
     //public static int count = 0;
     public static int counter = 0;
     public boolean isLanding = false;
-    //public static int gen =0;
+
     public static boolean simulation = false;
     public static boolean back = false;
     public static boolean followTitan = false;
     public static boolean followSaturn = false;
     public static boolean followShuttle = false;
     public static boolean followEarth = false;
-    //double factor = 2;
+
     Vector oldPos;
     Vector oldTitan;
-    Shuttle shuttle;
-    //Vector bestPos;
-    //Vector bestTitan;
-    //double err;
-    //double oldErr;
-    List<Circle>shuttleCir = new ArrayList<Circle>();
+    Shuttle tmpShuttle;
+
     PerspectiveCamera camera;
     Lander lander;
     Timeline timeline;
@@ -338,16 +334,26 @@ public class Runner extends Application{
         }
 
         //simulation back to titan
-        if(simulation && back && solarSystem.getDone()) {
+        if(simulation && back && solarSystem.getDone() && !onTitan) {
             onTitan = true;
+            System.out.println("Switch");
+            solarSystem.setShuttle(Shuttle.getStandardShuttle(simulator.getInit(), solarSystem.getTitan()));
+            solarSystem.getShuttle().allowLanding = false;
+            System.out.println(solarSystem.getShuttle().getInitialVelocity());
+            System.out.println(solarSystem.getShuttle().getPosition().distance(solarSystem.getSaturn().getPosition()));
+            mainPane.getChildren().clear();
+            mainPane.getChildren().add(solarSystem.getGUI());
         }
+        //if(onTitan)
+            //System.out.println(solarSystem.getShuttle().getAcceleration());
         if(simulation && back && solarSystem != null && simulator != null && onTitan) {
             solarSystem.setDone(false);
             simulator.addStep(250);
             SolarSystem tmp = simulator.tryNext();
-            if (tmp != null) {
+            if (tmp != null) {      //restart simulation
                 onTitan = false;
                 solarSystem = tmp;
+                tmpShuttle = solarSystem.getShuttle();
                 solarSystem.setShuttle(Shuttle.getStandardShuttle());
                 System.out.println("New attemp");
                 mainPane.getChildren().clear();

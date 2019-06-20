@@ -416,7 +416,7 @@ public class Shuttle extends Body{
         double d = dist.length();
         if(allowLanding && d < (planet.getDistanceAtmosphere() + planet.getRadius()) + 5e4) {       //start landing
             costEst = costEstimate(planet);
-            //System.out.println("Landing: " + (d - planet.getRadius()));
+            System.out.println("Landing: " + (d - planet.getRadius()));
             //velocity = dist.normalize().multiply(-velocity.length() + 100e4);
             landing = true;
             if(!Runner.simulation)

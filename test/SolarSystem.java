@@ -64,7 +64,7 @@ public class SolarSystem {
 		if(shuttle!= null) {
 			//if crashes on Titan:
 			//if(!Runner.back && shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
-			if(/*!Runner.back &&*/ shuttle.getPosition().subtract(planets[10].getPosition()).length() - planets[10].getRadius() < 10) {
+			if(/*!Runner.back &&*/shuttle.allowLanding && shuttle.getPosition().subtract(planets[10].getPosition()).length() - planets[10].getRadius() < 10) {
 				Vector v = shuttle.getVelocity().subtract(planets[10].getVelocity());
 				Vector dist = shuttle.getPosition().subtract(planets[10].getPosition());
 				double d = dist.length();
@@ -94,6 +94,7 @@ public class SolarSystem {
 				System.out.println("!!! LANDED ON TITAN !!!");
 				shuttle.allowLanding = false;
 				done = true;
+				System.out.println(shuttle);
 				//System.exit(0);
 			}
 			else {//crashes somewhere else:

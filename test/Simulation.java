@@ -5,13 +5,14 @@ public class Simulation {
     private int count;
     private int limit;
     private int gen;
-    private double factor = 2.0;
+    private double factor = 1;
 
     private double error;
     private Vector bestPos;
     private Vector bestTarget;
 
     private SolarSystem system;
+    private Shuttle shuttle;
     private Vector init;
 
     public Simulation(SolarSystem s, int start, int target, int limit) {
@@ -33,6 +34,7 @@ public class Simulation {
         if(init == null)
             init = bestTarget.subtract(bestPos);
         this.init = init;
+        this.shuttle = s.getShuttle();
         System.out.println("Start: " + s.getPlanets()[start].getName());
         System.out.println("Target: " + s.getPlanets()[target].getName());
         System.out.println("init: " + this.init);
@@ -66,6 +68,7 @@ public class Simulation {
             System.out.println("Error: " + error);
 
             Vector newInit = init.sum(correction.multiply(1 / getScaling(newErr))); //TODO distinguish between titan-earth init and earth-titan init
+            System.out.println("New: " + newInit);
             count = 0;
             system = new SolarSystem();
             shuttle = Shuttle.getStandardShuttle(newInit, system.getPlanets()[start]);
@@ -91,7 +94,9 @@ public class Simulation {
 
     public SolarSystem getSystem() {
         return system;
-    }
+    }   //redundant
+
+    public Shuttle getShuttle() { return shuttle; }
 
     public static Simulation getEarthTitan(SolarSystem s) {
 
@@ -102,7 +107,7 @@ public class Simulation {
         final int start = 10;
         final int target = 3;
 
-        return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2), Shuttle.getStandardShuttle().getInitialVelocity().multiply(-1));
+        return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2), Shuttle.getStandardShuttle().getInitialVelocity().multiply(-1.5));
         //return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2), new Vector(0, 1e8, 0));
     }
 }
