@@ -237,7 +237,7 @@ public class Planet extends Body{
 	}
 
 	public static Planet makeTitan() {
-		Planet p = new Planet("titan", new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07),        new Vector(1.208193089270527E+01,-1.813839579262785E+00,1.381017323560965E+00).multiply(Planet.factor),     2575.5 + 8192,   13455.3E19, 600, 1.5);
+		Planet p = new Planet("titan", new Vector(3.537424927743304E+08,-1.462539028125231E+09,1.169787519537956E+07),        new Vector(1.208193089270527E+01,-1.813839579262785E+00,1.381017323560965E+00).multiply(Planet.factor),     10767.5,   13455.3E19, 600, 1.5);
 
 		if(!mix) {
 			Vector velocityDayMinus3 = new Vector(6.178641376271634E+00, -1.833777023610783E+00, 1.971184760009602E+00).multiply(Planet.factor);             // on day 1

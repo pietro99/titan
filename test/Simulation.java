@@ -65,13 +65,16 @@ public class Simulation {
             System.out.println("Position: " + bestPos);
             System.out.println("Target: " + bestTarget);
             System.out.println("Correction: " + correction);
-            System.out.println("Error: " + error);
+            System.out.println("Error: " + (error - system.getPlanets()[target].getRadius()));
 
             Vector newInit = init.sum(correction.multiply(1 / getScaling(newErr))); //TODO distinguish between titan-earth init and earth-titan init
             System.out.println("New: " + newInit);
+
+            double mass = system.getShuttle().getMass();
             count = 0;
             system = new SolarSystem();
             shuttle = Shuttle.getStandardShuttle(newInit, system.getPlanets()[start]);
+            shuttle.setMass(mass);
             system.setShuttle(shuttle);
             error = newErr;
             init = newInit;
@@ -97,6 +100,11 @@ public class Simulation {
     }   //redundant
 
     public Shuttle getShuttle() { return shuttle; }
+
+    public double getErrorRadius() { return error - system.getPlanets()[target].getRadius();}
+
+    public int getTarget() { return target; }
+    public int getStart() { return start; }
 
     public static Simulation getEarthTitan(SolarSystem s) {
 

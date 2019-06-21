@@ -294,7 +294,7 @@ public class Runner extends Application{
             System.out.println("FAIL");
             System.exit(0);
         }
-        if (!simulation && solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition()) <= 1000000) {
+        if (!back && !simulation && solarSystem.getTitan().getPosition().distance(solarSystem.getShuttle().getPosition()) <= 1000000) {
             //if(solarSystem.getShuttle().isLanding()) {
             timeline.setRate(.005);
             if (counter == 0) {
@@ -344,13 +344,18 @@ public class Runner extends Application{
             mainPane.getChildren().clear();
             mainPane.getChildren().add(solarSystem.getGUI());
         }
-        //if(onTitan)
-            //System.out.println(solarSystem.getShuttle().getAcceleration());
         if(simulation && back && solarSystem != null && simulator != null && onTitan) {
             solarSystem.setDone(false);
             simulator.addStep(250);
             SolarSystem tmp = simulator.tryNext();
+
             if (tmp != null) {      //restart simulation
+                if(simulator.getErrorRadius() <= 0) {
+                    System.out.println("WELCOME BACK");
+                    System.out.println(simulator.getShuttle().getInitialVelocity());
+                    System.out.println(simulator.getInit());
+                    System.exit(0);
+                }
                 onTitan = false;
                 solarSystem = tmp;
                 tmpShuttle = solarSystem.getShuttle();
@@ -363,10 +368,27 @@ public class Runner extends Application{
 
         //travel to titan and back to earth
         if(!simulation && back) {
-            //TODO
+            if(solarSystem.getDone()) {
+                /*solarSystem.setShuttle(Shuttle.getBackShuttle(solarSystem.getShuttle(), solarSystem.getTitan()));
+                System.out.println(solarSystem.getShuttle().getInitialVelocity());
+                solarSystem.setDone(false);*/
+                solarSystem.setShuttle(Shuttle.getStandardShuttle(new Vector(-11758.832380706273, 1087391.3637470687, -111573.91536482116), solarSystem.getTitan()));
+                solarSystem.getShuttle().allowLanding = false;
+
+
+                onTitan = true;
+                solarSystem.getShuttle().allowLanding = false;
+                mainPane.getChildren().clear();
+                mainPane.getChildren().add(solarSystem.getGUI());
+
+            }
+            if(onTitan && solarSystem.getEarth().getPosition().distance(solarSystem.getShuttle().getPosition()) <= solarSystem.getEarth().getRadius()) {
+                System.out.println("WELCOME BACK");
+                System.exit(0);
+            }
         }
 
-        if(solarSystem.getDone() && (!simulation || !back)) {
+        if(solarSystem.getDone() && (!simulation && !back)) {
             System.exit(0);
         }
     }

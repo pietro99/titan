@@ -103,8 +103,9 @@ public class Shuttle extends Body{
         return new Shuttle(vel, 20000, 500, 5, 20, 100e8, -1e6, 500e8, -2e4, 2000, start);
     }
 
-    public static Shuttle getBackShuttle(Shuttle shuttle, Vector vel, Body start) {
-        return new Shuttle(vel, shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
+    public static Shuttle getBackShuttle(Shuttle shuttle, Body start) {
+        //-11758.832380706273 1087391.3637470687 -111573.91536482116
+        return new Shuttle(new Vector(-11758.832380706273, 1087391.3637470687, -111573.91536482116), shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
     }
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay) {
