@@ -69,10 +69,11 @@ public class SolarSystem {
 				Vector dist = shuttle.getPosition().subtract(planets[10].getPosition());
 				double d = dist.length();
 
-				System.out.println("Distance: " + (d - planets[10].getRadius()));
+				//System.out.println("Distance: " + (d - planets[10].getRadius()));
 				System.out.println("shuttle initial vector speed: " + shuttle.init);
 				System.out.println("shuttle initial speed: " + shuttle.init.length());
-				System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
+				//System.out.println("distance shuttle-titan: " + shuttle.getPosition().distance(planets[10].getPosition()));
+				System.out.println("Position: " + shuttle.getPosition().subtract(getTitan().getPosition()).normalize());
 				System.out.println("Direction Z: " + shuttle.getDirection(2));
 				//System.out.println("Angle (deg): " + (180 / Math.PI) * Math.acos(planets[10].getPosition().subtract(shuttle.getPosition()).normalize().dot(shuttle.getDirection(2).normalize())));
 				double dot = dist.normalize().dot(shuttle.getDirection(2).normalize());

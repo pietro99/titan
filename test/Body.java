@@ -1,11 +1,11 @@
-import javafx.beans.binding.ObjectExpression;
+//import javafx.beans.binding.ObjectExpression;
 
 public abstract class Body {
     protected Vector position, velocity, acceleration;
     protected double mass, radius;
 
-    public FourAdamsBashfort nextVelocity = null;
-    public FourAdamsBashfort nextPosition = null;
+    protected FourAdamsBashforth nextVelocity = null;
+    protected FourAdamsBashforth nextPosition = null;
 
     public Vector getPosition() { return position; }
     public Vector getVelocity() { return velocity; }
@@ -57,8 +57,8 @@ public abstract class Body {
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay){
         //Adams solvers
-        nextVelocity = new FourAdamsBashfort(SolarSystem.getTimeStep() / 4, VelocityActualDay, AccelerationActualDay, AccelerationDayMinus1, AccelerationDayMinus2,AccelerationDayMinus3);
-        nextPosition = new FourAdamsBashfort(SolarSystem.getTimeStep() / 4, PositionActualDay, VelocityActualDay, VelocityDayMinus1, VelocityDayMinus2, VelocityDayMinus3);
+        nextVelocity = new FourAdamsBashforth(SolarSystem.getTimeStep() / 4, VelocityActualDay, AccelerationActualDay, AccelerationDayMinus1, AccelerationDayMinus2,AccelerationDayMinus3);
+        nextPosition = new FourAdamsBashforth(SolarSystem.getTimeStep() / 4, PositionActualDay, VelocityActualDay, VelocityDayMinus1, VelocityDayMinus2, VelocityDayMinus3);
         /*nextVelocity.setNext(AccelerationActualDay);
         nextPosition.setNext(VelocityActualDay);*/
     }

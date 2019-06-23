@@ -1,4 +1,4 @@
-public class FourAdamsBashfort {
+public class FourAdamsBashforth {
     double timeStep;
     //previous value
     Vector wi; // actual vector at actual time
@@ -10,7 +10,7 @@ public class FourAdamsBashfort {
     Vector fMinus3; // at time-3
     Vector fPlus1;  // at time+1
 
-    public FourAdamsBashfort(double timeStep, Vector wi, Vector f, Vector fMinus1, Vector fMinus2, Vector fMinus3){
+    public FourAdamsBashforth(double timeStep, Vector wi, Vector f, Vector fMinus1, Vector fMinus2, Vector fMinus3){
         this.timeStep = timeStep;
         this.wi = wi;
         this.f = f;
