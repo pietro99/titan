@@ -31,8 +31,6 @@ public class Simulation {
         bestTarget = s.getPlanets()[target].getPosition();
         error = getError();
         system = s;
-        if(init == null)
-            init = bestTarget.subtract(bestPos);
         this.init = init;
         this.shuttle = s.getShuttle();
         System.out.println("Start: " + s.getPlanets()[start].getName());
@@ -108,7 +106,7 @@ public class Simulation {
 
     public static Simulation getEarthTitan(SolarSystem s) {
 
-        return new Simulation(s, 3, 10, 3600 * 24 * 365 * 2 , null);
+        return new Simulation(s, 3, 10, 3600 * 24 * 365 * 2 , new Vector(150000, -800000, -1000));
     }
 
     public static Simulation getTitanEarth(SolarSystem s) {

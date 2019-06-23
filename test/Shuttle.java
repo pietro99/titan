@@ -105,6 +105,7 @@ public class Shuttle extends Body{
 
     public static Shuttle getBackShuttle(Shuttle shuttle, Body start) {
         //-11758.832380706273 1087391.3637470687 -111573.91536482116
+        //use sun
         return new Shuttle(new Vector(-11758.832380706273, 1087391.3637470687, -111573.91536482116), shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
     }
 
@@ -420,7 +421,7 @@ public class Shuttle extends Body{
             System.out.println("Landing: " + (d - planet.getRadius()));
             //velocity = dist.normalize().multiply(-velocity.length() + 100e4);
             landing = true;
-            if(!Runner.simulation)
+          //  if(!Runner.simulation)
                 SolarSystem.setTimeStep(0.0001);
             setTimeStep(SolarSystem.getTimeStep());
             stopRotation(0, timeStep);
@@ -455,6 +456,8 @@ public class Shuttle extends Body{
             }
         }else {
             landing = false;
+            SolarSystem.setTimeStep(0.05);
+            setTimeStep(SolarSystem.getTimeStep());
         }
     }
 

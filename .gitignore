@@ -1,2 +1,7 @@
 *.class
 .idea
+*.aux
+*.lof
+*.log
+*.gz
+*.toc
