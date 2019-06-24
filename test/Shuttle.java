@@ -106,7 +106,9 @@ public class Shuttle extends Body{
     public static Shuttle getBackShuttle(Shuttle shuttle, Body start) {
         //-11758.832380706273 1087391.3637470687 -111573.91536482116
         //use sun
-        return new Shuttle(new Vector(-11758.832380706273, 1087391.3637470687, -111573.91536482116), shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
+        //return new Shuttle(new Vector(-11758.832380706273, 1087391.3637470687, -111573.91536482116), shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
+        //-131755.57495304957 1066492.0408731306 -158218.66756191314
+        return new Shuttle(new Vector(-131755.57495304957, 1066492.0408731306, -158218.66756191314), shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
     }
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay) {
