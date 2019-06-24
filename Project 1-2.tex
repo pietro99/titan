@@ -18,7 +18,6 @@
 \titlespacing*{\paragraph}
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
-
 \begin{document}
 	\begin{titlepage}	
 		\begin{center}	
@@ -98,7 +97,7 @@
 	\end{itemize}
 	\subsection{Tables}
 	\begin{itemize}
-		\item
+		\item %TODO table list
 	\end{itemize}
 
 	\subsection{Figures}
@@ -108,13 +107,13 @@
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Introduction}
-	Space travel and exploration has been on human?s minds for as long as they have grasped the idea of ?outer space?. For ages, people dreamt of heading up to the moon and to fly between the stars. As mankind developed and was able to fully explore our planet, the urge to explore the rest of the universe increased. It was not until recently that this became more than a dream. In 1961, Yuri Gagarin, the first living person to return from a space mission, completed the first orbit around Earth. A new era of (human) space exploration had started!\\ \\
+	Space travel and exploration has been on human's minds for as long as they have grasped the idea of ?outer space'. For ages, people dreamt of heading up to the moon and to fly between the stars. As mankind developed and was able to fully explore our planet, the urge to explore the rest of the universe increased. It was not until recently that this became more than a dream. In 1961, Yuri Gagarin, the first living person to return from a space mission, completed the first orbit around Earth. A new era of (human) space exploration had started!\\ \\
 	
-	This report is meant for everyone who would like to know more about a complete, safe space trip and its simulation. It is rather an introduction to this topic and it?s digital implementation. \\
+	This report is meant for everyone who would like to know more about a complete, safe space trip and its simulation. It is rather an introduction to this topic and it is digital implementation. \\
 	NO ROCKETS WERE HURT IN THE MAKING OF THIS REPORT!
 	
 	\subsection{Problem description}
-	In order to start tackling this problem, a physically correct simulation of the solar system is needed. Using this model we could then start experimenting by launching probes from Earth. Imagine these probes as cannonballs, launched from a cannon on Earth?s surface. These so called exploratory missions help explore the workings of the physical simulation of the solar system, which is based on gravity. Once you?ve hit Titan with one of the probes, you know with which velocity to launch it at what point in time and are thus able to reach Saturn?s moon.\\ \\
+	In order to start tackling this problem, a physically correct simulation of the solar system is needed. Using this model we could then start experimenting by launching probes from Earth. Imagine these probes as cannonballs, launched from a cannon on Earth's surface. These so called exploratory missions help explore the workings of the physical simulation of the solar system, which is based on gravity. Once you have hit Titan with one of the probes, you know with which velocity to launch it at what point in time and are thus able to reach Saturn's moon.\\ \\
 	
 	In order to land a rocket on a planet, you have to make it orbit the planet first. Once this is done, you have to align its direction so you can enter the orbit. This is where the going gets tough: as the rocket will now be influenced by atmospheric factors, such as the wind.
 	%TODO more complete intro
@@ -129,7 +128,7 @@
 
 	\subsection{Solar System}
 	\subsubsection{Physical approach and alternatives}
-	To digitally simulate our solar systems we used Newton's gravitational theorem. The model is based on equation $\vec{F} = \frac{\vec{r}}{|\vec{r}|} G \dfrac{m_1 m_2}{|\vec{r}|^2} $ \footnote{(2019). Retrieved from https://www3.nd.edu/~zxu2/acms40390F15/Lec-5.6.pd}, this means that the gravitational force F is equal to the product of the masses of both objects, divided by the distance squared, multiplied by the gravitational constant G. Or in other words: the bigger the mass and the closer the distance, the bigger the force.\\
+	To digitally simulate our solar systems we used Newton's gravitational theorem. The model is based on equation $\vec{F} = \frac{\vec{r}}{|\vec{r}|} G \dfrac{m_1 m_2}{|\vec{r}|^2} $, this means that the gravitational force F is equal to the product of the masses of both objects, divided by the distance squared, multiplied by the gravitational constant G. Or in other words: the bigger the mass and the closer the distance, the bigger the force.\\
 	To implement this model, it is necessary to pick a certain point in time and  to know where the planets were located at that time. Once all the celestial bodies are loaded in their original place, the gravity will do its work, which results in the planets orbiting around the Sun and the moons around their respective planets.\\ \\
 	
 	Another possibility was to simulate our solar system using an orbital model. This approach is simpler: draw the sun and surround it with ellipses that represent the size of the orbits of the planets. \\
@@ -147,7 +146,7 @@
 	This methods as a global error $O(h)$, require only one function evaluation at each iteration and it is easy to implements.
 	
 	\paragraph{Adams-Bashforth}
-	We decided to use Adams-Bashforth explicit 4 steps method to solve the different equations. 
+	We decided to use Adams-Bashforth explicit 4 steps method to solve the different equations \footnote{(2019). Retrieved from https://www3.nd.edu/~zxu2/acms40390F15/Lec-5.6.pd}. 
 	This method has been implemented and replaced the Euler's method to have a higher accuracy in the calculus of the simulation. As mentioned earlier, Euler's method is first order while Adams-Bashforth is a 4rth order equation solver. Adams-Bashforth's method is more accurate than Euler's, that is why it is recommended to work with the Adams-Bashforth method. 
 	This method is defined as
 	\begin{flalign}
@@ -186,11 +185,17 @@
 	
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	\section{Travel}	%TODO more details on launch
+	\section{Travel}	
 	\subsection{Launch}
+	To launch the rocket from any planet, we assume a special launching station that launches the rocket with a certain initial velocity. It is comparable to a catapult launching a projectile. The higher the velocity during the launch, the easier it is to calculate a correct course, the lower its speed, the easier it gets dragged away by other planets' gravity. Thus it is recommended to experiment with a higher speed first. 
+	The launcher seen on %TODO catapult figure
+	is comparable to the one used in this report, albeit on a bigger, digital scale.
+	
 	\subsubsection{From Earth}
-	For the launch on Earth we use the same point in time as we initialize our digital Solar System, which is the 22nd of March 2019 at midnight. We launch from really close to the equator (latitude -0.0016°) facing Titan
+	The spaceship is launched from Earth as soon as the Solar System is initialize, which is the 22nd of March 2019 at midnight. The launch location is really close to the equator (latitude -0.0016°) facing Titan. Atmosphere has been ignored during this phase of the travel.
+	
 	\subsubsection{From Titan}
+	The spaceship is launched again to Earth when it lands on Titan. The method is similar to the one used in the previous launch from the landing location.
 	
 	\subsection{Trajectory}
 	The trajectory is determined by the starting velocity of the rocket and the gravity influenced on the rocket by the celestial bodies in the solar system, according to Newton's gravitational theorem (see 3.1.1.).
@@ -199,37 +204,62 @@
 	To find a trajectory we developed an algorithm that finds the initial vector velocity of the rocket such that the rocket reaches Titan's atmosphere. The algorithm works by launching the rocket towards Titan with a generic initial velocity. After a determined amount of time the rocket stops and the vector distance between the rocket and Titan is stored and used to correct the rocket's initial velocity, then it is launched again with the improved initial velocity. This process is repeated and the correction made to the initial velocity is proportional to the distance between the rocket and Titan at the end of the launch. This is useful to avoid over-correcting and guarantees that the rocket will find a trajectory after a finite number of iterations. Moreover the correction factor is changed when the rocket can go close to Titan, in this way it oscillates less around the optimal solution and converges faster.
 		
 	\subsubsection{To Titan}
-	%TODO TO titan:PID and initial conditions
+	When the spaceship is launched from the Earth it is influenced by all the celestial body in the simulation (the Sun, the main planets, the Moon and Titan). The trajectory to Titan is almost straight, in this way it does not have to use its engines during the travel, so it reduces the cost. The trajectory is slightly curved by Jupiter and in the final phase by Saturn and Titan. There is no analytic formula for this trajectory, but it is defined by the initial velocity perpendicular to the ground of the spaceship.
+	The velocity used is:
+	\begin{enumerate}
+		\item[x:] 17.614806943044582
+		\item[y:] -83.14644838398469
+		\item[z:] -0.08920608999642003
+	\end{enumerate}	
+	then the initial velocity is about 84.99 km/s. \\
+	By using this trajectory the spaceship is able perform few orbits around Titan, but then if it does not land it will fly away from the planet, because of Saturn gravity.
+	
 	\subsubsection{To Earth}
-	%TODO  To earth: trajectory
+	The trajectory to return to Earth is calculated with the same algorithm used for the trajectory to go to Titan. The launching time is one year later the launching from Earth, so 22 March 2020. The trajectory is almost straight and similar to previous one. It is slightly influenced by Jupiter.\\
+	The initial velocity for the launch is 
+	\begin{enumerate}
+		\item[x:] -13.175557495304957
+		\item[y:] 106.64920408731306
+		\item[z:] -15.821866756191314
+	\end{enumerate}	
+	then the initial velocity is about 108.61 km/s and it manages to return the spaceship in one year. \\
+	Another possible trajectory is close to $(-1.1758832380706273, 108.73913637470687, -11.157391536482116)$, which is heavily influenced by the Sun.	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Landing}
 	When the shuttle managed to orbit around the target planet, it will start an automated landing. The landing is coordinated by two built-in controllers. These algorithms help to land our shuttle safely on the surface of the planet.
-	\subsection{On Titan}
+	
 	\subsubsection{Given tolerances}
 	In order to assure a safe landing, it is required to respect multiple parameters. A landing is considered safe when the velocity is less than 0.1, the angular velocity less than 0.01, the angle between the vertical axis of the spaceship and the ground is less than 0.02 and the distance to the ground less than 0.1.
 	
 	\subsubsection{Stochastic wind model}
 	%TODO wind model
+	
 	\subsubsection{Feedback controller}
-	%TODO feedback controller
+	This controller keeps the spaceship vertical during the landing, so it tries to minimize the angle between the vertical axis of the spaceship and the orthogonal axis to the ground. Titan is assumed to be sphere so the distance between the spaceship and the planet is the orthogonal axis. The controller estimates the angular velocity needed to align by using the angle formula (3.2.3.) and it compensates the actual angular velocity and the wind rotation effect. Then the angle is computed by the equation solver. When the alignment is correct, it adjusts it at every iteration and keeps the angular velocity close to zero.	
+	
 	\subsubsection{Open loop controller}
-	The computation for the velocity during the landing is done by using an open loop controller: at 50'000 km the velocity is reduced to 500 km/h (with respect to Titan) with the main engine and with the same direction of the velocity of Titan. Then at 600km, when the spaceship enters the atmosphere, it starts braking to have the same velocity of the planet. During this phase the feedback controller for the rotation is still working and a three dimensional space is used.
-	%TODO why opendloop and not feedback
+	The computation for the velocity during the landing is done by using an open loop controller: at 50'000 km the velocity is reduced to 500 km/h (with respect to Titan) with the main engine and with the same direction of the velocity of Titan. Then at 600km, when the spaceship enters the atmosphere, it starts braking to have the same velocity of the planet. During this phase the feedback controller for the rotation is still working and a three dimensional space is used.\\
+	This controller does not take in account changes of the environment but try to reach the correct state at each phase of the landing.
+	
+	\subsection{On Titan}
+	The landing is considered complete when the distance between the spaceship and the ground is zero, then it is not error-based, so it is not possible using a PID controller for the velocity. During the descending it continues to orbit around Titan. Also the final state is measured in this moment.
+	
 	\subsection{On Earth}
-	%TODO no safe landing on earth
+	The return to Earth does not take in account atmosphere and the landing velocity, but it just tries to reach the planet.
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%		
 	\section{Optimizations}
 	\subsection{Fuel efficiency}
-	Every time that the spaceship uses its engines it consume fuel, so it reduces its mass. The total mass at the launch is 20'000 kg, 15'000 kg are fuel. When it lands on Titan it has consumed 5529.55 kg of fuel. The cost of the fuel is assumed to be the same of kerosene (1.68 ? / gallon \footnote{Jet Fuel - Monthly Price (Euro per Gallon) - Commodity Prices - Price Charts, Data, and News - IndexMundi. Retrieved from https://www.indexmundi.com/commodities/?commodity=jet-fuel\&months=12\&currency=eur}, about 0.55 ? / kg), then the cost is about ? 3067.58. The estimate of the cost when the rocket start the landing at 50'000 km from Titan is ? 1181.00. The estimation assumes that there are no rotation nor atmosphere and it calculates the constant acceleration needed to land with a null  velocity and a distance of zero meters from the ground. 
-	From constant acceleration motion formula it is possible to derive that $\vec{a} = \frac{|\vec{v}|^2}{2h}$, where $h$ is the distance from the ground. Then the mass $M$ of fuel need is $M = \dfrac{m a}{F_{engine}}m_{engine} $ and the cost is calculated by using the mass M.
-	
+	Every time that the spaceship uses its engines it consume fuel, so it reduces its mass. The total mass at the launch is 20'000 kg, 15'000 kg are fuel. When it lands on Titan it has consumed 5529.55 kg of fuel. The cost of the fuel is assumed to be the same of kerosene (1.68 ? / gallon \footnote{Jet Fuel - Monthly Price (Euro per Gallon) - Commodity Prices - Price Charts, Data, and News - IndexMundi. Retrieved from https://www.indexmundi.com/commodities/?commodity=jet-fuel\&months=12\&currency=eur}, about 0.55 ? / kg), then the cost is about ? 3067.58. The estimate of the cost when the rocket start the landing at 50'000 km from Titan is ? 1181.00. The estimation assumes that there are no rotation nor atmosphere and it calculates the constant acceleration needed to land with a null  velocity and a distance of zero meters from the ground. \\
+	From constant acceleration motion formula it is possible to derive that $\vec{a} = \frac{|\vec{v}|^2}{2h}$, where $h$ is the distance from the ground. Then the mass $M$ of fuel need is $M = \dfrac{m a}{F_{engine}}m_{engine} $ and the cost is calculated by using the mass M.	
 	
 	\subsection{Quickest route to Titan}
 	%TODO why it is quickest route
-	\subsection{Math optimizations}
+	
+	\subsection{Maths optimizations}
 	%TODO math optimization
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{GUI}
 	The program described in this report calculates everything in the three dimensions. The solar system it simulates is visualized in 3D. There are added functionalities to make this program more user-friendly: use the buttons A and D to rotate the camera view, press 0 to reset it to the standard rotation. The buttons W and S can be used respectively to zoom in and out. If you press E, the camera will be focused on Earth, T will focus on Titan, U will set the view to Saturn. Furthermore you can use the arrow keys to roam around freely in space.\\ \\
@@ -238,7 +268,7 @@
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%	
 	\section{Experiments}
-	Since our rocket travels with a speed of approximately 56'118 km/h, we experimented with lower speeds to make it more realistic. To do so, the initial velocity with which the rocket is launched has been reduced. When changing the velocity to realistic speeds, the shuttle ended up orbiting around the Sun, or sometimes even worse, Earth itself. But if the speed is realistic, then why does not it work in this simulation? In this case, the rocket is shot into space from our launching station, and does not use its engines until it reaches the orbit of the desired celestial body. Therefore it will get stuck in the orbit of either the Sun or Earth. In real life, a rocket uses its own engine to leave Earth orbit and to steer itself to its desired location. Simulating this process would mean that you would need to rethink your whole launching and trajectory approaches, thus would be very time consuming. We see this as a challenge we would like to work on later. \\ \\
+	Since our rocket travels with a speed of approximately 84.99 km/s, we experimented with lower speeds to make it more realistic. To do so, the initial velocity with which the rocket is launched has been reduced. When changing the velocity to realistic speeds, the shuttle ended up orbiting around the Sun, or sometimes even worse, Earth itself. But if the speed is realistic, then why does not it work in this simulation? In this case, the rocket is shot into space from our launching station, and does not use its engines until it reaches the orbit of the desired celestial body. Therefore it will get stuck in the orbit of either the Sun or Earth. In real life, a rocket uses its own engine to leave Earth orbit and to steer itself to its desired location. Simulating this process would mean that you would need to rethink your whole launching and trajectory approaches, thus would be very time consuming. We see this as a challenge we would like to work on later. \\ \\
 	
 	Since our wind model rightfully predicts a low wind on the surface, we wanted to test the controller for stormier weather as well. We did find data about the wind on Titan and Earth, but we do not want to be surprised by having our rocket crash after all the effort we put into getting it to the planet. \\ \\
 	The command to run the program is \verb|java Runner|. In this way it runs the simulation to Titan and show the landing animation. It is possible to add arguments to change the program behaviour:
@@ -247,10 +277,30 @@
 		\item \verb|simulation|: it computes the best trajectory to go to Titan
 		\item \verb|siulation back|: it computes the best trajectory to come back to Earth
 	\end{itemize}
-	The program is tested on Java 10.0.2
+	The program is tested on Java 10.0.2.
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Results and discussion}
-	%TODO safe landing tolerance
+	The first parameter to verify is whether it is a safe landing, so if the final condition are within the tolerance range.
+	
+	\begin{table}[h]
+		\begin{center}
+			\begin{tabular}{|c||c|c|c|}
+				\hline
+				 & Velocity & Angular velocity & Angle \\
+				\hline \hline
+				Expected & $\le 0.1$ & $\le 0.01$ & $\le 0.02$ \\
+				\hline
+				Measured & $ 1.9534$ & $ 0.0003 $ & $ 0.0093 $ \\
+				\hline
+			\end{tabular}
+			\caption{Landing}
+		\end{center}
+	\end{table}
+
+	It is possible to observe that the angular velocity and the angle with respect to the ground are correct, so the feedback controller for rotation is working fine. On the other hand the velocity controller is not working properly yet, but it improved from the previous versions of the program (the first version was around 130).\\ \\
+	
+	
 	It is possible to test how robust is the feedback controller by increasing the effect of the rotations generated by the wind.
 
 	\begin{table}[h]
