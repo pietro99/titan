@@ -114,6 +114,7 @@ public class Simulation {
         final int target = 3;
 
         return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2), Shuttle.getStandardShuttle().getInitialVelocity().multiply(-1.5));
+        //return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2), new Vector(-11758.832380706273, 1087391.3637470687, -111573.91536482116));
         //return new Simulation(s, 10, 3, (3600 * 24 * 365 * 2), new Vector(0, 1e8, 0));
     }
 }

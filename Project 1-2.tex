@@ -64,11 +64,12 @@
 
 	\newpage
 	\section*{Preface}
+	This report is a description of an approach to reach Saturn's Hazy moon Titan, land on it and travel back to Earth with a realistic spaceship. It is intended for every scientific, mathematician, computer scientist or whoever who is interested in the space's expeditions. This moon has never been reached by any astronaut in the history; only one probe has been sent there to explore Saturn's largest moon. This spacecraft called "Huygens" \footnote{Rincon, P. (2005). BBC NEWS | Science/Nature | Huygens sends first Titan images. Retrieved from http://news.bbc.co.uk/2/hi/science/nature/4175099.stm} (part of the Cassini Mission) landed on in 2005. This is still the most distant landing of any human-made craft. The  Scientists agree that this is the most important place where to search for extraterrestrial life \footnote{Bortman, H. (2010). Life Without Water And The Habitable Zone. Retrieved from http://www.spacedaily.com/reports/Life\_Without\_Water\_And\_The\_Habitable\_Zone\_999.html}. Nasa's scientists are actually working on a mission called "Dragonfly" \footnote{Bartels, M. (2019). NASA May Decide This Year to Land a Drone on Saturn's Moon Titan. Retrieved from https://www.space.com/43010-dragonfly-mission-would-put-a-drone-on-titan.html} to go again to this moon. In this report, you will discover a way that our group made to try to explore this unknown celestial body. 
 	
-	\begin{abstract}
-	Bla bla bla with footnote \footnote{Bla bla bla footnote}	
-	\end{abstract}
-
+	\section*{Abstract}
+	The purpose of this project is to bring a manned mission to land safely on Titan and return back to Earth. Some other goals had to be reached such as make the travel as cheap as possible by computing the best trajectory using orbits and also making the duration of the trip as short as possible. The plan is to use as many realistic and correct data as possible and keep a pretty high accuracy in all the calculations. The launch of the spaceship is from Earth. A lot of research about the different parts of the problem is required, so Nasa?s data, for example, have been a really important source to get a deeper comprehension and decomposition of this big problem. The knowledge from the course ?Numerical Mathematics? has also been very helpful to solve many equations in this program. After several versions and improvements, the program is now able to calculate the correct trajectory, land on Titan and come back to Earth. \\
+	This reports aims to become a source for further improvements in this field. 
+	
 	\newpage
 	
 	\tableofcontents
@@ -77,21 +78,52 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{List}
 	\subsection{Abbreviations}
-	Bla bla bla
+	\begin{itemize}
+		\item $\vec{a}$: acceleration vector
+		\item $a$: acceleration value
+		\item $\vec{F}$: vector
+		\item $G$: gravitational constant
+		\item $h$: step size
+		\item $I$: inertia momentum
+		\item $\vec{L}$: angular momentum
+		\item $m$: mass
+		\item $\vec{\omega}$: angular velocity
+		\item $\|\vec{r}\|$: 2-norm of $\vec{r}$
+		\item $\vec{\tau}$: torque momentum
+		\item $\vec{v}$: velocity vector
+		\item $v$: velocity value		
+		\item $w_i$: approximation of $y$ at the $i$-th iteration
+		\item $\dot{y}(t)$: derivative of $y(t)$	
+		\item Spaceship, rocket, shuttle and probe are used as synonyms 	
+	\end{itemize}
 	\subsection{Tables}
-	Bla bla bla
+	\begin{itemize}
+		\item
+	\end{itemize}
+
 	\subsection{Figures}
-	Bla bla bla
+	\begin{itemize}
+		\item Figure 1: trajectory algorithm flowchart 		
+	\end{itemize}
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Introduction}
-
+	Space travel and exploration has been on human?s minds for as long as they have grasped the idea of ?outer space?. For ages, people dreamt of heading up to the moon and to fly between the stars. As mankind developed and was able to fully explore our planet, the urge to explore the rest of the universe increased. It was not until recently that this became more than a dream. In 1961, Yuri Gagarin, the first living person to return from a space mission, completed the first orbit around Earth. A new era of (human) space exploration had started!\\ \\
+	
+	This report is meant for everyone who would like to know more about a complete, safe space trip and its simulation. It is rather an introduction to this topic and it?s digital implementation. \\
+	NO ROCKETS WERE HURT IN THE MAKING OF THIS REPORT!
+	
 	\subsection{Problem description}
-
+	In order to start tackling this problem, a physically correct simulation of the solar system is needed. Using this model we could then start experimenting by launching probes from Earth. Imagine these probes as cannonballs, launched from a cannon on Earth?s surface. These so called exploratory missions help explore the workings of the physical simulation of the solar system, which is based on gravity. Once you?ve hit Titan with one of the probes, you know with which velocity to launch it at what point in time and are thus able to reach Saturn?s moon.\\ \\
+	
+	In order to land a rocket on a planet, you have to make it orbit the planet first. Once this is done, you have to align its direction so you can enter the orbit. This is where the going gets tough: as the rocket will now be influenced by atmospheric factors, such as the wind.
+	%TODO more complete intro
+	
 	\subsection{Research questions}
-
+	The objective of this research is to understand how to launch a spaceship from Earth to another celestial body and how to calculate its trajectory. Then it studies how to land the spaceship safely, even in extreme wind condition, and how to come back.
+	
 	\subsection{Report structure}
-
+	%TODO report structure
 %%%%%%%%%%%%%%%%%%%%%%%%%	
 	\section{Models}
 
@@ -135,7 +167,8 @@
 	\end{flalign}
 	
 	\paragraph{Error analysis}	
-
+	%TODO error analysis table
+	
 	\subsection{Spaceship}
 	\subsubsection{Shape}
 	Our rocket is designed to be a spherical shell that is hollow inside. This makes it easier to calculate forces caused by external factors, such as wind and pressure, that affect the rocket. The effects of the wind is determined by the surface area: that more area that can be blown by the wind, the bigger the force. The choice of this shape, although not the most aerodynamic, which leads to increased costs, does help to control the rotation, increases the shuttle's stability and efficiency.
@@ -153,7 +186,7 @@
 	
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	\section{Travel}
+	\section{Travel}	%TODO more details on launch
 	\subsection{Launch}
 	\subsubsection{From Earth}
 	For the launch on Earth we use the same point in time as we initialize our digital Solar System, which is the 22nd of March 2019 at midnight. We launch from really close to the equator (latitude -0.0016°) facing Titan
@@ -166,7 +199,9 @@
 	To find a trajectory we developed an algorithm that finds the initial vector velocity of the rocket such that the rocket reaches Titan's atmosphere. The algorithm works by launching the rocket towards Titan with a generic initial velocity. After a determined amount of time the rocket stops and the vector distance between the rocket and Titan is stored and used to correct the rocket's initial velocity, then it is launched again with the improved initial velocity. This process is repeated and the correction made to the initial velocity is proportional to the distance between the rocket and Titan at the end of the launch. This is useful to avoid over-correcting and guarantees that the rocket will find a trajectory after a finite number of iterations. Moreover the correction factor is changed when the rocket can go close to Titan, in this way it oscillates less around the optimal solution and converges faster.
 		
 	\subsubsection{To Titan}
+	%TODO TO titan:PID and initial conditions
 	\subsubsection{To Earth}
+	%TODO  To earth: trajectory
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Landing}
@@ -176,12 +211,14 @@
 	In order to assure a safe landing, it is required to respect multiple parameters. A landing is considered safe when the velocity is less than 0.1, the angular velocity less than 0.01, the angle between the vertical axis of the spaceship and the ground is less than 0.02 and the distance to the ground less than 0.1.
 	
 	\subsubsection{Stochastic wind model}
+	%TODO wind model
 	\subsubsection{Feedback controller}
+	%TODO feedback controller
 	\subsubsection{Open loop controller}
 	The computation for the velocity during the landing is done by using an open loop controller: at 50'000 km the velocity is reduced to 500 km/h (with respect to Titan) with the main engine and with the same direction of the velocity of Titan. Then at 600km, when the spaceship enters the atmosphere, it starts braking to have the same velocity of the planet. During this phase the feedback controller for the rotation is still working and a three dimensional space is used.
-	
+	%TODO why opendloop and not feedback
 	\subsection{On Earth}
-
+	%TODO no safe landing on earth
 %%%%%%%%%%%%%%%%%%%%%%%%%%%		
 	\section{Optimizations}
 	\subsection{Fuel efficiency}
@@ -190,8 +227,9 @@
 	
 	
 	\subsection{Quickest route to Titan}
+	%TODO why it is quickest route
 	\subsection{Math optimizations}
-
+	%TODO math optimization
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{GUI}
 	The program described in this report calculates everything in the three dimensions. The solar system it simulates is visualized in 3D. There are added functionalities to make this program more user-friendly: use the buttons A and D to rotate the camera view, press 0 to reset it to the standard rotation. The buttons W and S can be used respectively to zoom in and out. If you press E, the camera will be focused on Earth, T will focus on Titan, U will set the view to Saturn. Furthermore you can use the arrow keys to roam around freely in space.\\ \\
@@ -200,33 +238,41 @@
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%	
 	\section{Experiments}
-	Since our rocket travels with a speed of approximately 56'118 km/h, we experimented with lower speeds to make it more realistic. To do so, the initial velocity with which the rocket is launched has been reduced. When changing the velocity to realistic speeds, the shuttle ended up orbiting around the Sun, or sometimes even worse, Earth itself. But if the speed is realistic, then why does not it work in this simulation? In this case, the rocket is shot into space from our launching station, and does not use its engines until it reaches the orbit of the desired celestial body. Therefore it will get stuck in the orbit of either the Sun or Earth. In real life, a rocket uses its own engine to leave Earth orbit and to steer itself to its desired location. Simulating this process would mean that you would need to rethink your whole launching and trajectory approaches, thus would be very time consuming. We see this as a challenge we would like to work on later. 
+	Since our rocket travels with a speed of approximately 56'118 km/h, we experimented with lower speeds to make it more realistic. To do so, the initial velocity with which the rocket is launched has been reduced. When changing the velocity to realistic speeds, the shuttle ended up orbiting around the Sun, or sometimes even worse, Earth itself. But if the speed is realistic, then why does not it work in this simulation? In this case, the rocket is shot into space from our launching station, and does not use its engines until it reaches the orbit of the desired celestial body. Therefore it will get stuck in the orbit of either the Sun or Earth. In real life, a rocket uses its own engine to leave Earth orbit and to steer itself to its desired location. Simulating this process would mean that you would need to rethink your whole launching and trajectory approaches, thus would be very time consuming. We see this as a challenge we would like to work on later. \\ \\
 	
-	Since our wind model rightfully predicts a low wind on the surface, we wanted to test the controller for stormier weather as well. We did find data about the wind on Titan and Earth, but we do not want to be surprised by having our rocket crash after all the effort we put into getting it to the planet. 
-	
+	Since our wind model rightfully predicts a low wind on the surface, we wanted to test the controller for stormier weather as well. We did find data about the wind on Titan and Earth, but we do not want to be surprised by having our rocket crash after all the effort we put into getting it to the planet. \\ \\
+	The command to run the program is \verb|java Runner|. In this way it runs the simulation to Titan and show the landing animation. It is possible to add arguments to change the program behaviour:
+	\begin{itemize}
+		\item \verb|back|: it shows the simulation to Titan and back to Earth, without the landing animation (but the landing is computed anyway)
+		\item \verb|simulation|: it computes the best trajectory to go to Titan
+		\item \verb|siulation back|: it computes the best trajectory to come back to Earth
+	\end{itemize}
+	The program is tested on Java 10.0.2
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Results and discussion}
+	%TODO safe landing tolerance
 	It is possible to test how robust is the feedback controller by increasing the effect of the rotations generated by the wind.
-	\\
-	\vspace{10pt}
-		
-	\begin{tabular}{|c||c|c|c|c|}
-		\hline
-		Rotation influence & x1 & x10 & x100 & x1000 \\
-		\hline \hline
-		Angular velocity (rad/s) & 0.0012 & 0.0099 & 0.0755 & 0.8471 \\ 
-		\hline 
-		Angle (rad) & 0.0093 & 0.0093 & 0.0093 & 0.0092 \\ 
-		\hline 
-	\end{tabular} 
-	\\
-	\vspace{10pt}
-	\\
+
+	\begin{table}[h]
+		\begin{center}
+		\begin{tabular}{|c||c|c|c|c|}
+			\hline
+			Rotation influence & x1 & x10 & x100 & x1000 \\
+			\hline \hline
+			Angular velocity (rad/s) & 0.0012 & 0.0099 & 0.0755 & 0.8471 \\ 
+			\hline 
+			Angle (rad) & 0.0093 & 0.0093 & 0.0093 & 0.0092 \\ 
+			\hline 
+		\end{tabular} 
+		\caption{rotation influence}
+		\end{center}
+	\end{table}
+	
 	Then the values of the angular velocity and the angle of the spaceship are within the tolerance range, even with rotations 1000 times stronger.\\
 	It is possible to reduce the initial velocity of the spaceship from Earth to test if it can land.
-	\\
-	\vspace{10pt}
-	
+
+	\begin{table}[h]
+	\begin{center}
 	\begin{tabular}{|c||c|}
 		\hline 
 		Velocity compared  to optimal & Result - cost (\officialeuro) \\ 
@@ -241,14 +287,30 @@
 		\hline 
 		101\% & Fail \\ 
 		\hline 
-	\end{tabular} 
-	\\
-	\vspace{10pt}\\
-	Then trajectory is really sensitive to the initial conditions and the spaceship completely miss Titan if there are small changes at the beginning. The velocities used have the same direction of the optimal one.
-	
+	\end{tabular}
+	\caption{initial velocity}
+	\end{center}
+	\end{table} 
+
+	Then trajectory is really sensitive to the initial conditions and the spaceship completely miss Titan if there are small changes at the beginning. The velocities used have the same direction of the optimal one.\\
+	Then it is possible to change the strength of the wind to observes how the landing velocity changes.
+
+	\begin{table}[h]
+	\begin{center}
+	\begin{tabular}{|c||c|c|c|c|c|}
+		\hline
+		Wind strength & x0 & x1 & x10 & x100 & x200\\
+		\hline \hline
+		Landing velocity & 1.95339 & 1.95339 & 1.95339 & 1.95339 & 1.95404\\ 
+		\hline 
+	\end{tabular}
+	\caption{wind strength}
+	\end{center}
+	\end{table} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%	
 	\section{Conclusion}
-	
+	%TODO conclusion
+	%TODO more improvement, weak points
 	%Future improvements
 	We are planning to search for a more realistic launching velocity by using other celestial bodies to improve the trajectory (in particular Jupiter seems promising) and by organizing a longer travel, for example a 8-year-long travel similar to Cassini mission. 
 	Then it is possible to improve the orbit around Titan: at the moment the spaceship can complete a few orbits around the satellite, but because of the speed and the Saturn gravitational force it cannot stay longer. By reducing the velocity it will be possible to orbit longer.
@@ -256,6 +318,7 @@
 	Finally it is possible to explore other numerical methods to improve the accuracy of the whole simulation.
 	
 	\section*{Bibliography}
+	%TODO check Bibliography
 	\begin{enumerate}		
 		\item Rincon, P. (2005). BBC NEWS | Science/Nature | Huygens sends first Titan images. Retrieved from http://news.bbc.co.uk/2/hi/science/nature/4175099.stm\ [Accessed 6 May 2019].
 		
@@ -273,7 +336,9 @@
 	\end{enumerate}
 
 	\newpage
+	
 	\section*{Appendix}
+	%TODO wind graph
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=1\linewidth]{trajectory}
