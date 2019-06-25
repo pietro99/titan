@@ -113,16 +113,19 @@
 	NO ROCKETS WERE HURT IN THE MAKING OF THIS REPORT!
 	
 	\subsection{Problem description}
-	In order to start tackling this problem, a physically correct simulation of the solar system is needed. Using this model we could then start experimenting by launching probes from Earth. Imagine these probes as cannonballs, launched from a cannon on Earth's surface. These so called exploratory missions help explore the workings of the physical simulation of the solar system, which is based on gravity. Once you have hit Titan with one of the probes, you know with which velocity to launch it at what point in time and are thus able to reach Saturn's moon.\\ \\
+	In order to start tackling this problem, a physically correct simulation of the solar system is needed. Using this model you can start launching probes from Earth. These probes behaves like cannonballs, launched from a cannon on Earth's surface. These so called exploratory missions help explore the workings of the physical simulation of the solar system, which is based on gravity, and to develop an algorithm to calculate the trajectory of the probe. Once we have hit Titan with one of the probes, we know with which velocity to launch it at what point in time and are thus able to reach Saturn's moon.\\ \\
 	
-	In order to land a rocket on a planet, you have to make it orbit the planet first. Once this is done, you have to align its direction so you can enter the orbit. This is where the going gets tough: as the rocket will now be influenced by atmospheric factors, such as the wind.
-	%TODO more complete intro
+
+	Landing a rocket safely is a difficult mission. In order to land a rocket on a planet, it has to orbit the planet first. Once this is done, it has to align its direction so you can enter the orbit. In this phase of the landing the rocket is influenced by atmospheric factors, such as the wind. You will need to stabilize the rotation the wind inflicts, as you want the rocket to land straight and safe. The controllers of the rocket tries to keep the optimal alignment and to land with a minimum velocity, because obviously it is unsafe to land with a high speed. \\\\
+	
+	In this phase of the mission, you launch the rocket from Titan towards mother Earth. Assuming we have a launching station on Titan, we follow the same approach as we did on Earth: launch the rocket with a given velocity. Then the rocket, following the optimal trajectory, returns eventually to the Earth. To optimize our fuel usage, we chose the launching method, instead of letting the engines steer the rocket all the way back.
 	
 	\subsection{Research questions}
 	The objective of this research is to understand how to launch a spaceship from Earth to another celestial body and how to calculate its trajectory. Then it studies how to land the spaceship safely, even in extreme wind conditions, and how to come back.
 	
 	\subsection{Report structure}
-	%TODO report structure
+	Chapter 3 starts with the explanations about the physics and the equation solvers of the Solar System implemented. The rest of this chapter is a detailed description of the spaceship. Chapter 4 is reserved to the launching methods from the different planets. It also includes the algorithm's details for the trajectory. All the optimizations made during this project can be found in Chapter 6. Chapter 7 is following with different instructions about the graphical user interface and its insights. The next Chapter contains the experiments details and their results are in Chapter 9. The last one lists conclusions from the whole experiment. It also mentions the improvements that the team would like to do in the future.
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%	
 	\section{Models}
 
@@ -170,15 +173,16 @@
 	Our rocket is designed to be a spherical shell that is hollow inside. This makes it easier to calculate forces caused by external factors, such as wind and pressure, that affect the rocket. The effects of the wind is determined by the surface area: that more area that can be blown by the wind, the bigger the force. The choice of this shape, although not the most aerodynamic, which leads to increased costs, does help to control the rotation, increases the shuttle's stability and efficiency.
 	
 	\subsubsection{Engines and uses}
-	Our rocket is uses 7 engines which control velocity and rotation. The engines are divided into 2 categories: 1 main engine and 6 sub engines. Main engine allows us to control the rocket?s velocity and acceleration. The sub engines change the rotation of our vehicle for the different x, y, z axis. For every axis, or dimension, there are 2 sub engines or thrusters. This helps us establish better control over our rocket. The main purpose of these engines is to balance the wind in Titan?s atmosphere and to maintain the correct velocity and alignment during the landing. 
+	Our rocket is uses 7 engines which control velocity and rotation. The engines are divided into 2 categories: 1 main engine and 6 sub engines. Main engine allows us to control the rocket's velocity and acceleration. The sub engines change the rotation of our vehicle for the different x, y, z axis. For every axis, or dimension, there are 2 sub engines or thrusters. This helps us establish better control over our rocket. The main purpose of these engines is to balance the wind in Titan's atmosphere and to maintain the correct velocity and alignment during the landing. 
 	
 	\subsubsection{Rotation}
-	Spaceship's rotations are calculated from torque momentum formula = r F, where r is the distance between the application point of the force and the center of the spaceship, and the angular momentum formula $ \vec{L} = I \vec{\omega}$. Because of the particular shape of the spaceship inertia momentum is $I = \frac{2}{5}m \dfrac{r^5_2 - r^5_1}{r^3_2 - r^3_1}$. Then the angular velocity could be approximated as $\vec{\omega} = \dfrac{\sum_{i = 0}^{n}(\vec{r}_i \times \vec{F}_i)\Delta t}{I} $ and the rotation is $\vec{\theta} = \frac{d\vec{\omega}}{dt} $, which is calculated with Adams-Bashforth's method.\\
+	Spaceship's rotations are calculated from torque momentum formula = r F, where r is the distance between the application point of the force and the centre of the spaceship, and the angular momentum formula $ \vec{L} = I \vec{\omega}$. Because of the particular shape of the spaceship inertia momentum is $I = \frac{2}{5}m \dfrac{r^5_2 - r^5_1}{r^3_2 - r^3_1}$ \footnote{Raymond A. Serway (1986). Physics for Scientists and Engineers (2nd ed.). Saunders College Publishing. p. 202. ISBN 0-03-004534-7.}. Then the angular velocity could be approximated as $\vec{\omega} = \dfrac{\sum_{i = 0}^{n}(\vec{r}_i \times \vec{F}_i)\Delta t}{I} $ and the rotation is $\vec{\theta} = \frac{d\vec{\omega}}{dt} $, which is calculated with Adams-Bashforth's method.\\
 	To calculate the orientation of the spaceship three perpendicular axis are used: $x$ and $y$ are horizontal and $z$ is the vertical one. Orientation is computed by using axis-angle rotations: given the unit axis of rotation $\vec{e}$ and the angle $\theta$, the axis of the spaceship are updated to 
+	\footnote{Olinde Rodrigues, "Des lois géometriques qui regissent les déplacements d' un systéme solide dans l' espace, et de la variation des coordonnées provenant de ces déplacement considérées indépendant des causes qui peuvent les produire", J. Math. Pures Appl. 5 (1840), 380?440.}
+	
 	\begin{equation}
 		\vec{v}^* = (\cos\theta)\vec{v} + (\sin\theta)(\vec{e} \times \vec{v}) + (1 - \cos\theta)(\vec{e} \cdot \vec{v}) \vec{e}
 	\end{equation}
-	
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Travel}	
@@ -211,7 +215,7 @@
 	By using this trajectory the spaceship is able to perform few orbits around Titan, but then if it does not land it will fly away from the planet, because of Saturn's gravity.
 	
 	\subsubsection{To Earth}
-	The trajectory to return to Earth is calculated with the same algorithm used for the trajectory to go to Titan. The launching time is one year later the launching from Earth, so 22 March 2020. The trajectory is almost straight and similar to previous one. It is slightly influenced by Jupiter.\\
+	The trajectory to return to Earth is calculated with the same algorithm used for the trajectory to go to Titan. The launching time is one year later the launching from Earth, so 22nd March 2020. The trajectory is almost straight and similar to previous one. It is slightly influenced by Jupiter.\\
 	The initial velocity for the launch is 
 	\begin{enumerate}
 		\item[x:] -13.175557495304957
@@ -220,7 +224,7 @@
 	\end{enumerate}	
 	then the initial velocity is about 108.61 km/s and it manages to return the spaceship in one year. \\
 	Another possible trajectory is close to $(-1.1758832380706273, 108.73913637470687, -11.157391536482116)$, which is heavily influenced by the Sun and might be more fuel efficient, but at the moment the spaceship did not manage to land with one.\\
-	The velocities used are too high to be realistic, but because we decided on the approach to reach Titan without using the rocket?s engines, is is not possible to find a trajectory to Titan or back with more realistic speeds.
+	The velocities used are too high to be realistic, but because we decided on the approach to reach Titan without using the rocket's engines, is is not possible to find a trajectory to Titan or back with more realistic speeds.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Landing}
@@ -426,6 +430,13 @@
 		\includegraphics[width=1\linewidth]{trajectory}
 		\caption[Short]{Algorithm to calculate the trajectory to reach a planet.}
 		\label{fig:trajectory}
+	\end{figure}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=1\linewidth]{Adams_Bashforth_compared_to_Euler.pdf}
+		\caption[Short]{Adams-Bashforth's relative error compared to Euler's.}
+		\label{fig:adams-bashforth}
 	\end{figure}
 	
 \end{document}

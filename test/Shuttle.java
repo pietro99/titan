@@ -3,7 +3,7 @@ public class Shuttle extends Body{
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
 
-    public final double fuelCost = 0.5547615714017767;   //cost euro / kg
+    public static final double fuelCost = 0.5547615714017767;   //cost euro / kg
     //1.68 euro/gallon / (3.78541 l/gallion * 0.8 kg/l)
     //https://www.indexmundi.com/
     //https://www.indexmundi.com/commodities/?commodity=jet-fuel&months=12&currency=eur
@@ -100,7 +100,7 @@ public class Shuttle extends Body{
     }
 
     public static Shuttle getStandardShuttle(Vector vel, Body start) {
-        return new Shuttle(vel, 20000, 500, 5, 20, 100e8, -1e6, 500e8, -2e4, 2000, start);
+        return new Shuttle(vel, 20000, 3000, 5, 20, 100e8, -1e6, 500e8, -2e4, 2000, start);
     }
 
     public static Shuttle getBackShuttle(Shuttle shuttle, Body start) {
@@ -108,7 +108,12 @@ public class Shuttle extends Body{
         //use sun
         //return new Shuttle(new Vector(-11758.832380706273, 1087391.3637470687, -111573.91536482116), shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
         //-131755.57495304957 1066492.0408731306 -158218.66756191314
-        return new Shuttle(new Vector(-131755.57495304957, 1066492.0408731306, -158218.66756191314), shuttle.getMass(), shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
+        Vector initial = new Vector(-131755.57495304957, 1066492.0408731306, -158218.66756191314);
+        double mass = shuttle.getMainEngineMass() * (initial.multiply(1 / (SolarSystem.getTimeStep() * 1e4)).length() * shuttle.getMainEngineMass() / shuttle.getMainEngineForce());
+        System.out.println("Mass to come back: " + mass);
+        System.out.println("Cost: "+ (mass * fuelCost));
+        System.out.println("Remaining mass: " + (shuttle.getMass() - mass));
+        return new Shuttle(new Vector(-131755.57495304957, 1066492.0408731306, -158218.66756191314), shuttle.getMass() - mass, shuttle.getMinMass(), shuttle.getInnerRadius(), shuttle.getRadius(), shuttle.getMainEngineForce(), shuttle.getMainEngineMass(), shuttle.getLateralEngineForce(), shuttle.getLateralEngineMass(), shuttle.getParachute(), start);
     }
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay) {
