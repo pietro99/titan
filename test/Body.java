@@ -1,5 +1,3 @@
-//import javafx.beans.binding.ObjectExpression;
-
 public abstract class Body {
     protected Vector position, velocity, acceleration;
     protected double mass, radius;

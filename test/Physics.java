@@ -4,7 +4,7 @@ public class Physics {
     public static final double EPS = 1E-15;
 
     //private static final double dragConstant = 100;
-    private static final double drag = 250;
+    public static final double drag = 250;
 
     public static Vector dragAcceleration(Planet p, Shuttle shuttle) {
         double height = p.getPosition().subtract(shuttle.getPosition()).length() - p.getRadius();
@@ -33,31 +33,5 @@ public class Physics {
                 rot = new Vector(Math.random(), Math.random(), Math.random()).multiply(rotScale);
         }
         return new Vector[]{wind, rot};
-    }
-
-    public static void main(String[] args){
-        if(args.length >= 1) {
-            if(args[0].equals("drag")) {
-                Planet p1 = new Planet("titan", new Vector(2000, 2000, 2000), Vector.ZERO, 500, 500, 600, 1.5);
-                Planet p2 = new Planet("titan", Vector.ZERO, Vector.ZERO, 100, 100, 600, 1.5);
-                Shuttle s = new Shuttle(new Vector(10, 10, 10), 1000, 1000, 5, 10, 10, 10, 6, 6, 0.1, p2);
-                Vector acc;
-                for(int i = 0; i < 60; i++) {
-                    s.update(10);
-                    acc = dragAcceleration(p1, s);
-                    System.out.println("Drag: " + acc.length() + " Distance: " + p1.getPosition().subtract(s.getPosition()).length() + " Direction: " + acc.dot(s.getVelocity()));
-                }
-            }else if(args[0].equals("wind")) {
-                Planet p1 = new Planet("titan", Vector.ZERO, Vector.ZERO, 500, 500, 1000, 1.5);
-                Planet p2 = new Planet("titan", Vector.ZERO, Vector.ZERO, 700, 500, 600, 1.5);
-                Shuttle s = new Shuttle(new Vector(0, 0, 1), 1000, 1000, 5, 10, 10, 10, 6, 6, 0.1, p2);
-                Vector[] f;
-                System.out.println(p1.getPosition().subtract(s.getPosition()).length());
-                for(int i = 0; i < 10; i++) {
-                    f = wind(s, p1, 10, .1, 1);
-                    System.out.println("Wind: " + f[0].length() + " Rot: " + f[1].length());
-                }
-            }
-        }
     }
 }

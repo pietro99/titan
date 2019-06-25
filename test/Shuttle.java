@@ -30,10 +30,10 @@ public class Shuttle extends Body{
     private double timeStep = 1;
 
     private boolean landing;
-    public boolean allowLanding = true;
+    private boolean allowLanding = true;
     private double costEst;
 
-    private FourAdamsBashfort nextAngle;
+    private FourAdamsBashforth nextAngle;
     /* ******* Constructor ******** */
     public Shuttle(Vector velocity, double mass){
         this(velocity, mass, mass, 0, 0, 0, 0, 0, 0, 0, SolarSystem.getPlanets()[3]);
@@ -96,7 +96,7 @@ public class Shuttle extends Body{
 
     }
     public static Shuttle getStandardShuttle(Vector vel) {
-        return getStandardShuttle(vel, SolarSystem.planets[3]);
+        return getStandardShuttle(vel, SolarSystem.getPlanets()[3]);
     }
 
     public static Shuttle getStandardShuttle(Vector vel, Body start) {
@@ -113,7 +113,7 @@ public class Shuttle extends Body{
 
     public void setNextDataFirst(Vector VelocityDayMinus3, Vector VelocityDayMinus2, Vector VelocityDayMinus1, Vector VelocityActualDay, Vector AccelerationDayMinus3, Vector AccelerationDayMinus2, Vector AccelerationDayMinus1, Vector AccelerationActualDay,  Vector PositionActualDay) {
         super.setNextDataFirst(this.init, this.init, this.init, this.init, Vector.ZERO, this.init.multiply(1 / 3), this.init.multiply(2 / 3), this.init, this.position);
-        this.nextAngle = new FourAdamsBashfort(SolarSystem.getTimeStep() / 4, Vector.ZERO, Vector.ZERO, Vector.ZERO, Vector.ZERO, Vector.ZERO);
+        this.nextAngle = new FourAdamsBashforth(SolarSystem.getTimeStep() / 4, Vector.ZERO, Vector.ZERO, Vector.ZERO, Vector.ZERO, Vector.ZERO);
         this.setTimeStep(SolarSystem.getTimeStep());
     }
 
@@ -263,7 +263,7 @@ public class Shuttle extends Body{
     }
 
     public void useParachute(Planet p) {
-        double atmosphere = SolarSystem.planets[10].getAtmosphericPressureComparedToEarthPressure();
+        double atmosphere = SolarSystem.getPlanets()[10].getAtmosphericPressureComparedToEarthPressure();
         acceleration = acceleration.sum(velocity.subtract(p.getVelocity()).multiply(-parachute * atmosphere));
     }
 
@@ -348,45 +348,6 @@ public class Shuttle extends Body{
             addAcceleration(direction[2].multiply(-lateralEngineForce * time * (1 + (Math.random() - .5) * accuracy) / mass), Vector.ZERO, lateralEngineMass * time / 2);
         }
     }
-
-    /*public void brake(double targetVelocity, double tolerance, double timeStep) {
-        //assumet that it has the right direction
-        double vel = velocity.length();
-        double time = 0;
-        //System.out.println("Vel: " + velocity + " V: " + vel);
-        if(Math.abs(vel - targetVelocity) > tolerance) {
-            //if (direction[2].dot(velocity) < 0) {    //make sure that it is the right direction
-            //TODO mistake in time calculation -> over stimate
-            time = Math.abs((vel - targetVelocity) * mass / mainEngineForce);
-
-            if (time > timeStep) {
-                //brake during all the timeStep
-                System.out.println("Main engine");
-                mainEngine(1);
-            } else {
-                System.out.println("Almost the right speed: " + vel);
-                System.out.println("Distance: " + position.distance(SolarSystem.planets[10].getPosition()));
-                System.out.println("Titan: " + SolarSystem.planets[10].getVelocity().length());
-                //less than one time step
-                //assume a constant acceleration
-                Vector acc = direction[2].multiply(mainEngineForce / mass);
-
-                //update mass
-                mass += mainEngineMass * time;
-
-                //change of position during the brake
-                position = position.sum(velocity.multiply(time).sum(acc.multiply(0.5 * time * time)));
-
-                //update velocity
-                velocity = velocity.sum(acc.multiply(time));
-            }
-           /* }else {
-                System.out.println("Wrong direction");
-                velocity = velocity.normalize().multiply(targetVelocity);
-            }*/
-        //}
-    //}
-
 
     public void brake(Vector target, Vector planetSpeed) {
         Vector delta = target.subtract(velocity);
@@ -480,10 +441,6 @@ public class Shuttle extends Body{
         return  costEst;
     }
 
-    /* ************************* */
-
-    /* ***** Testing ******* */
-    /*public void setAngularSpeed(Vector speed) {
-        this.angularSpeed = speed;
-    }*/
+    public boolean getAllowLanding() { return allowLanding;}
+    public void setAllowLanding(boolean b) { allowLanding = b; }
 }

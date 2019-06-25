@@ -11,7 +11,7 @@ public class SolarSystemGUI extends Group {
     private  Sphere shuttleSphere = new Sphere(1);
 
     private static double scale = 4e5;//scaling factor
-    double  radiusScale = 600;
+    private double  radiusScale = 600;
     private static Vector movingFactor = new Vector(500,525,0);
 
     public SolarSystemGUI(SolarSystem solarSystem){

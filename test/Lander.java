@@ -11,20 +11,20 @@ import javafx.stage.Stage;
 
 
 public class Lander extends Group {
-	Line leg1;
-	Line leg2;
-	Circle shuttleBody;
-    Circle leftThruster;
-    Circle rightThruster;
-    Circle titan;
-    Vector shuttleLayout;
-    Vector shuttleOldLayout;
-    Vector shuttleOldPosition;
-    Vector shuttlePosition;
-    private static final boolean DEBUG = true; 
-    int counter =0;
-    Shape rocketTemp;
-    Shape rocket;
+	private Line leg1;
+    private Line leg2;
+    private Circle shuttleBody;
+    private Circle leftThruster;
+    private Circle rightThruster;
+    private Circle titan;
+    private Vector shuttleLayout;
+    private Vector shuttleOldLayout;
+    private Vector shuttleOldPosition;
+    private Vector shuttlePosition;
+    private static final boolean DEBUG = true;
+    private int counter =0;
+    private Shape rocketTemp;
+    private Shape rocket;
 
     public Lander(Shuttle shuttle, Planet titan) {
     	shuttlePosition = shuttle.getPosition();

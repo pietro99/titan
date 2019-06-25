@@ -31,22 +31,22 @@ import javafx.util.Duration;
 
 
 public class Runner extends Application{
-    public static SolarSystem solarSystem;
-    public static double mouseX = 0;
-    public static double mouseY = 0;
-    public static Stage primaryStage;
-    public static BorderPane mainPane;
-    public static double frameSeconds = 0.1;
-    //public static int count = 0;
-    public static int counter = 0;
-    public boolean isLanding = false;
+    private static SolarSystem solarSystem;
+    private static double mouseX = 0;
+    private static double mouseY = 0;
+    private static Stage primaryStage;
+    private static BorderPane mainPane;
+    private static double frameSeconds = 0.1;
+    //private static int count = 0;
+    private static int counter = 0;
+    private static boolean isLanding = false;
 
-    public static boolean simulation = false;
-    public static boolean back = false;
-    public static boolean followTitan = false;
-    public static boolean followSaturn = false;
-    public static boolean followShuttle = false;
-    public static boolean followEarth = false;
+    private static boolean simulation = false;
+    private static boolean back = false;
+    private static boolean followTitan = false;
+    private static boolean followSaturn = false;
+    private static boolean followShuttle = false;
+    private static boolean followEarth = false;
 
     Vector oldPos;
     Vector oldTitan;
@@ -342,7 +342,7 @@ public class Runner extends Application{
                 solarSystem.setDone(false);
                 solarSystem.setShuttle(Shuttle.getBackShuttle(solarSystem.getShuttle(), solarSystem.getTitan()));
             }
-            solarSystem.getShuttle().allowLanding = false;
+            solarSystem.getShuttle().setAllowLanding(false);
             System.out.println(solarSystem.getShuttle().getInitialVelocity());
             System.out.println(solarSystem.getShuttle().getPosition().distance(solarSystem.getSaturn().getPosition()));
             mainPane.getChildren().clear();

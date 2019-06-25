@@ -41,6 +41,7 @@ public class Simulation {
     public void addStep(int c) {
         count += c;
     }
+    public void addStep() {count += delta; }
 
     public SolarSystem tryNext() {  //TODO travel back
         if(count > limit) {

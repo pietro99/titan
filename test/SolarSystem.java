@@ -7,13 +7,10 @@
 public class SolarSystem {
 	private static double timeStep = 0.05;
 	private SolarSystemGUI solarSystemGUI;
-	public static Planet[] planets = new Planet[11];
+	private static Planet[] planets = new Planet[11];
 	private static boolean done = false;
 	private GravityMethod gravityCalculator;
-	public Shuttle shuttle;
-	public static Vector bestPos, bestTitan;
-	public static double bestDistance;
-	public static int bestTime = 0;
+	private Shuttle shuttle;
 
 	//initiate the solar system with the planets and the shuttle initial position
 	public SolarSystem() {
@@ -64,7 +61,7 @@ public class SolarSystem {
 		if(shuttle!= null) {
 			//if crashes on Titan:
 			//if(!Runner.back && shuttle.getPosition().subtract(planets[10].getPosition()).squareLength() < Math.pow(planets[10].getRadius(), 2)) {
-			if(/*!Runner.back &&*/shuttle.allowLanding && shuttle.getPosition().subtract(planets[10].getPosition()).length() - planets[10].getRadius() < 10) {
+			if(/*!Runner.back &&*/shuttle.getAllowLanding() && shuttle.getPosition().subtract(planets[10].getPosition()).length() - planets[10].getRadius() < 10) {
 				Vector v = shuttle.getVelocity().subtract(planets[10].getVelocity());
 				Vector dist = shuttle.getPosition().subtract(planets[10].getPosition());
 				double d = dist.length();
@@ -93,7 +90,7 @@ public class SolarSystem {
 				System.out.println("Cost estimate: " + shuttle.getCostEstimate());
 				System.out.println("Cost: " + shuttle.cost());
 				System.out.println("!!! LANDED ON TITAN !!!");
-				shuttle.allowLanding = false;
+				shuttle.setAllowLanding(false);
 				done = true;
 				System.out.println(shuttle);
 				//System.exit(0);

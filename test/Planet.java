@@ -47,10 +47,10 @@ public class Planet extends Body{
 		Vector velocityActualDay = new Vector(0, 0, 0).multiply(Planet.factor);			//on day 4 -> today
 
 		//set acceleration 	-> use 3-points formula
-		Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-		Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-		Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-		Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+		Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+		Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+		Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+		Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 		Vector positionActualDay = new Vector(0, 0, 0); // day 4 --- actual day
 
@@ -66,10 +66,10 @@ public class Planet extends Body{
 		Vector velocityActualDay = new Vector(6.693497964118796E+00, -4.362708337948559E+01, -4.178969254985038E+00).multiply(Planet.factor);			//on day 4 -> today
 
 		//set acceleration 	-> use 3-points formula
-		Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-		Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-		Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-		Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+		Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+		Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+		Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+		Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 		Vector positionActualDay = new Vector(-5.843237462283994E+07, -2.143781663349622E+07, 3.608679295141068E+06); // day 4 --- actual day
 
@@ -85,10 +85,10 @@ public class Planet extends Body{
 		Vector velocityActualDay = new Vector(3.477728421647656E+01, -9.612123998925466E-01, -2.020103291838695E+00).multiply(Planet.factor);			//on day 4 -> today
 
 		//set acceleration 	-> use 3-points formula
-		Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-		Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-		Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-		Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+		Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+		Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+		Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+		Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 		Vector positionActualDay = new Vector(-2.580458154996926E+06, -1.087011239119300E+08, -1.342601858592726E+06); // day 4 --- actual day
 
@@ -105,10 +105,10 @@ public class Planet extends Body{
 			Vector velocityActualDay = new Vector(-6.271192280390987E-02, -2.988491242814953E+01, 1.101633412416092E-03).multiply(Planet.factor);            //on day 4 -> today
 
 			//set acceleration 	-> use 3-points formula
-			Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-			Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-			Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-			Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+			Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+			Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+			Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+			Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 			Vector positionActualDay = new Vector(-1.490108621500159E+08, -2.126396301163715E+06, 1.388910094132880E+02); // day 4 --- actual day
 
@@ -125,10 +125,10 @@ public class Planet extends Body{
 		Vector velocityActualDay = new Vector(-2.319279681535404E+01, 4.479321597588995E+00, 6.629375352771729E-01).multiply(Planet.factor);			//on day 4 -> today
 
 		//set acceleration 	-> use 3-points formula
-		Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-		Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-		Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-		Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+		Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+		Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+		Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+		Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 		Vector positionActualDay = new Vector(2.324287221167859E+07, 2.314995121135774E+08, 4.280415288364515E+06); // day 4 --- actual day
 
@@ -144,10 +144,10 @@ public class Planet extends Body{
 		Vector velocityActualDay = new Vector(1.233361263555140E+01, -3.252782848348839E+00, -2.625332120353037E-01).multiply(Planet.factor);			//on day 4 -> today
 
 		//set acceleration 	-> use 3-points formula
-		Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-		Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-		Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-		Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+		Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+		Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+		Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+		Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 		Vector positionActualDay = new Vector(-2.356728458452976E+08, -7.610012694580332E+08, 8.434019057867110E+06); // day 4 --- actual day
 
@@ -164,10 +164,10 @@ public class Planet extends Body{
 			Vector velocityActualDay = new Vector(8.867827359240396E+00, 2.247044412940183E+00, -3.923703407460523E-01).multiply(Planet.factor);            //on day 4 -> today
 
 			//set acceleration 	-> use 3-points formula
-			Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-			Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-			Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-			Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+			Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+			Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+			Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+			Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 			Vector positionActualDay = new Vector(3.547593532400821E+08, -1.461948830848272E+09, 1.129255310798091E+07); // day 4 --- actual day
 
@@ -184,10 +184,10 @@ public class Planet extends Body{
 		Vector velocityActualDay = new Vector(-3.638605615637463E+00, 5.459468350572506E+00, 6.727967066481910E-02).multiply(Planet.factor);			//on day 4 -> today
 
 		//set acceleration 	-> use 3-points formula
-		Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-		Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-		Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-		Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+		Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+		Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+		Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+		Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 		Vector positionActualDay = new Vector(2.520721625280142E+09, 1.570265330931762E+09, -2.681128773651946E+07); // day 4 --- actual day
 
@@ -203,10 +203,10 @@ public class Planet extends Body{
 		Vector velocityActualDay = new Vector(1.292632887654737E+00, 5.305024140488896E+00, -1.386814230827889E-01).multiply(Planet.factor);			//on day 4 -> today
 
 		//set acceleration 	-> use 3-points formula
-		Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-		Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-		Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-		Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+		Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+		Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+		Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+		Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 		Vector positionActualDay = new Vector(4.344787551365745E+09, -1.083664718815018E+09, -7.782629925658041E+07); // day 4 --- actual day
 
@@ -224,10 +224,10 @@ public class Planet extends Body{
 			Vector velocityActualDay = new Vector(1.540496550112790E-01, -3.094661877857872E+01, 2.193857468353855E-02).multiply(Planet.factor);            //on day 4 -> today
 
 			//set acceleration 	-> use 3-points formula
-			Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-			Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-			Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-			Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+			Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+			Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+			Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+			Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 			Vector positionActualDay = new Vector(-1.493626859901140E+08, -2.212378435248749E+06, 3.162933122716530E+04); // day 4 --- actual day
 
@@ -246,10 +246,10 @@ public class Planet extends Body{
 			Vector velocityActualDay = new Vector(1.208193089270527E+01, -1.813839579262785E+00, 1.381017323560965E+00).multiply(Planet.factor);            //on day 4 -> today
 
 			//set acceleration 	-> use 3-points formula
-			Vector accelerationDayMinus3 = FourAdamsBashfort.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
-			Vector accelerationDayMinus2 = FourAdamsBashfort.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
-			Vector accelerationMinus1 = FourAdamsBashfort.centredDiff(velocityDayMinus2, velocityActualDay, 1);
-			Vector accelerationActualDay = FourAdamsBashfort.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
+			Vector accelerationDayMinus3 = FourAdamsBashforth.forwardDiff(velocityDayMinus3, velocityDayMinus2, velocityDayMinus1, 1);
+			Vector accelerationDayMinus2 = FourAdamsBashforth.centredDiff(velocityDayMinus3, velocityDayMinus1, 1);
+			Vector accelerationMinus1 = FourAdamsBashforth.centredDiff(velocityDayMinus2, velocityActualDay, 1);
+			Vector accelerationActualDay = FourAdamsBashforth.backwardDiff(velocityActualDay, velocityDayMinus1, velocityDayMinus2, 1);
 
 			Vector positionActualDay = new Vector(3.537424927743304E+08, -1.462539028125231E+09, 1.169787519537956E+07); // day 4 --- actual day
 
