@@ -4,7 +4,7 @@
 You can find here the code of the program for Titan's Expedition and also the report of this project (there is a PDF version and a Latex version). 
 
 To run the simulation:
-* Just run the Runner.java class 
+* Just run the Runner.java class (from the "test" folder) 
 
 
 
