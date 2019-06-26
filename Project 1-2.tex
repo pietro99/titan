@@ -125,16 +125,16 @@
 	This report is meant for everyone who would like to know more about a complete, safe space trip and its simulation. It is rather an introduction to this topic and its digital implementation. \\
 	
 	\subsection{Background}
-	There are 62 moons orbiting around Saturn, the twentieth-most distant of these is called Titan. This moon is larger than Mercury, which makes it the second-largest moon in our Solar System, only topped by Jupiter's Ganymede. It was discovered in 1655 by the Dutch astronomer Christiaan Huygens, after whom the space Cassini-Huygens space mission was named. Titan is the only moon in our Solar System with a dense atmosphere, which was previously mistaken for a bigger size until the previously mentioned space mission. The biggest shock this mission revealed, however, was the discovery of liquid hydrocarbon lakes in its polar regions. Its atmosphere consists mostly of nitrogen. This creates ethane and methane clouds, which results in Earth-like weather. Titan has its own climate, which results in the making of dunes, rivers, lakes and seas. Although not made from water, this moon looks a lot like the place mankind calls home. 
+	There are 62 moons orbiting around Saturn, the twentieth-most distant of these is called Titan. This moon is larger than Mercury, which makes it the second-largest moon in the Solar System, only topped by Jupiter?s Ganymede. It was discovered in 1655 by the Dutch astronomer Christiaan Huygens, after whom the space Cassini-Huygens space mission was named. Titan is the only moon in the Solar System with a dense atmosphere, which was previously mistaken for a bigger size until the previously mentioned space mission. The biggest shock this mission revealed, however, was the discovery of liquid hydrocarbon lakes in its polar regions. Its atmosphere consists mostly of nitrogen. This creates ethane and methane clouds, which results in Earth-like weather. Titan has its own climate, which results in the making of dunes, rivers, lakes and seas. Although not made from water, this moon looks a lot like the place mankind calls home. 
 	
 	\subsection{Problem description}
 	
-	The objective of this project is to simulate our Solar System, in that simulation: launch a rocket to Titan, land it safely on its surface and bring it back to Earth. 
-	In order to start tackling this problem, a physically correct simulation of the Solar System is needed. Using this model probes are launched from Earth. These probes behaves like cannonballs, launched from a cannon on Earth's surface. These so called exploratory missions help explore the workings of the physical simulation of the Solar System, which is based on gravity, and to develop an algorithm to calculate the trajectory of the probe. Once we have hit Titan with one of the probes, we know with which velocity to launch it at what point in time and are thus able to reach Saturn's moon.\\    
+	The objective of this project is to simulate the Solar System, in that simulation: launch a rocket to Titan, land it safely on its surface and bring it back to Earth.  All the travel has to be optimized to reduce the total cost of this exploratory mission, this means finding the optimal trajectory and reducing the overall fuel usage.
+	In order to start tackling this problem, a physically correct simulation of the Solar System is needed. Using this model probes are launched from Earth. These probes behaves like cannonballs, launched from a cannon on Earth's surface. These so called exploratory missions help explore the workings of the physical simulation of the Solar System, which is based on gravity, and to develop an algorithm to calculate the trajectory of the probe.\\    
 	
-	Landing a rocket safely is a difficult mission. In order to land a rocket on a planet, it has to orbit the planet first. Once this is done, it has to align its direction so it can enter the orbit. In this phase of the landing the rocket is influenced by atmospheric factors, such as the wind. it needs to stabilize the rotation the wind inflicts, as the rocket can land straight and safe. The controllers of the rocket tries to keep the optimal alignment and to land with a minimum velocity, because obviously it is unsafe to land with a high speed.\\
+	Landing a rocket safely is a difficult mission. In order to land a rocket on a planet, it has to orbit the planet first. Once this is done, it has to align its direction so it can enter the orbit. In this phase of the landing the rocket is influenced by atmospheric factors, such as the wind. It needs to stabilize the rotation the wind inflicts, as the rocket can land straight and safe. It is important to make the rocket land with the optimal alignment and a minimal velocity, because obviously it is unsafe to land with a high speed.\\
 	
-	In this phase of the mission, the rocket is launched from Titan towards mother Earth. Assuming that there is a launching station on Titan, we follow the same approach as we did on Earth: launch the rocket with a given velocity. Then the rocket, following the optimal trajectory, returns eventually to the Earth. To optimize the fuel usage, we chose the launching method, instead of letting the engines steer the rocket all the way back.
+	Afterwards, the rocket is launched from Titan towards mother Earth in order to land on it after a few years of traveling. 
 	
 	
 	\subsection{Research questions}
@@ -143,7 +143,7 @@
 	
 	
 	\subsection{Report structure}
-	Chapter 3 starts with some explanations about the physics and the equation solvers of the Solar System. The rest of this section is a detailed description of the spaceship. Chapter 4 is reserved to the launching methods from the different planets. It also includes the algorithm's details for the trajectory. All the optimizations made during this project can be found in Chapter 6. The chapter 7 is following with different instructions about the graphical user interface and its insights. The next Chapter contains the experiments' details. The results of these are in Chapter 9. The last one lists conclusions from the whole experiment. It also mentions the improvements that the team would like to do in the future.
+	Chapter 3 starts with some explanations about the physics and the equation solvers of the Solar System. The rest of this section is a detailed description of the spaceship. Chapter 4 is reserved to the launching methods from the different planets. It also includes the algorithm's details for the trajectory. All the optimizations made during this project can be found in Chapter 6. The chapter 7 is following with different instructions about the graphical user interface and its insights. The next Chapter contains the experiments? details. The results of these are in Chapter 9. The last one lists conclusions from the whole experiment. It also mentions the improvements that the team would like to do in the future.
 	
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%    
@@ -151,7 +151,7 @@
 	
 	\subsection{Solar System}
 	\subsubsection{Physical approach and alternatives}
-	To digitally simulate the Solar System, Newton's gravitational law is used. The model is based on the equation $\vec{F} = \frac{\vec{r}}{|\vec{r}|} G \dfrac{m_1 m_2}{|\vec{r}|^2} $. This means that the gravitational force F is equal to the product of the masses of both objects, divided by the distance squared, multiplied by the gravitational constant G. Or in other words: the bigger the mass and the closer the distance is, the bigger the force is.\\
+	To digitally simulate the Solar System, Newton's gravitational law is used. The model is based on the equation $\vec{F} = \frac{\vec{r}}{|\vec{r}|} G \dfrac{m_1 m_2}{|\vec{r}|^2} $. This means that the gravitational force F is equal to the product of the masses of both objects, divided by the distance squared, multiplied by the gravitational constant G. Or in other words: the bigger the object?s masses are and the closer they are to each other, the bigger the gravitational force between them will be.\\
 	To implement this model, it is necessary to pick a certain point in time and  to know where the planets were located at that time. Once all the celestial bodies are loaded in their original place, the gravity will do its work, which results in the planets orbiting around the Sun and the moons around their respective planets.\\
 	
 	Another possibility is to simulate the Solar System using an orbital model. Newton's model has been chosen instead of the orbital model because it is more physically accurate and it can show the evolution of the Solar System. Moreover, it only needs the initial conditions of each body and the gravitational formula. On the other hand calculating the position of a body at a given time could be tricky and the complexity of the algorithm increases exponentially if the number of bodies in the simulation increases.
@@ -159,10 +159,13 @@
 	
 	
 	\subsubsection{Equation solvers}
-	The whole simulated Solar System works on just one equation: Newton's gravitational theorem. In order to implement this and actually make the celestial bodies orbit, solving this equation is required. There are multiple ways to do it, represented are the ones used in the making of this report.
+	The whole simulated Solar System works on just one equation: Newton's gravitational theorem. Using this formula, the acceleration of the planets is calculated. Then, from the acceleration, the velocity of the celestial bodies can be found using ordinary differential equations solvers. Furthermore and using the same solvers, the planets? position is also computable from the velocity. In order to implement the gravity and actually make the celestial bodies orbit, solving these equations is required. // 
+	There are a lot of numerical approaches to solve these. The report will go in depth about the methods used in the program. 
+	
+	
 	
 	\paragraph{Euler}
-	Euler's method is a numerical method that solves first order differential equations. It is one of the most simple ODE-solvers, yet still relatively accurate.
+	Euler's method is a numerical method that solves first order differential equations. It is one of the simplest ODE-solvers, yet still relatively accurate for a small number of iterations.
 	\begin{flalign}
 	&\dot{y}(t) = f(t, y)\\
 	&y_i \approx w_i = w_{i - 1} + hf(t_{i -1}, w_{i-1}),\ \text{with}\ i > 0
@@ -170,18 +173,17 @@
 	This method as a global error $O(h)$, requires only one function evaluation at each iteration and is easy to implement.
 	
 	\paragraph{Adams-Bashforth}
-	We decided to use Adams-Bashforth explicit 4 steps method to solve the different equations \footnote{(2019). Retrieved from https://www3.nd.edu/~zxu2/acms40390F15/Lec-5.6.pd}.
-	This method has been implemented and replaced the Euler's method to have a higher accuracy in the calculus of the simulation. As mentioned earlier, Euler's method is first order while Adams-Bashforth is a 4rth order equation solver. Adams-Bashforth's method is more accurate than Euler's, that is why it is recommended to work with the Adams-Bashforth method.
+	The decision to use Adams-Bashforth explicit 4 steps method \footnote{(2019). Retrieved from https://www3.nd.edu/~zxu2/acms40390F15/Lec-5.6.pdf} to solve the different equations  has been made. This method has been implemented and replaced the Euler's method to have a higher accuracy in the calculus of the simulation. As mentioned earlier, Euler's method is first order while Adams-Bashforth is a 4rth order equation solver. Adams-Bashforth's method is more accurate than Euler's, that is why it is recommended to work with the Adams-Bashforth method.
 	It is defined as
 	\begin{flalign}
 	&\dot{y}(t) = f(t, y)\\
 	&y_{i + 1} \approx w_{i + i} = w_i + \frac{h}{24} [55f(t_{i}, w_{i}) - 59 f(t_{i -1}, w_{i-1}) + 37 f(t_{i -2}, w_{i-2}) - 9 f(t_{i -3}, w_{i-3})],\ \text{with}\ i > 3
 	\end{flalign}
-	To initialize this method, data from Nasa are used if available. The acceleration is calculated by using 3 points difference formula and data for the spaceship are assumed to be linear.\\
+	To initialize this method, data from NASA are used if available. The acceleration is calculated by using 3 points difference formula and data for the spaceship are assumed to be linear.\\
 	The main advantage of the approach is that it reduces the error (from $O(h)$ for Euler's to $O(h^4)$ for Adams-Bashforth's) without increasing the computational cost, because both of them require only a function evaluation at each iteration.    
 	
 	\paragraph{3 point difference}
-	It was not possible to obtain information about the acceleration of the celestial bodies from Nasa, so it is necessary to calculate it. The acceleration is defined as $\vec{a} = \frac{d\vec{v}}{dt} $. So the values of the acceleration can be calculated as following:
+	It is not possible to obtain information about the acceleration of the celestial bodies from NASA, so it is necessary to calculate it. This 3 point difference method is used during the initialization of Adams-bashforth?s method, by calculating the acceleration as derivative of the velocity. The acceleration is defined as $\vec{a} = \frac{d\vec{v}}{dt} $. So the values of the acceleration can be calculated as following:
 	
 	\begin{flalign}
 	\text{Forward difference: } &\vec{a}_i = \dfrac{-3\vec{v}_i + 4\vec{v}_{i + 1} - \vec{v}_{i + 2}}{2h}\\
@@ -189,9 +191,11 @@
 	\text{Backward difference: } &\vec{a}_i = \dfrac{3\vec{v}_i - 4\vec{v}_{i - 1} + \vec{v}_{i - 2}}{2h}
 	\end{flalign}    
 	
+	Then only Newton?s gravitational law is used to update the acceleration of the planets and the shuttle in the simulation.
+	
 	\subsection{Spaceship}
 	\subsubsection{Shape}
-	The rocket is designed to be a spherical shell that is hollow inside. This makes it easier to calculate forces caused by external factors, such as wind and pressure, that affect the spaceship. The effect of the wind is determined by the surface area: the more area that can be blown by the wind, the bigger the force is. The choice of this shape (although not the most aerodynamic, which leads to increased costs) does help to control the rotation, increases the shuttle's stability and efficiency
+	The rocket is designed to be a spherical shell that is hollow inside. This design makes the calculations about the forces on the spaceship easier. Those forces include the wind, the engines, the atmosphere and the parachute. Note that the effect of the wind is partially determined by the surface area. The choice of this shape (although not the most aerodynamic, which leads to increased costs) does help to control the rotation, increases the shuttle's stability and efficiency. The external radius is 20m, while the inner radius is 5m. Then the space inside is used by the astronauts and the fuel is uniformly distributed in the remaining space.
 	
 	\subsubsection{Engines and uses}
 	The spaceship uses 7 engines that allow the control over velocity and rotation. The engines are divided into 2 categories: 1 main engine and 6 sub engines. The main engine is responsible to control the rocket's velocity and acceleration. The sub engines change the rotation of the vehicle for the different x, y, z axis. For every axis, or dimension, there are 2 sub engines called thrusters. The main purpose of these engines is to balance the wind in Titan's atmosphere and to maintain the correct velocity and alignment during the landing.
@@ -200,7 +204,7 @@
 	\subsubsection{Rotation}
 	The rotations that the spaceship undergoes, are calculated from the torque momentum formula $\vec{\tau} = \vec{r} \times \vec{F}$, where $\vec{r}$ is the distance between the application point of the force $\vec{F}$ and the centre of the spaceship, and the angular momentum formula $ \vec{L} = I \vec{\omega}$. Because of the particular shape of the spaceship inertia momentum is $I = \frac{2}{5}m \dfrac{r^5_2 - r^5_1}{r^3_2 - r^3_1}$ \footnote{Raymond A. Serway (1986). Physics for Scientists and Engineers (2nd ed.). Saunders College Publishing. p. 202. ISBN 0-03-004534-7.}. Then the angular velocity could be approximated as $\vec{\omega} = \dfrac{\sum_{i = 0}^{n}(\vec{r}_i \times \vec{F}_i)\Delta t}{I} $ and the rotation is $\vec{\theta} = \frac{d\vec{\omega}}{dt} $, which is calculated with Adams-Bashforth's method.\\
 	To calculate the orientation of the spaceship three perpendicular axis are used: $x$ and $y$ are horizontal and $z$ is the vertical one. Orientation is computed by using axis-angle rotations: given the unit axis of rotation $\vec{e}$ and the angle $\theta$, the axis of the spaceship are updated to
-	\footnote{Olinde Rodrigues, "Des lois gÃ©ometriques qui regissent les dÃ©placements d' un systÃ©me solide dans l' espace, et de la variation des coordonnÃ©es provenant de ces dÃ©placement considÃ©rÃ©es indÃ©pendant des causes qui peuvent les produire", J. Math. Pures Appl. 5 (1840), 380?440.}
+	\footnote{Olinde Rodrigues, "Des lois géométriques qui régissent les déplacements d'un système solide dans l'espace, et de la variation des coordonnées provenant de ces déplacement considérés indépendant des causes qui peuvent les produire", J. Math. Pures Appl. 5 (1840), 380?440.}
 	
 	\begin{equation}
 	\vec{v}^* = (\cos\theta)\vec{v} + (\sin\theta)(\vec{e} \times \vec{v}) + (1 - \cos\theta)(\vec{e} \cdot \vec{v}) \vec{e}
@@ -209,15 +213,15 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Travel}    
 	\subsection{Launch}
-	To launch the rocket from any planet, we assume a special launching station that launches the spacecraft with a certain initial velocity. It is comparable to a catapult launching a projectile. The higher the velocity during the launch, the easier it is to calculate a correct course, the lower its speed, the easier it gets dragged away by other planets' gravity. Thus it is recommended to experiment with a higher speed first.
+	To launch the rocket from any planet, a special launching station that launches the spacecraft with a certain initial velocity has been assumed. It is comparable to a catapult launching a projectile. The higher the velocity during the launch, the easier it is to calculate a correct course, the lower its speed, the easier it gets dragged away by other planets' gravity. Thus it is recommended to experiment with a higher speed first.
 	We chose to make the travel 1-year-long, so the rocket has a high initial velocity, so the trajectory is more straight, the rocket is less influenced by other planets' gravity and the trajectory algorithm converges faster.
 	The launcher seen on Figure 1 \footnote{Retrieved from http://targetsystems.qinetiq.com/en-ca/products-and-services/launchers-for-unmanned-systems/kec-launcher/} is comparable to the one used in this report, albeit on a bigger, digital scale.
 	
 	\subsubsection{From Earth}
-	The spaceship is launched from Earth as soon as the Solar System is initialized, which is the 22nd of March 2019 at midnight. The launch location is really close to the equator (latitude -0.0016Â°) facing Titan. Atmosphere has been ignored during this phase of the travel.
+	The spaceship is launched from Earth as soon as the Solar System is initialized, which is the 22nd of March 2019 at midnight. The launch location is really close to the equator (latitude -0.0016°) facing Titan. Atmosphere has been ignored during this phase of the travel.
 	
 	\subsubsection{From Titan}
-	The spaceship is launched again to Earth when it lands on Titan (latitude 56.2499Â°). The method is similar to the one used in the previous launch from the landing location.
+	The spaceship is launched again to Earth when it lands on Titan (latitude 56.2499°). The method is similar to the one used in the previous launch from the landing location.
 	
 	\subsection{Trajectory}
 	The trajectory calculated by the algorithm is determined by the starting velocity of the spaceship and the gravity of the other celestial bodies in the Solar System that influences the rocket, according to Newton's gravitational theorem (see 3.1.1.).
@@ -256,21 +260,24 @@
 	When the shuttle managed to orbit around the target planet, it will start an automated landing. The landing is coordinated by two built-in controllers. These algorithms help to land the spaceship safely on the surface of the planet.
 	
 	\subsection{On Titan}
-	The landing is considered complete when the distance between the spaceship and the ground is zero, then it is not error-based, so it is not possible using a PID controller for the velocity. During the descending it continues to orbit around Titan. Also the final state is measured at this moment.
+	The landing is considered complete when the distance between the spaceship and the ground is zero, then it is not error-based, so it is not possible using a PID controller for the velocity. During the descending it continues to orbit around Titan. Also the final state is measured at this moment.\\
+	In this phase the atmosphere is taken into account, so the spaceship is influenced by wind, atmospheric drag and a parachute used to reduce the landing velocity. Note that the atmosphere  is about 1.5 more dense than Earth?s atmosphere \footnote{Lindal, G. F.; Wood, G. E.; Hotz, H. B.; Sweetnam, D. N.; Eshleman, V. R.; Tyler, G. L. (1983-02-01). "The atmosphere of Titan: An analysis of the Voyager 1 radio occultation measurements". Icarus. 53 (2): 348?363. doi:10.1016/0019-1035(83)90155-0. ISSN 0019-1035.} and 600km thick \footnote{Retrieved from https://www.space.com/15257-titan-saturn-largest-moon-facts-discovery-sdcmp.html
+	}.
+	The parachute simply adds an extra acceleration which is opposite to the spaceship velocity and proportional to the atmosphere density. The atmospheric drag is proportional to the altitude, the atmosphere density and the spaceship area. Both of these effects are affecting the spaceship only when it is in the atmosphere.
 	
 	\subsubsection{Given tolerances}
 	In order to assure a safe landing, it is required to respect multiple parameters. A landing is considered safe when the velocity is less than 0.1, the angular velocity less than 0.01, the angle between the vertical axis of the spaceship and the ground is less than 0.02 and the distance to the ground less than 0.1.
 	
 	\subsubsection{Stochastic wind model}
 	The simulation takes into account a stochastic wind when the spaceship gets close to Titan. A few values about the wind have been found on multiple sources.
-	From our research, the big idea is that the wind is pretty weak on the surface (around 0.5-1m/s \footnote{Hendrix, A. and Yung, Y. (2017). Energy Options for Future Humans on Titan. [online] Available at: https://arxiv.org/ftp/arxiv/papers/1707/1707.00365.pdf [Accessed 2 May 2019].}) and stronger at higher altitudes \footnote{2.Carey, B. (2005). New View of Titan: Strong Winds, Soft Ground and Lightning. Retrieved from https://www.space.com/1825-view-titan-strong-winds-soft-ground-lightning.html [Accessed 3 May 2019]} (around 20m/s at 40km high and up to 120m/s). A wind model has been created in respect to these data to have a landing phase as realistic as possible. In this model the wind's speed is exponential to the distance from Titan's ground. The direction of the wind is calculated as $\vec{v} = \vec{d} \times \vec{R} + k \frac{\vec{d}}{\|\vec{d}\|}$, where $\vec{d}$ is the distance between Titan and the spaceship, $\vec{R}$ is a random unit vector,$k$k is a random value (it can be scaled to simulated a more variable wind), and $\times$ is the cross product. This is why the wind is stochastic.
+	From the research made, the general idea is that the wind is pretty weak on the surface (around 0.5-1m/s \footnote{Hendrix, A. and Yung, Y. (2017). Energy Options for Future Humans on Titan. [online] Available at: https://arxiv.org/ftp/arxiv/papers/1707/1707.00365.pdf [Accessed 2 May 2019].}) and stronger at higher altitudes \footnote{2.Carey, B. (2005). New View of Titan: Strong Winds, Soft Ground and Lightning. Retrieved from https://www.space.com/1825-view-titan-strong-winds-soft-ground-lightning.html [Accessed 3 May 2019]} (around 20m/s at 40km high and up to 120m/s). A wind model has been created in respect to these data to have a landing phase as realistic as possible. In this model the wind's speed is exponential to the distance from Titan's ground. The direction of the wind is calculated as $\vec{v} = \vec{d} \times \vec{R} + k \frac{\vec{d}}{\|\vec{d}\|}$, where $\vec{d}$ is the distance between Titan and the spaceship, $\vec{R}$ is a random unit vector,$k$k is a random value (it can be scaled to simulated a more variable wind), and $\times$ is the cross product. The wind is considered stochastic because of the random angle in which it blows and the random value that determines its strength.
 	
 	\subsubsection{Feedback controller}
-	his controller keeps the spaceship vertical during the landing, so it tries to minimize the angle between the vertical axis of the spaceship and the orthogonal axis to the ground. Titan is assumed to be sphere so the distance between the spaceship and the planet is the orthogonal axis. The controller estimates the angular velocity needed to align by using the angle formula (3.2.3.) and it compensates the actual angular velocity and the wind rotation effect. Then the angle is computed by the equation solver. When the alignment is correct, it adjusts it at every iteration and keeps the angular velocity close to zero.
+	This controller keeps the spaceship vertical during the landing, so it tries to minimize the angle between the vertical axis of the spaceship and the orthogonal axis to the ground. Titan is assumed to be sphere so the distance between the spaceship and the planet is the orthogonal axis. The controller estimates the angular velocity needed to align by using the angle formula (3.2.3.) and it compensates the actual angular velocity and the wind rotation effect. Then the angle is computed by the equation solver. When the alignment is correct, it adjusts it at every iteration and keeps the angular velocity close to zero.
 	
 	\subsubsection{Open loop controller}
 	The computation for the velocity during the landing is done by using an open loop controller: at 50'000 km the velocity is reduced to 500 km/h (with respect to Titan) with the main engine and with the same direction of the velocity of Titan. Then at 600km, when the spaceship enters the atmosphere, it starts braking to have the same velocity of the planet. During this phase the feedback controller for the rotation is still working and a three dimensional space is used.\\
-	This controller does not take into account changes of the environment but try to reach the correct state at each phase of the landing.
+	This controller does not take into account changes of the environment but tries to reach the correct state at each phase of the landing.
 	
 	
 	\subsection{On Earth}
@@ -284,12 +291,12 @@
 	The rocket needs a high initial velocity to take off from Titan, which is provided by its engines. By doing so the rocket consumes part of the remaining 11'470.45 kg of fuel and come back on Earth with around 608.60 kg, so the cost to come back is \officialeuro 6025.74. The acceleration taken into account is one iteration of the simulation.
 	
 	\subsection{Quickest route to Titan}
-	As we chose to implement our algorithm at the same time we initialize our Solar System, we rerun this moment over and over, launching a rocket into space. This algorithm is designed to find the quickest route to Titan, only using an initial velocity and the gravitational force. The quickest route is therefore the route the algorithm outputs. It takes us only one year to travel to Titan.
-	
+	This algorithm is designed to find the quickest route to Titan (with a specified travelling time), only using an initial velocity and the gravitational force. The algorithm is actually working on finding a trajectory for a trip lasting one year. 
+	Unfortunately, there is an absence of formal proof that the trajectory computed by the algorithm is the best one. The spaceship is following the most straightforward path to get to Titan?s orbit but there could exist some other faster routes.
 	
 	\subsection{Maths optimizations}
-	As mentioned earlier, two different equation solvers have been used in the program. The first order Euler method was first implemented. It was later on upgraded to the third order Adams-Bashforth method, which proved to be more accurate than the previous. The results of this improvement are presented in section 9 table 5.\\
-	Another optimization is to precompute the distance between each pair of celestial bodies and calculate directly the gravitational acceleration, in this way the distance is calculated only once per iteration and it is not necessary to multiply and then divide by the same amount of mass. Angular velocity is calculated in a similar way.
+	As mentioned earlier, two different equation solvers have been used in the program. The first order Euler method was first implemented. It was later on upgraded to the fourth order Adams-Bashforth method, which proved to be more accurate than the previous one. The results of this improvement are presented in section 9 table 5.\\
+	Another optimization is to precompute the distance between each pair of celestial bodies and calculate directly the gravitational acceleration. In this way the distance is calculated only once per iteration and it is not necessary to multiply and then divide by the same amount of mass. Angular velocity is calculated in a similar way.
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Graphical User Interface}
@@ -301,10 +308,10 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%    
 	\section{Experiments}
 	\subsection{Realistic velocity}
-	Since the rocket travels with a speed of approximately 84.99 km/s, we experimented with lower speeds to make it more realistic (Huygens travelled at an average velocity of 16.4 km/s \footnote{Retrieved from https://www.esa.int/Our\_Activities/Space\_Science/Cassini-Huygens/Cassini-Huygens\_Frequently\_Asked\_Questions\_FAQs}). To do so, the initial velocity with which the rocket is launched has been reduced. When changing the velocity to realistic speeds, the shuttle ended up orbiting around the Sun, or sometimes even worse, Earth itself. But if the speed is realistic, then why does not it work in this simulation? In this case, the rocket is shot into space from a launching station, and does not use its engines until it reaches the orbit of the desired celestial body. Therefore it will get stuck in the orbit of either the Sun or Earth. In real life, a rocket uses its own engine to leave Earth orbit and to steer itself to its desired location. Simulating this process would mean rethinking the whole launching and trajectory approaches, thus would be very time consuming. We see this as a challenge we would like to work on later.
+	Since the rocket travels with a speed of approximately 84.99 km/s, some experiences with lower speeds to make it more realistic could be interesting (Huygens travelled at an average velocity of 16.4 km/s \footnote{Retrieved from https://www.esa.int/Our\_Activities/Space\_Science/Cassini-Huygens/Cassini-Huygens\_Frequently\_Asked\_Questions\_FAQs}, but with a travel of 7 years instead of only 1). To do so, the initial velocity with which the rocket is launched has been reduced. When changing the velocity to realistic speeds, the shuttle ended up orbiting around the Sun or Earth itself. This lead to an interesting weakness of the program. The actual hypothesis is that it gets stuck into the orbit of either the Sun or Earth, due to not using engines during the travel. In ?real life?, a rocket uses its own engine to leave Earth orbit and to steer itself to its desired location. Simulating this process would mean rethinking the whole launching and trajectory approaches, thus would be very time consuming. We see this as a challenge we would like to work on later.
 	
 	\subsection{Unrealistic wind}
-	Since our wind model rightfully predicts a low wind on the surface, we wanted to test the controller for stormier weather as well. We did find data about the wind on Titan and Earth, but we do not want to be surprised by having the rocket crash after all the effort we put into getting it to the planet. We tested the rocket in stormier weather and with great success! The results can be found in chapter 9. in table 2 and 4.
+	Since the wind model rightfully predicts a low wind on the surface, the intention is to test the controller for stormier weather as well. Unfortunately there are no data about Titan?s weather, so the strategy is to increase the influence of the wind. The results can be found in chapter 9. in table 2 and 4.
 	
 	
 	\subsection{Usage}    
@@ -336,9 +343,9 @@
 		\end{center}
 	\end{table}
 	
-	It is possible to observe that the angular velocity and the angle with respect to the ground are correct, so the feedback controller for rotation is working fine. On the other hand the velocity controller is not working properly yet, but it has improved from the previous versions of the program (the first version was around 130).\\
+	It is possible to observe that the angular velocity and the angle with respect to the ground are correct, so the feedback controller for the rotation is working fine. On the other hand the velocity controller is not working properly yet, but it has improved from the previous versions of the program (the first version was around 130).\\
 	
-	It is possible to test how robust is the feedback controller by increasing the effect of the rotations generated by the wind. Here are the results (below).
+	It is also possible to test how robust is the feedback controller by increasing the effect of the rotations generated by the wind. Here are the results (below).
 	
 	\begin{table}[h]
 		\begin{center}
@@ -453,9 +460,12 @@
 		
 		\item Raymond A. Serway (1986). Physics for Scientists and Engineers (2nd ed.). Saunders College Publishing. p. 202. ISBN 0-03-004534-7.
 		
-		\item Olinde Rodrigues, "Des lois gÃ©ometriques qui regissent les dÃ©placements d' un systÃ©me solide dans l' espace, et de la variation des coordonnÃ©es provenant de ces dÃ©placement considÃ©rÃ©es indÃ©pendant des causes qui peuvent les produire", J. Math. Pures Appl. 5 (1840), 380?440.
+		\item Olinde Rodrigues, "Des lois géometriques qui regissent les déplacements d' un systéme solide dans l' espace, et de la variation des coordonnées provenant de ces déplacement considérées indépendant des causes qui peuvent les produire", J. Math. Pures Appl. 5 (1840), 380?440.
 		
 		\item Retrieved from http://targetsystems.qinetiq.com/en-ca/products-and-services/launchers-for-unmanned-systems/kec-launcher/
+		
+		\item Lindal, G. F.; Wood, G. E.; Hotz, H. B.; Sweetnam, D. N.; Eshleman, V. R.; Tyler, G. L. (1983-02-01). "The atmosphere of Titan: An analysis of the Voyager 1 radio occultation measurements". Icarus. 53 (2): 348?363. doi:10.1016/0019-1035(83)90155-0. ISSN 0019-1035.
+		\item Retrieved from https://www.space.com/15257-titan-saturn-largest-moon-facts-discovery-sdcmp.html
 		
 		\item Hendrix, A. and Yung, Y. (2017). Energy Options for Future Humans on Titan. [online] Available at: https://arxiv.org/ftp/arxiv/papers/1707/1707.00365.pdf [Accessed 2 May 2019].
 		
@@ -463,6 +473,8 @@
 		
 		\item Jet Fuel - Monthly Price (Euro per Gallon) - Commodity Prices - Price Charts, Data, and News - IndexMundi. Retrieved from \\https://www.indexmundi.com/commodities/?commodity=jet-fuel [Accessed 18 June 2019].    
 		\item Retrieved from https://www.esa.int/Our\_Activities/Space\_Science/Cassini-Huygens/Cassini-Huygens\_Frequently\_Asked\_Questions\_FAQs
+		
+		\item https://solarsystem.nasa.gov/missions/cassini/overview/
 	\end{enumerate}
 	
 	\newpage
@@ -498,3 +510,4 @@
 	\end{figure}      
 	
 \end{document}
+
