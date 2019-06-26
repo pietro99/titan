@@ -105,8 +105,8 @@ public class Runner extends Application{
         timeline.play();
         if(simulation)
             timeline.setRate(20);
-        else
-            timeline.setRate(5);
+        /*else
+            timeline.setRate(5);*/
         //.................
 
 
