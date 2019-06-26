@@ -46,11 +46,11 @@
 		Gianluca Vico (i6183186\\			
 		\vspace{15pt}
 		
-		\textit{Supervisors:}
+		\textit{Supervisors:}\\
 		Enrique Hortal Quesada\\
 		\vspace{15pt}
 		
-		\textit{Examiners:}
+		\textit{Examiners:}\\
 		Siamak Mehrkanoon\\
 		Nico Roos\\
 		\vspace{15pt}
@@ -64,7 +64,7 @@
 
 	\newpage
 	\section*{Preface}
-	This report is a description of an approach to reach Saturn's Hazy moon Titan, land on it and travel back to Earth with a realistic spaceship. It is intended for every scientific, mathematician, computer scientist or whoever who is interested in the space's expeditions. This moon has never been reached by any astronaut in the history; only one probe has been sent there to explore Saturn's largest moon. This spacecraft called "Huygens" \footnote{Rincon, P. (2005). BBC NEWS | Science/Nature | Huygens sends first Titan images. Retrieved from http://news.bbc.co.uk/2/hi/science/nature/4175099.stm} (part of the Cassini Mission) landed on in 2005. This is still the most distant landing of any human-made craft. The  Scientists agree that this is the most important place where to search for extraterrestrial life \footnote{Bortman, H. (2010). Life Without Water And The Habitable Zone. Retrieved from http://www.spacedaily.com/reports/Life\_Without\_Water\_And\_The\_Habitable\_Zone\_999.html}. Nasa's scientists are actually working on a mission called "Dragonfly" \footnote{Bartels, M. (2019). NASA May Decide This Year to Land a Drone on Saturn's Moon Titan. Retrieved from https://www.space.com/43010-dragonfly-mission-would-put-a-drone-on-titan.html} to go again to this moon. In this report, you will discover a way that our group made to try to explore this unknown celestial body. 
+	This report is a description of an approach to reach Saturn's hazy moon Titan, land on it and travel back to Earth with a realistic spaceship. It is intended for every scientific, mathematician, computer scientist or whoever is interested in the space's expeditions. This moon has never been reached by any astronaut in the history; only one probe has been sent there to explore Saturn's largest moon. This spacecraft called "Huygens" \footnote{Rincon, P. (2005). BBC NEWS | Science/Nature | Huygens sends first Titan images. Retrieved from http://news.bbc.co.uk/2/hi/science/nature/4175099.stm} (part of the Cassini Mission) landed on in 2005. This is still the most distant landing of any human-made craft. The  Scientists agree that this is the most important place where to search for extraterrestrial life \footnote{Bortman, H. (2010). Life Without Water And The Habitable Zone. Retrieved from http://www.spacedaily.com/reports/Life\_Without\_Water\_And\_The\_Habitable\_Zone\_999.html}. Nasa's scientists are actually working on a mission called "Dragonfly" \footnote{Bartels, M. (2019). NASA May Decide This Year to Land a Drone on Saturn's Moon Titan. Retrieved from https://www.space.com/43010-dragonfly-mission-would-put-a-drone-on-titan.html} to go again to this moon. In this report, you will discover a way that our group made to try to explore this unknown celestial body. 
 	
 	\section*{Abstract}
 	The purpose of this project is to bring a manned mission to land safely on Titan and return back to Earth. Some other goals had to be reached such as make the travel as cheap as possible by computing the best trajectory using orbits and also making the duration of the trip as short as possible. The plan is to use as many realistic and correct data as possible and keep a pretty high accuracy in all the calculations. \\
@@ -242,7 +242,7 @@
 		\item[z:] -15.821866756191314
 	\end{enumerate}	
 	then the initial velocity is about 108.61 km/s and it manages to return the spaceship in one year. \\
-	Another possible trajectory is close to $(-1.1758832380706273, 108.73913637470687, -11.157391536482116)$, which is heavily influenced by the Sun and might be more fuel efficient, but at the moment the spaceship did not manage to land with one.\\
+	Another possible trajectory is close to $(-1.1758832380706273, 108.73913637470687, -11.157391536482116)$, which is heavily influenced by the Sun and might be more fuel efficient, but at the moment the spaceship did not manage to land with this one.\\
 	The velocities used are too high to be realistic, but because we decided on the approach to reach Titan without using the rocket's engines and in only one year, is is not possible to find a trajectory to Titan or back with more realistic speeds.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -256,9 +256,8 @@
 	In order to assure a safe landing, it is required to respect multiple parameters. A landing is considered safe when the velocity is less than 0.1, the angular velocity less than 0.01, the angle between the vertical axis of the spaceship and the ground is less than 0.02 and the distance to the ground less than 0.1.
 	
 	\subsubsection{Stochastic wind model}
-	The simulation takes into account a stochastic wind when the spaceship gets close to Titan. A few values about the wind have been found on multiple sources \footnote{Hendrix, A. and Yung, Y. (2017). Energy Options for Future Humans on Titan. [online] Available at: https://arxiv.org/ftp/arxiv/papers/1707/1707.00365.pdf [Accessed 2 May 2019].}.
-	From our research, the big idea is that the wind is pretty weak on the surface (around 0.5-1m/s according to this paper) and stronger at higher altitudes \footnote{2.Carey, B. (2005). New View of Titan: Strong Winds, Soft Ground and Lightning. Retrieved from https://www.space.com/1825-view-titan-strong-winds-soft-ground-lightning.html [Accessed 3 May 2019]} (around 20m/s at 40km high and up to 120m/s). We have created a wind model in respect to these data to have a landing phase as realistic as possible. In this model the wind's speed is exponential to the distance from Titan's ground. The direction of the wind is calculated as $\vec{v} = \vec{d} \times \vec{R} + k \frac{\vec{d}}{\|\vec{d}\|}$, where $\vec{d}$ is the distance between Titan and the spaceship, $\vec{R}$ is a random unit vector,$k$k is a random value (it can be scaled to simulated a more variable wind), and $\times$ is the cross product. This is why the wind is stochastic. 
-	%TODO wind graph
+	The simulation takes into account a stochastic wind when the spaceship gets close to Titan. A few values about the wind have been found on multiple sources.
+	From our research, the big idea is that the wind is pretty weak on the surface (around 0.5-1m/s \footnote{Hendrix, A. and Yung, Y. (2017). Energy Options for Future Humans on Titan. [online] Available at: https://arxiv.org/ftp/arxiv/papers/1707/1707.00365.pdf [Accessed 2 May 2019].}) and stronger at higher altitudes \footnote{2.Carey, B. (2005). New View of Titan: Strong Winds, Soft Ground and Lightning. Retrieved from https://www.space.com/1825-view-titan-strong-winds-soft-ground-lightning.html [Accessed 3 May 2019]} (around 20m/s at 40km high and up to 120m/s). We have created a wind model in respect to these data to have a landing phase as realistic as possible. In this model the wind's speed is exponential to the distance from Titan's ground. The direction of the wind is calculated as $\vec{v} = \vec{d} \times \vec{R} + k \frac{\vec{d}}{\|\vec{d}\|}$, where $\vec{d}$ is the distance between Titan and the spaceship, $\vec{R}$ is a random unit vector,$k$k is a random value (it can be scaled to simulated a more variable wind), and $\times$ is the cross product. This is why the wind is stochastic. 
 	
 	\subsubsection{Feedback controller}
 	his controller keeps the spaceship vertical during the landing, so it tries to minimize the angle between the vertical axis of the spaceship and the orthogonal axis to the ground. Titan is assumed to be sphere so the distance between the spaceship and the planet is the orthogonal axis. The controller estimates the angular velocity needed to align by using the angle formula (3.2.3.) and it compensates the actual angular velocity and the wind rotation effect. Then the angle is computed by the equation solver. When the alignment is correct, it adjusts it at every iteration and keeps the angular velocity close to zero.
@@ -284,6 +283,7 @@
 	
 	\subsection{Maths optimizations}
 	As mentioned earlier, two different equation solvers have been used in the program. The first order Euler method was first implemented. It was later on upgraded to the third order Adams-Bashforth method, which proved to be more accurate than the previous. The results of this improvement are presented in section 9 table ***.
+	%TODO maths optimizations
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{GUI}
@@ -295,7 +295,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%	
 	\section{Experiments}
 	\subsection{Realistic velocity}
-	Since the rocket travels with a speed of approximately 84.99 km/s, we experimented with lower speeds to make it more realistic (Huygens travelled at an average velocity of 16.4 km/s). To do so, the initial velocity with which the rocket is launched has been reduced. When changing the velocity to realistic speeds, the shuttle ended up orbiting around the Sun, or sometimes even worse, Earth itself. But if the speed is realistic, then why does not it work in this simulation? In this case, the rocket is shot into space from our launching station, and does not use its engines until it reaches the orbit of the desired celestial body. Therefore it will get stuck in the orbit of either the Sun or Earth. In real life, a rocket uses its own engine to leave Earth orbit and to steer itself to its desired location. Simulating this process would mean that you would need to rethink your whole launching and trajectory approaches, thus would be very time consuming. We see this as a challenge we would like to work on later. 
+	Since the rocket travels with a speed of approximately 84.99 km/s, we experimented with lower speeds to make it more realistic (Huygens travelled at an average velocity of 16.4 km/s \footnote{Retrieved from https://www.google.com/url?q=https://www.esa.int/Our\_Activities/Space\_Science/Cassini-Huygens/Cassini-Huygens\_Frequently\_Asked\_Questions\_FAQs\&sa=D\&ust=1561470736958000\&usg=AFQjCNFLFAKyc9jlXeZ-FGcwqaj-oVYDMQ}). To do so, the initial velocity with which the rocket is launched has been reduced. When changing the velocity to realistic speeds, the shuttle ended up orbiting around the Sun, or sometimes even worse, Earth itself. But if the speed is realistic, then why does not it work in this simulation? In this case, the rocket is shot into space from our launching station, and does not use its engines until it reaches the orbit of the desired celestial body. Therefore it will get stuck in the orbit of either the Sun or Earth. In real life, a rocket uses its own engine to leave Earth orbit and to steer itself to its desired location. Simulating this process would mean that you would need to rethink your whole launching and trajectory approaches, thus would be very time consuming. We see this as a challenge we would like to work on later. 
 	
 	\subsection{Unrealistic wind}
 	Since our wind model rightfully predicts a low wind on the surface, we wanted to test the controller for stormier weather as well. We did find data about the wind on Titan and Earth, but we do not want to be surprised by having our rocket crash after all the effort we put into getting it to the planet. We tested our rocket in stormier weather and with great success! The results can be found in chapter 9. in table 2 and 4.
@@ -415,7 +415,7 @@
 	\end{table} 
 	%graph
 	
-	We can observe that for a small amount of iterations, the two methods have more or less the same accuracy. But it takes many years to reach Titan (Huygens %TODO cassini footnote
+	We can observe that for a small amount of iterations, the two methods have more or less the same accuracy. But it takes many years to reach Titan (Huygens \footnote{Retrieved from https://www.google.com/url?q=https://www.esa.int/Our\_Activities/Space\_Science/Cassini-Huygens/Cassini-Huygens\_Frequently\_Asked\_Questions\_FAQs\&sa=D\&ust=1561470736958000\&usg=AFQjCNFLFAKyc9jlXeZ-FGcwqaj-oVYDMQ}
 	travelled for 7 years) and we can observe that the difference of accuracy between the equations solvers is huge. Indeed, the Adams-Bashforth error after one year is significantly less than the Euler error after the same amount of time. This confirms our thoughts and confirms that the choice of changing a 1st order method to a 4th order method was definitely a good decision to improve importantly the accuracy of the complete model. 
 	
 	
@@ -443,18 +443,19 @@
 		\item Bartels, M. (2019). NASA May Decide This Year to Land a Drone on Saturn's Moon Titan. Retrieved from https://www.space.com/43010-dragonfly-mission-would-put-a-drone-on-titan.html [Accessed 17 June 2019].
 
 		\item Retrieved from https://www3.nd.edu/~zxu2/acms40390F15/Lec-5.6.pdf [Accessed 1 May 2019].
-
+		%TODO Raymonds A. serway
+		%TODO Olinde rodrigues
 		\item Hendrix, A. and Yung, Y. (2017). Energy Options for Future Humans on Titan. [online] Available at: https://arxiv.org/ftp/arxiv/papers/1707/1707.00365.pdf [Accessed 2 May 2019].
 		
 		\item Carey, B. (2005). New View of Titan: Strong Winds, Soft Ground and Lightning. Retrieved from https://www.space.com/1825-view-titan-strong-winds-soft-ground-lightning.html [Accessed 3 May 2019]
 		
-		\item Jet Fuel - Monthly Price (Euro per Gallon) - Commodity Prices - Price Charts, Data, and News - IndexMundi. Retrieved from \\https://www.indexmundi.com/commodities/?commodity=jet-fuel [Accessed 18 June 2019].		
+		\item Jet Fuel - Monthly Price (Euro per Gallon) - Commodity Prices - Price Charts, Data, and News - IndexMundi. Retrieved from \\https://www.indexmundi.com/commodities/?commodity=jet-fuel [Accessed 18 June 2019].	
+		
 	\end{enumerate}
 
 	\newpage
 	
 	\section*{Appendix}
-	%TODO wind graph
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=1\linewidth]{trajectory}
